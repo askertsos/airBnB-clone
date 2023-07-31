@@ -1,0 +1,12 @@
+ENTITIES :
+
+	User :  private Long id; (pk)
+		private String username;
+		private String password;
+		private String first_name;
+		private String last_name;
+		private String email;
+		private String PhoneNumber;
+		private Boolean isHost;
+		private Enum role;
+		private ?? picture;
