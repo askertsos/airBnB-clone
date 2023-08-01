@@ -2,21 +2,34 @@ package com.rbbnbb.TediTry1.Entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="users")
 public class User {
-    enum roles {ADMIN, HOST, TENANT, HOST_TENANT};
-    private roles role;
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String username;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String first_name;
+    @Column(nullable = false)
     private String last_name;
-    private Boolean isHost;
+    @Column(nullable = false, unique = true)
     private String email;
     //private Photo picture
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name="users_roles",
+            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
+            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
+    private List<Role> roles = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -58,14 +71,6 @@ public class User {
         this.last_name = last_name;
     }
 
-    public Boolean getHost() {
-        return isHost;
-    }
-
-    public void setHost(Boolean host) {
-        isHost = host;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -82,11 +87,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public roles getRole() {
-        return role;
+    public List<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(roles role) {
-        this.role = role;
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }

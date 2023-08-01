@@ -10,3 +10,16 @@ ENTITIES :
 		private Boolean isHost;
 		private Enum role;
 		private ?? picture;
+
+	Photo:
+	    private Long id;
+	    private String filepath;
+
+
+	Rental:
+	    private Long id;
+	    private Decimal reviews;
+	    private
+	    private
+	    private
+	    private
