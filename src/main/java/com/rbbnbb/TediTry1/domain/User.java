@@ -1,13 +1,14 @@
 package com.rbbnbb.TediTry1.domain;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name="users")
-public class User {
+public class User implements UserDetails {
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false, unique = true)
@@ -29,7 +30,19 @@ public class User {
             name="users_roles",
             joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
             inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> authorities;
+
+    public User(){
+        super();
+        this.authorities = new HashSet<Role>();
+    }
+
+    public User(Long id, String username, String password, Set<Role>authorities){
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.authorities=authorities;
+    }
 
     public Long getId() {
         return id;
@@ -45,6 +58,15 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.authorities;
+    }
+
+    public void setAuthorities(Set<Role> authorities) {
+        this.authorities = authorities;
     }
 
     public String getPassword() {
@@ -87,11 +109,24 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }

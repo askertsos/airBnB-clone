@@ -4,23 +4,28 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
-public class Role {
+public class Role implements GrantedAuthority {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name; //ROLE_ADMIN || ROLE_HOST || ROLE_TENANT
 
-    public Role(){}
-    public Role(String role){
-        this.name=role;
-    }
+    private String authority;
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String getAuthority() {
+        return this.authority;
+    }
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 }
