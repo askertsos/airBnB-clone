@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin("localhost:8080")
+@CrossOrigin("*")
 public class AdminController {
 
     @GetMapping("/")
