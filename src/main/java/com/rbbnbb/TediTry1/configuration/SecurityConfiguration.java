@@ -26,27 +26,27 @@ public class SecurityConfiguration {
         daoAuthProvider.setUserDetailsService(detailsService);
         return new ProviderManager(daoAuthProvider);
     }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> {
-//                    auth.requestMatchers("/auth/**").permitAll();
-//                    auth.requestMatchers("/view/**").permitAll();
-//                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
-//                    auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
-                    auth.anyRequest().permitAll();
-                });
-
-//        http.oauth2ResourceServer()
-//                .jwt()
-//                .jwtAuthenticationConverter(jwtAuthenticationConverter());
-//        http.sessionManagement(
-//                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//        );
-
-        return http.build();
-    }
+//
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(auth -> {
+////                    auth.requestMatchers("/auth/**").permitAll();
+////                    auth.requestMatchers("/view/**").permitAll();
+////                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+////                    auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
+//                    auth.anyRequest().permitAll();
+//                });
+//
+////        http.oauth2ResourceServer()
+////                .jwt()
+////                .jwtAuthenticationConverter(jwtAuthenticationConverter());
+////        http.sessionManagement(
+////                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+////        );
+//
+//        return http.build();
+//    }
 }
 
