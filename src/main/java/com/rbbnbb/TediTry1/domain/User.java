@@ -15,14 +15,14 @@ public class User implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String password;
-    @Column(nullable = false)
+
     private String first_name;
-    @Column(nullable = false)
+
     private String last_name;
-    @Column(nullable = false, unique = true)
+
     private String email;
     //private Photo picture
-    @Column(nullable = false, unique = true)
+
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -37,8 +37,7 @@ public class User implements UserDetails {
         this.authorities = new HashSet<Role>();
     }
 
-    public User(Long id, String username, String password, Set<Role>authorities){
-        this.id = id;
+    public User(String username, String password, Set<Role>authorities){
         this.username = username;
         this.password = password;
         this.authorities=authorities;

@@ -13,6 +13,13 @@ public class Role implements GrantedAuthority {
 
     private String authority;
 
+    public Role() {
+        super();
+    }
+    public Role(String authority){
+        this.authority=authority;
+    }
+
     public Long getId() {
         return id;
     }
