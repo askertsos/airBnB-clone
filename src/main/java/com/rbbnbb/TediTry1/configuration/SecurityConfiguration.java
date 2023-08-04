@@ -16,26 +16,27 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfiguration {
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authManager(UserDetailsService detailsService){
+    public AuthenticationManager authManager(UserDetailsService detailsService) {
         DaoAuthenticationProvider daoAuthProvider = new DaoAuthenticationProvider();
         daoAuthProvider.setUserDetailsService(detailsService);
         return new ProviderManager(daoAuthProvider);
     }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/auth/**").permitAll();
-                    auth.requestMatchers("/view/**").permitAll();
-                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                    auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
-                    auth.anyRequest().authenticated();
+//                    auth.requestMatchers("/auth/**").permitAll();
+//                    auth.requestMatchers("/view/**").permitAll();
+//                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+//                    auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
+                    auth.anyRequest().permitAll();
                 });
 
 //        http.oauth2ResourceServer()
@@ -47,4 +48,5 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+}
 
