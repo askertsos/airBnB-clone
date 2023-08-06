@@ -23,10 +23,10 @@ public class TediTry1Application {
 	@Bean
 	CommandLineRunner run(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
 		return args ->{
-			if (roleRepository.findByAuthority("ROLE_ADMIN").isPresent()) return;
-			Role adminRole = roleRepository.save(new Role("ROLE_ADMIN"));
-			roleRepository.save(new Role("ROLE_TENANT"));
-			roleRepository.save(new Role("ROLE_HOST"));
+			if (roleRepository.findByAuthority("ADMIN").isPresent()) return;
+			Role adminRole = roleRepository.save(new Role("ADMIN"));
+			roleRepository.save(new Role("TENANT"));
+			roleRepository.save(new Role("HOST"));
 
 			Set<Role> roles = new HashSet<>();
 			roles.add(adminRole);

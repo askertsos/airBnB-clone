@@ -40,7 +40,7 @@ public class AuthenticationService {
 
     public User registerUser(String username, String password){
         String encodedPassword = passwordEncoder.encode(password);
-        Role tenantRole = roleRepository.findByAuthority("ROLE_TENANT").get();
+        Role tenantRole = roleRepository.findByAuthority("TENANT").get();
 
         Set<Role> authorities = new HashSet<>();
         authorities.add(tenantRole);
