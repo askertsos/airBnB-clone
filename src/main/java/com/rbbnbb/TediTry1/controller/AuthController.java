@@ -22,13 +22,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public LoginResponseDTO loginUser(@RequestBody LoginDTO body){
-        LoginResponseDTO response = authService.loginUser(body.getUsername(), body.getPassword());
-        if (response.getUser() == null){
-            return null;
-        }
-        else{
-            return response;
-        }
+        return authService.loginUser(body.getUsername(), body.getPassword());
     }
     @GetMapping("/index")
     public String home(){

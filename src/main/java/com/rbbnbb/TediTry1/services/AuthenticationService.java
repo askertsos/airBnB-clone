@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.AuthenticationException;
+
 import java.util.HashSet;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
@@ -45,20 +45,20 @@ public class AuthenticationService {
         Set<Role> authorities = new HashSet<>();
         authorities.add(tenantRole);
 
-        return userRepository.save(new User(username,encodedPassword,authorities));
+        return userRepository.save(new User(0L,username,encodedPassword,authorities));
     }
 
     public LoginResponseDTO loginUser(String username, String password){
         try {
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             String token = tokenService.generateJWT(auth);
-            try {
-                return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
-            } catch (NoSuchElementException n){
-                System.out.println("Not found");
-                throw new AuthenticationException();
-            }
-        }catch(AuthenticationException e){
+            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
+        }catch(AuthenticationException e) {
+            System.out.println("AUTHENTICATION EXCEPTION");
+            return new LoginResponseDTO(null, "");
+        }catch(IllegalArgumentException e){
+            System.out.println("ILLEGALARGUMENT EXCEPTION");
             return new LoginResponseDTO(null, "");
         }
     }
