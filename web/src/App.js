@@ -1,28 +1,38 @@
 // import logo from './logo.svg';
+import { useState, useEffect } from "react";
 import './App.css';
 
 function App() {
-  const reqBody = {
-    username: "kk",
-    password: "ll"
-  }
-  fetch("http://localhost:8080/auth/login", { 
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "post",
-    body: JSON.stringify(reqBody)
-  }) 
-    .then((response) => Promise.all([response.json(), response.headers]))
-    .then(([body, headers]) => {
-      const jwtToken = headers.get("authorization");
-      console.log(jwtToken);
-      console.log(body);
-    });
+  
+  const [jwt,setJwt] = useState("");
+
+  useEffect(() => {
+    const reqBody = {
+      username: "kk",
+      password: "ll"
+    }
+    fetch("http://localhost:8080/auth/login", { 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "post",
+      body: JSON.stringify(reqBody)
+    }) 
+      .then((response) => Promise.all([response.json(), response.headers]))
+      .then(([body, headers]) => {
+        setJwt(headers.get("authorization"));
+        // console.log(a);
+        // console.log(body);
+        // setJwt(a);
+      });
+  
+  },[jwt])
+
 
   return (
     <div className="App">
-      <h1>i sucka da cocka</h1> 
+      <h1>i sucka da cocka {jwt}</h1> 
+      <div>JWT is {jwt}</div>
     </div>
   )
 
