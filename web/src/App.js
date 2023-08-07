@@ -1,15 +1,15 @@
-// import logo from './logo.svg';
 import { useState, useEffect } from "react";
 import './App.css';
 
 function App() {
   
-  const [jwt,setJwt] = useState("");
+  const [jwt,setJwt] = useState(null);
+  const [username,setUsername] = useState(null);
 
   useEffect(() => {
     const reqBody = {
-      username: "kk",
-      password: "ll"
+      username: "user1",
+      password: "pass1"
     }
     fetch("http://localhost:8080/auth/login", { 
       headers: {
@@ -20,40 +20,24 @@ function App() {
     }) 
       .then((response) => Promise.all([response.json(), response.headers]))
       .then(([body, headers]) => {
-        setJwt(headers.get("authorization"));
-        // console.log(a);
-        // console.log(body);
-        // setJwt(a);
+        setJwt(body.jwt);
+        setUsername(body.user.username);
+        console.log("Server Response Body:", body);
+        console.log("Server Response Headers:", headers);
       });
   
-  },[jwt])
+  },[])
 
 
   return (
     <div className="App">
-      <h1>i sucka da cocka {jwt}</h1> 
-      <div>JWT is {jwt}</div>
+        <div>
+          <h1>i sucka da cocka</h1> 
+          <div>Hi, {username}</div>
+        </div>
     </div>
-  )
+  );
 
-  // return (
-  //   <div className="App">
-  //     <header className="App-header">
-  //       <img src={logo} className="App-logo" alt="logo" />
-  //       <p>
-  //         Edit <code>src/App.js</code> and save to reload.
-  //       </p>
-  //       <a
-  //         className="App-link"
-  //         href="https://reactjs.org"
-  //         target="_blank"
-  //         rel="noopener noreferrer"
-  //       >
-  //         Learn React
-  //       </a>
-  //     </header>
-  //   </div>
-  // );
 }
 
 export default App;
