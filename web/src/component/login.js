@@ -5,22 +5,14 @@ const LoginPost = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const onChangeUsername = (e) => {
-    setUsername(e.target.value);
-  };
-
-  const onChangePassword = (e) => {
-    setPassword(e.target.value);
-  };
-
   const onSubmit = (e) => {
     e.preventDefault();
     const newPost = {
-      username: e.username,
-      password: e.password,
+      username: {username},
+      password: {password},
     };
     console.log(newPost);
-    axios.post("http://localhost:8080/auth/login", newPost)
+    axios.post("http://localhost:8080/auth/login", JSON.stringify(newPost))
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
   };
@@ -28,12 +20,14 @@ const LoginPost = () => {
     <form onSubmit={onSubmit}>
       <div>
         <label>
-            Username:
+            Username
             <input
-                type="text"
+                id="username"
                 name="username"
-                value={username} // Link to the state variable
-                onChange={onChangeUsername} // Handle input changes
+                type="text"
+                placeholder="username"
+                onChange={event => setUsername(event.target.value)}
+                value={username}
             />
         </label>
       </div>
@@ -41,14 +35,16 @@ const LoginPost = () => {
         <label>
             Password:
             <input
-                type="text"
+                id="password"
                 name="password"
-                value={password} // Link to the state variable
-                onChange={onChangePassword} // Handle input changes
+                type="text"
+                placeholder="password"
+                onChange={event => setPassword(event.target.value)}
+                value={password}
             />
         </label>
       </div>
-      <button type="submit">POST</button>
+      <button type="submit">Sumbit</button>
     </form>
   );
 };
