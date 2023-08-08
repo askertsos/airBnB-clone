@@ -1,21 +1,30 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 const LoginPost = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [jwt,setJwt] = useState(null);
 
   const onSubmit = (e) => {
-    e.preventDefault();
-    const newPost = {
-      username: {username},
-      password: {password},
+    const reqBody = {
+        username: {username},
+        password: {password}
+      }
+      fetch("http://localhost:8080/auth/login", { 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "post",
+        body: JSON.stringify(reqBody)
+      }) 
+        .then((response) => Promise.all([response.json(), response.headers]))
+        .then(([body, headers]) => {
+          setJwt(body.jwt);
+          console.log("Server Response Body:", body);
+          console.log("Server Response Headers:", headers);
+        });
     };
-    console.log(newPost);
-    axios.post("http://localhost:8080/auth/login", JSON.stringify(newPost))
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
-  };
+
   return (
     <form onSubmit={onSubmit}>
       <div>
