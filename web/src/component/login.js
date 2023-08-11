@@ -7,8 +7,8 @@ const LoginPost = () => {
 
 	const onSubmit = (e) => {
 		const reqBody = {
-			username: { username },
-			password: { password },
+			username: username,
+			password: password,
 		};
 		fetch("http://localhost:8080/auth/login", {
 			headers: {
@@ -17,13 +17,25 @@ const LoginPost = () => {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		})
-			.then((response) =>
-				Promise.all([response.json(), response.headers])
-			)
+			.then((response) => {
+				Promise.all([response.json(), response.headers]);
+				if (response.status === 200)
+					return Promise.all([response.json(), response.headers]);
+				else return Promise.reject("Login attempt failed");
+			})
 			.then(([body, headers]) => {
-				setJwt(body.jwt);
-				console.log("Server Response Body:", body);
-				console.log("Server Response Headers:", headers);
+				setJwt(headers.get("authorization"));
+				console.log("Jwt is:", jwt);
+				console.log("User is:", body);
+			})
+			// .then((body, headers) => {
+			// 	setJwt(body.jwt);
+			// 	window.location.href = "../home";
+			// 	console.log("Server Response Body:", body);
+			// 	// console.log("Server Response Headers:", headers);
+			// })
+			.catch((message) => {
+				alert(message);
 			});
 	};
 
@@ -31,7 +43,7 @@ const LoginPost = () => {
 		<form onSubmit={onSubmit}>
 			<div>
 				<label>
-					Username
+					Username:
 					<input
 						id="username"
 						name="username"

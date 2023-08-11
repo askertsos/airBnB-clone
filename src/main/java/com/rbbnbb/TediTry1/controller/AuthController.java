@@ -6,6 +6,8 @@ import com.rbbnbb.TediTry1.dto.LoginResponseDTO;
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -21,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@RequestBody LoginDTO body){
+    public ResponseEntity<?> loginUser(@RequestBody LoginDTO body){
         return authService.loginUser(body.getUsername(), body.getPassword());
     }
     @GetMapping("/index")
