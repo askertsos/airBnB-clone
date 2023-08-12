@@ -55,9 +55,15 @@ public class AuthenticationService {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             String token = tokenService.generateJWT(auth);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, token)
-                    .body(auth.getPrincipal());
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add(HttpHeaders.AUTHORIZATION,token);
+            responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,HttpHeaders.AUTHORIZATION);
+            var r = ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .body((User)auth.getPrincipal());
+            System.out.println("body is "+ r.getBody().getUsername());
+            System.out.println("headers are "+ r.getHeaders());
+            return r;
 //            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
         }catch(AuthenticationException e) {
             System.out.println("AUTHENTICATION EXCEPTION");

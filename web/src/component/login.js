@@ -10,29 +10,51 @@ const LoginPost = () => {
 			username: username,
 			password: password,
 		};
-		fetch("http://localhost:8080/auth/login", {
+		const fetchOptions = {
 			headers: {
 				"Content-Type": "application/json",
 			},
 			method: "post",
 			body: JSON.stringify(reqBody),
-		})
+		};
+		fetch("http://localhost:8080/auth/login", fetchOptions)
 			.then((response) => {
-				Promise.all([response.json(), response.headers]);
-				if (response.status === 200)
-					return Promise.all([response.json(), response.headers]);
-				else return Promise.reject("Login attempt failed");
+				if (response.status === 200) {
+					const auth = response.headers.get("authorization");
+					// console.log("jwt is: ", auth);
+					localStorage.setItem("jwt", auth);
+					setJwt(auth);
+					window.location.href = "../../";
+				} else return Promise.reject("Login attempt failed");
 			})
-			.then(([body, headers]) => {
-				setJwt(headers.get("authorization"));
-				console.log("Jwt is:", jwt);
-				console.log("User is:", body);
-			})
-			// .then((body, headers) => {
-			// 	setJwt(body.jwt);
-			// 	window.location.href = "../home";
-			// 	console.log("Server Response Body:", body);
-			// 	// console.log("Server Response Headers:", headers);
+			// .then((codeIs200) => {
+			// 	if (codeIs200) {
+
+			// 	} else {
+
+			// 	}
+			// })
+			// .then((response) => {
+			// 	localStorage.setItem("test", "TEST");
+			// 	// if (response.status === 200)
+			// 	return Promise.all([
+			// 		response.json(),
+			// 		response.headers.get("Authorization"),
+			// 	]);
+			// 	// else return Promise.reject("Login attempt failed");
+			// 	// if (response.status === "200") {
+			// 	// 	localStorage.setItem(
+			// 	// 		"jwt",
+			// 	// 		response.headers.get("Authorization")
+			// 	// 	);
+			// 	// 	window.location.href = "../../home";
+			// 	// } else return Promise.reject("Invalid login attempt");
+			// })
+			// .then((body, auth) => {
+			// 	localStorage.setItem("test", "ttt");
+			// 	localStorage.setItem("jwt", auth);
+			// 	setJwt(auth);
+			// 	window.location.href = "../../home";
 			// })
 			.catch((message) => {
 				alert(message);
@@ -40,7 +62,8 @@ const LoginPost = () => {
 	};
 
 	return (
-		<form onSubmit={onSubmit}>
+		// <form onSubmit={onSubmit}>
+		<>
 			<div>
 				<label>
 					Username:
@@ -67,8 +90,11 @@ const LoginPost = () => {
 					/>
 				</label>
 			</div>
-			<button type="submit">Login</button>
-		</form>
+			<button id="submit" type="button" onClick={() => onSubmit()}>
+				Login
+			</button>
+			{/*  </form> */}
+		</>
 	);
 };
 export default LoginPost;
