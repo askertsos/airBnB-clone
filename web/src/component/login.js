@@ -27,35 +27,6 @@ const LoginPost = () => {
 					window.location.href = "../../";
 				} else return Promise.reject("Login attempt failed");
 			})
-			// .then((codeIs200) => {
-			// 	if (codeIs200) {
-
-			// 	} else {
-
-			// 	}
-			// })
-			// .then((response) => {
-			// 	localStorage.setItem("test", "TEST");
-			// 	// if (response.status === 200)
-			// 	return Promise.all([
-			// 		response.json(),
-			// 		response.headers.get("Authorization"),
-			// 	]);
-			// 	// else return Promise.reject("Login attempt failed");
-			// 	// if (response.status === "200") {
-			// 	// 	localStorage.setItem(
-			// 	// 		"jwt",
-			// 	// 		response.headers.get("Authorization")
-			// 	// 	);
-			// 	// 	window.location.href = "../../home";
-			// 	// } else return Promise.reject("Invalid login attempt");
-			// })
-			// .then((body, auth) => {
-			// 	localStorage.setItem("test", "ttt");
-			// 	localStorage.setItem("jwt", auth);
-			// 	setJwt(auth);
-			// 	window.location.href = "../../home";
-			// })
 			.catch((message) => {
 				alert(message);
 			});

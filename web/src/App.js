@@ -4,11 +4,14 @@ import Home from "./component/home";
 import About from "./component/about";
 import Contact from "./component/contact";
 import LoginPost from "./component/login";
+import User from "./component/user";
 import "./App.css";
 
 function App() {
 	const [jwt, setJwt] = useState(null);
 	const [username, setUsername] = useState(null);
+
+	localStorage.setItem("jwt", null);
 
 	// useEffect(() => {
 	// 	const reqBody = {
@@ -41,6 +44,7 @@ function App() {
 				<Route exact path="/contact" element={<Contact />}></Route>
 				<Route exact path="/auth/login" element={<LoginPost />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
+				<Route exact path="/user" element={<User />}></Route>
 			</Routes>
 		</Router>
 	);
