@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPost = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const [jwt, setJwt] = useState(null);
+
+	const navigate = useNavigate();
 
 	const onSubmit = (e) => {
 		const reqBody = {
@@ -21,10 +23,8 @@ const LoginPost = () => {
 			.then((response) => {
 				if (response.status === 200) {
 					const auth = response.headers.get("authorization");
-					// console.log("jwt is: ", auth);
 					localStorage.setItem("jwt", auth);
-					setJwt(auth);
-					window.location.href = "../../";
+					navigate("/home")
 				} else return Promise.reject("Login attempt failed");
 			})
 			.catch((message) => {

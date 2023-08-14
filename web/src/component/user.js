@@ -1,32 +1,35 @@
 // User.js
 import React, { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function User() {
-	console.log("in User");
+
+	const jwt = localStorage.getItem("jwt");
+	const navigate = useNavigate();
+
+	console.log("JWT is ", jwt);
+
 	useEffect(() => {
 		const fetchOptions = {
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("jwt"),
+				Authorization:  localStorage.getItem("jwt"),
 			},
 			method: "get",
 			body: null,
 		};
-		console.log("fetching");
-		fetch("http://localhost:8080/user", fetchOptions)
-			.then((response) => {
-				if (response.status !== response.ok) {
-					return Promise.reject(
-						"You must login to access this field"
-					);
-				}
-			})
-			.catch((message) => alert(message));
+		fetch("http://localhost:8080/user/", fetchOptions)
+		.then((response) => {
+			console.log(response.status);
+			if (response.status !== 200) {
+				navigate('/unauthorized/user');
+			}
+		})
+		.catch((message) => console.log(message));
 
 		// localStorage.getItem("jwt") && <Navigate to="/login" replace={true} />;
 	});
-	console.log("after useEffect");
+
 	return (
 		<>
 			<h1>User</h1>

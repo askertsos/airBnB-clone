@@ -5,13 +5,14 @@ import About from "./component/about";
 import Contact from "./component/contact";
 import LoginPost from "./component/login";
 import User from "./component/user";
+import UserNotLogged from "./component/UserNotLogged";
 import "./App.css";
 
 function App() {
 	const [jwt, setJwt] = useState(null);
 	const [username, setUsername] = useState(null);
 
-	localStorage.setItem("jwt", null);
+	// localStorage.setItem("jwt", null);
 
 	// useEffect(() => {
 	// 	const reqBody = {
@@ -45,6 +46,7 @@ function App() {
 				<Route exact path="/auth/login" element={<LoginPost />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
 				<Route exact path="/user" element={<User />}></Route>
+				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
 			</Routes>
 		</Router>
 	);

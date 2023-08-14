@@ -16,11 +16,10 @@ public class UserController {
 //    }
 
     @GetMapping("/")
-    public ResponseEntity authenticateJWT(@RequestHeader String Authorization){
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,HttpHeaders.AUTHORIZATION);
-        if (Authorization.isBlank() || Authorization.isEmpty()) return ResponseEntity.status(401).build();
-        return ResponseEntity.ok().headers(responseHeaders).build();
+    public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
+        System.out.println("Token is " + jwt);
+        if (jwt.isBlank() || jwt.isEmpty() || jwt.equals("null") ) return ResponseEntity.status(401).build();
+        return ResponseEntity.ok().build();
     }
 
 }
