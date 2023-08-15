@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./component/home";
-import About from "./component/about";
-import Contact from "./component/contact";
 import LoginPost from "./component/login";
+import Logout from "./component/logout";
 import User from "./component/user";
 import UserNotLogged from "./component/UserNotLogged";
 import "./App.css";
@@ -41,9 +40,8 @@ function App() {
 		<Router>
 			<Routes>
 				<Route exact path="/" element={<Home />}></Route>
-				<Route exact path="/about" element={<About />}></Route>
-				<Route exact path="/contact" element={<Contact />}></Route>
 				<Route exact path="/auth/login" element={<LoginPost />}></Route>
+				<Route exact path="/auth/logout" element={<Logout />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
 				<Route exact path="/user" element={<User />}></Route>
 				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
