@@ -3,32 +3,30 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function User() {
-
 	const jwt = localStorage.getItem("jwt");
 	const navigate = useNavigate();
 
 	console.log("JWT is ", jwt);
 
-	useEffect(() => {
-		const fetchOptions = {
-			headers: {
-				"Content-Type": "application/json",
-				Authorization:  localStorage.getItem("jwt"),
-			},
-			method: "get",
-			body: null,
-		};
-		fetch("http://localhost:8080/user/", fetchOptions)
+	const fetchOptions = {
+		headers: {
+			"Content-Type": "application/json",
+			Authorization: localStorage.getItem("jwt"),
+			"Access-Control-Allow-Origin": "*",
+		},
+		method: "get",
+		body: null,
+	};
+	fetch("http://localhost:8080/user/auth", fetchOptions)
 		.then((response) => {
 			console.log(response.status);
 			if (response.status !== 200) {
-				navigate('/unauthorized/user');
+				navigate("/unauthorized/user");
 			}
 		})
 		.catch((message) => console.log(message));
 
-		// localStorage.getItem("jwt") && <Navigate to="/login" replace={true} />;
-	});
+	// localStorage.getItem("jwt") && <Navigate to="/login" replace={true} />;;
 
 	return (
 		<>

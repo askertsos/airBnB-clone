@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/auth/**").permitAll();
 //                    auth.requestMatchers("/view/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                    auth.requestMatchers("/user/**").permitAll();
+//                    auth.requestMatchers("/user/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
