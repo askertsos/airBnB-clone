@@ -1,40 +1,14 @@
-import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./component/home";
 import LoginPost from "./component/login";
 import Logout from "./component/logout";
 import User from "./component/user";
+import Register from "./component/register";
 import UserNotLogged from "./component/UserNotLogged";
+import RegistrationComplete from "./component/registrationComplete";
 import "./App.css";
 
 function App() {
-	const [jwt, setJwt] = useState(null);
-	const [username, setUsername] = useState(null);
-
-	// localStorage.setItem("jwt", null);
-
-	// useEffect(() => {
-	// 	const reqBody = {
-	// 		username: "user1",
-	// 		password: "pass1",
-	// 	};
-	// 	fetch("http://localhost:8080/auth/login", {
-	// 		headers: {
-	// 			"Content-Type": "application/json",
-	// 		},
-	// 		method: "post",
-	// 		body: JSON.stringify(reqBody),
-	// 	})
-	// 		.then((response) =>
-	// 			Promise.all([response.json(), response.headers])
-	// 		)
-	// 		.then(([body, headers]) => {
-	// 			setJwt(body.jwt);
-	// 			setUsername(body.user.username);
-	// 			console.log("Server Response Body:", body);
-	// 			console.log("Server Response Headers:", headers);
-	// 		});
-	// }, []);
 
 	return (
 		<Router>
@@ -45,6 +19,8 @@ function App() {
 				<Route exact path="/home" element={<Home />}></Route>
 				<Route exact path="/user" element={<User />}></Route>
 				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
+				<Route exact path="/auth/register" element={<Register />}></Route>
+				<Route exact path="/auth/register/complete" element={<RegistrationComplete />}></Route>
 			</Routes>
 		</Router>
 	);

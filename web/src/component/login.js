@@ -33,7 +33,6 @@ const LoginPost = () => {
 	};
 
 	return (
-		// <form onSubmit={onSubmit}>
 		<>
 			<div>
 				<label>
@@ -54,7 +53,7 @@ const LoginPost = () => {
 					<input
 						id="password"
 						name="password"
-						type="text"
+						type="password"
 						placeholder="password"
 						onChange={(event) => setPassword(event.target.value)}
 						value={password}
@@ -64,7 +63,6 @@ const LoginPost = () => {
 			<button id="submit" type="button" onClick={() => onSubmit()}>
 				Login
 			</button>
-			{/*  </form> */}
 		</>
 	);
 };
