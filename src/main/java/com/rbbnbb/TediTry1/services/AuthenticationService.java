@@ -61,11 +61,9 @@ public class AuthenticationService {
             return ResponseEntity.ok()
                     .headers(responseHeaders)
                     .body((User)auth.getPrincipal());
-//            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
         }catch(AuthenticationException e) {
             System.out.println("AUTHENTICATION EXCEPTION");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//            return new LoginResponseDTO(null, "");
         }
     }
 
