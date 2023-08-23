@@ -187,6 +187,7 @@ function Register() {
 					Roles on site : 
                 </label>
                 <select name="roles" id="roles" value={roles} onChange={(event) => setRoles(event.target.value)}>
+                    <option></option>
                     <option value="tenant">Tenant</option>
                     <option value="host">Host</option>
                     <option value="both">Both</option>
