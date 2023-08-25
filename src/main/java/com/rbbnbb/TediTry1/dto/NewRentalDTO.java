@@ -12,6 +12,9 @@ public class NewRentalDTO {
     private String title;
     private Double price;
 
+    private Double chargePerPerson;
+    private List<String> availableDays;
+
     //Space
     private Integer beds;
     private Integer bedrooms;
@@ -35,10 +38,20 @@ public class NewRentalDTO {
     private String neighbourhood;
     private String publicTransport;
 
-    public NewRentalDTO(String title, Double price, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, String address, String neighbourhood, String publicTransport) {
-        super();
+    //Amenities
+    private Boolean hasWiFi;
+    private Boolean hasAC;
+    private Boolean hasHeating;
+    private Boolean hasKitchen;
+    private Boolean hasTV;
+    private Boolean hasParking;
+    private Boolean hasElevator;
+
+    public NewRentalDTO(String title, Double price, Double chargePerPerson, List<String> availableDays, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, String address, String neighbourhood, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.price = price;
+        this.chargePerPerson = chargePerPerson;
+        this.availableDays = availableDays;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -53,6 +66,13 @@ public class NewRentalDTO {
         this.address = address;
         this.neighbourhood = neighbourhood;
         this.publicTransport = publicTransport;
+        this.hasWiFi = hasWiFi;
+        this.hasAC = hasAC;
+        this.hasHeating = hasHeating;
+        this.hasKitchen = hasKitchen;
+        this.hasTV = hasTV;
+        this.hasParking = hasParking;
+        this.hasElevator = hasElevator;
     }
 
     public String getTitle() {
@@ -181,6 +201,78 @@ public class NewRentalDTO {
 
     public void setPublicTransport(String publicTransport) {
         this.publicTransport = publicTransport;
+    }
+
+    public Boolean getHasWiFi() {
+        return hasWiFi;
+    }
+
+    public void setHasWiFi(Boolean hasWiFi) {
+        this.hasWiFi = hasWiFi;
+    }
+
+    public Boolean getHasAC() {
+        return hasAC;
+    }
+
+    public void setHasAC(Boolean hasAC) {
+        this.hasAC = hasAC;
+    }
+
+    public Boolean getHasHeating() {
+        return hasHeating;
+    }
+
+    public void setHasHeating(Boolean hasHeating) {
+        this.hasHeating = hasHeating;
+    }
+
+    public Boolean getHasKitchen() {
+        return hasKitchen;
+    }
+
+    public void setHasKitchen(Boolean hasKitchen) {
+        this.hasKitchen = hasKitchen;
+    }
+
+    public Boolean getHasTV() {
+        return hasTV;
+    }
+
+    public void setHasTV(Boolean hasTV) {
+        this.hasTV = hasTV;
+    }
+
+    public Boolean getHasParking() {
+        return hasParking;
+    }
+
+    public void setHasParking(Boolean hasParking) {
+        this.hasParking = hasParking;
+    }
+
+    public Boolean getHasElevator() {
+        return hasElevator;
+    }
+
+    public void setHasElevator(Boolean hasElevator) {
+        this.hasElevator = hasElevator;
+    }
+
+    public Double getChargePerPerson() {
+        return chargePerPerson;
+    }
+
+    public void setChargePerPerson(Double chargePerPerson) {
+        this.chargePerPerson = chargePerPerson;
+    }
+
+    public List<String> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<String> availableDays) {
+        this.availableDays = availableDays;
     }
 
     public String toString(){

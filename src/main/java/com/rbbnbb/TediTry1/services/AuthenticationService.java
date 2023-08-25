@@ -1,10 +1,13 @@
 package com.rbbnbb.TediTry1.services;
 
 
+import com.rbbnbb.TediTry1.domain.Review;
 import com.rbbnbb.TediTry1.domain.Role;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.LoginResponseDTO;
 import com.rbbnbb.TediTry1.dto.RegisterDTO;
+import com.rbbnbb.TediTry1.repository.RentalRepository;
+import com.rbbnbb.TediTry1.repository.ReviewRepository;
 import com.rbbnbb.TediTry1.repository.RoleRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.ResponseEntity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -31,6 +36,13 @@ public class AuthenticationService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private RentalRepository rentalRepository;
+
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -86,6 +98,8 @@ public class AuthenticationService {
             return ResponseEntity.ok()
                     .headers(responseHeaders)
                     .body((User)auth.getPrincipal());
+//                    .body(reviewRepository.getHostRatings((User)auth.getPrincipal()));
+//                    .body((List)rentalRepository.getHostRentals((User)auth.getPrincipal()));
         }catch(AuthenticationException e) {
             System.out.println("AUTHENTICATION EXCEPTION");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
