@@ -3,9 +3,12 @@ package com.rbbnbb.TediTry1.controller;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.LoginDTO;
 import com.rbbnbb.TediTry1.dto.LoginResponseDTO;
+import com.rbbnbb.TediTry1.dto.RegisterDTO;
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -16,12 +19,12 @@ public class AuthController {
     private AuthenticationService authService;
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody LoginDTO body){
-        return authService.registerUser(body.getUsername(),body.getPassword());
+    public ResponseEntity<?> registerUser(@RequestBody RegisterDTO body){
+        return authService.registerUser(body);
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO loginUser(@RequestBody LoginDTO body){
+    public ResponseEntity<?> loginUser(@RequestBody LoginDTO body){
         return authService.loginUser(body.getUsername(), body.getPassword());
     }
     @GetMapping("/index")

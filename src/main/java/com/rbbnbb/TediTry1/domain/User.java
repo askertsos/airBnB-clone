@@ -44,6 +44,17 @@ public class User implements UserDetails {
         this.authorities=authorities;
     }
 
+    public User(Long id, String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.authorities = authorities;
+    }
+
     public Long getId() {
         return id;
     }
