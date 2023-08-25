@@ -11,7 +11,7 @@ function Logout() {
 	return (
 		<>
 			<h1>Succesfully logged out!</h1>
-            <a href = 'http://localhost:3000/home'>Home </a>
+            <a href = 'https://localhost:3000/home'>Home </a>
 		</>
 	);
 }

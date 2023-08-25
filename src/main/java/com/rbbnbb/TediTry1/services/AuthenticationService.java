@@ -70,8 +70,7 @@ public class AuthenticationService {
             return ResponseEntity.ok().build();
         }
         catch (Exception e){
-            System.out.println(e);
-            return ResponseEntity.status(500).build();
+            return ResponseEntity.badRequest().build();
         }
     }
 
@@ -87,7 +86,6 @@ public class AuthenticationService {
                     .headers(responseHeaders)
                     .body((User)auth.getPrincipal());
         }catch(AuthenticationException e) {
-            System.out.println("AUTHENTICATION EXCEPTION");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
