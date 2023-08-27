@@ -99,7 +99,7 @@ public class AuthenticationService {
                     .headers(responseHeaders)
                     .body((User)auth.getPrincipal());
 //                    .body(reviewRepository.getHostRatings((User)auth.getPrincipal()));
-//                    .body((List)rentalRepository.getHostRentals((User)auth.getPrincipal()));
+//                    .body(rentalRepository.getHostRentals((User)auth.getPrincipal()));
         }catch(AuthenticationException e) {
             System.out.println("AUTHENTICATION EXCEPTION");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

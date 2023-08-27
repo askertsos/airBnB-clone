@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rbbnbb.TediTry1.dto.ReviewDTO;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import jakarta.persistence.*;
@@ -20,6 +21,8 @@ public class Review {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable=false)
     private User reviewer;
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable=false)
     private Rental rental;
