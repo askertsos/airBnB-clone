@@ -21,6 +21,7 @@ public class Rental {
     private String title;
     private Double basePrice;
     private Double chargePerPerson;
+    private Integer maxPeople;
     private List<LocalDate> availableDays;
 
     //Space
@@ -42,9 +43,10 @@ public class Rental {
 
 
     //Location
-    private String address;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private Address address;
     //map
-    private String neighbourhood;
     private String publicTransport;
 
     //Photos
@@ -68,12 +70,13 @@ public class Rental {
     public Rental(){
 
     }
-    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, List<LocalDate> availableDays, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, String address, String neighbourhood, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host) {
+    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, List<LocalDate> availableDays, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String neighbourhood, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host) {
         this.id = id;
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
         this.availableDays = availableDays;
+        this.maxPeople = maxPeople;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -86,7 +89,6 @@ public class Rental {
         this.allowEvents = allowEvents;
         this.minDays = minDays;
         this.address = address;
-        this.neighbourhood = neighbourhood;
         this.publicTransport = publicTransport;
         this.hasWiFi = hasWiFi;
         this.hasAC = hasAC;
@@ -101,7 +103,7 @@ public class Rental {
 
     public Rental(Long id, NewRentalDTO dto, User user){
         this.title = dto.getTitle();
-        this.basePrice = dto.getPrice();
+        this.basePrice = dto.getBasePrice();
         this.chargePerPerson = dto.getChargePerPerson();
 
         this.availableDays = new ArrayList<LocalDate>();
@@ -112,7 +114,7 @@ public class Rental {
                 this.availableDays.add(localDate);
             }
         }
-
+        this.maxPeople = dto.getMaxPeople();
         this.beds = dto.getBeds();
         this.bedrooms = dto.getBedrooms();
         this.bathrooms = dto.getBathrooms();
@@ -125,7 +127,6 @@ public class Rental {
         this.allowEvents = dto.getAllowEvents();
         this.minDays = dto.getMinDays();
         this.address = dto.getAddress();
-        this.neighbourhood = dto.getNeighbourhood();
         this.publicTransport = dto.getPublicTransport();
         this.hasWiFi = dto.getHasWiFi();
         this.hasAC = dto.getHasAC();
@@ -135,16 +136,11 @@ public class Rental {
         this.hasParking = dto.getHasParking();
         this.hasElevator = dto.getHasElevator();
         this.host = user;
-
         this.reviews = new HashSet<Review>();
 
     }
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -161,6 +157,14 @@ public class Rental {
 
     public void setBasePrice(Double basePrice) {
         this.basePrice = basePrice;
+    }
+
+    public Integer getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(Integer maxPeople) {
+        this.maxPeople = maxPeople;
     }
 
     public Integer getBeds() {
@@ -251,20 +255,12 @@ public class Rental {
         this.minDays = minDays;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getNeighbourhood() {
-        return neighbourhood;
-    }
-
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
     }
 
     public String getPublicTransport() {
@@ -374,5 +370,10 @@ public class Rental {
             sum += review.getStars();
         }
         return sum / this.reviews.size();
+    }
+
+    public Double getPrice(Integer days, Integer tenants){
+        //Assume days >= minDays
+        return (basePrice + tenants*chargePerPerson)*days;
     }
 }

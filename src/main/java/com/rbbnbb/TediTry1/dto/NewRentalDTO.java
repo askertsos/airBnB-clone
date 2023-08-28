@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.dto;
 
+import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Rental;
 
 import java.time.LocalDate;
@@ -10,10 +11,12 @@ import java.util.Set;
 public class NewRentalDTO {
 
     private String title;
-    private Double price;
+    private Double basePrice;
 
     private Double chargePerPerson;
     private List<String> availableDays;
+
+    private Integer maxPeople;
 
     //Space
     private Integer beds;
@@ -33,9 +36,8 @@ public class NewRentalDTO {
     private Integer minDays;
 
     //Location
-    private String address;
+    private Address address;
     //map
-    private String neighbourhood;
     private String publicTransport;
 
     //Amenities
@@ -47,11 +49,12 @@ public class NewRentalDTO {
     private Boolean hasParking;
     private Boolean hasElevator;
 
-    public NewRentalDTO(String title, Double price, Double chargePerPerson, List<String> availableDays, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, String address, String neighbourhood, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDays, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
-        this.price = price;
+        this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
         this.availableDays = availableDays;
+        this.maxPeople = maxPeople;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -64,7 +67,6 @@ public class NewRentalDTO {
         this.allowEvents = allowEvents;
         this.minDays = minDays;
         this.address = address;
-        this.neighbourhood = neighbourhood;
         this.publicTransport = publicTransport;
         this.hasWiFi = hasWiFi;
         this.hasAC = hasAC;
@@ -83,12 +85,20 @@ public class NewRentalDTO {
         this.title = title;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getBasePrice() {
+        return basePrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setBasePrice(Double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public Integer getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(Integer maxPeople) {
+        this.maxPeople = maxPeople;
     }
 
     public Integer getBeds() {
@@ -179,20 +189,12 @@ public class NewRentalDTO {
         this.minDays = minDays;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getNeighbourhood() {
-        return neighbourhood;
-    }
-
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
     }
 
     public String getPublicTransport() {

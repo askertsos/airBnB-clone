@@ -17,7 +17,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    LocalDateTime dateTime;
+    private LocalDateTime dateTime;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable=false)
     private User reviewer;
@@ -42,6 +42,7 @@ public class Review {
     }
     public Review(Long id, ReviewDTO dto, User reviewer, Rental rental){
         this.id = id;
+        this.dateTime = LocalDateTime.now();
         this.reviewer = reviewer;
         this.rental = rental;
         this.text = dto.getText();
