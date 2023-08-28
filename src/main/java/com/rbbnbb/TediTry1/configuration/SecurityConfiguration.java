@@ -26,6 +26,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 
 
 @Configuration
@@ -54,16 +55,15 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
-//                    auth.requestMatchers("/view/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
-//                    auth.requestMatchers("/user/**").permitAll();
-                    auth.anyRequest().authenticated();
+                    auth.requestMatchers("/user/**").hasAnyRole("TENANT", "HOST", "ADMIN");
+                    auth.anyRequest().permitAll();
                 })
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();

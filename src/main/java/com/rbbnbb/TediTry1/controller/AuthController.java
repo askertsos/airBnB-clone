@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin("*")
 public class AuthController {
 
     @Autowired
