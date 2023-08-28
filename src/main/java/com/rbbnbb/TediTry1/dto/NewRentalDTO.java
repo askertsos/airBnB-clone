@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.dto;
 
+import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Rental;
 
 import java.time.LocalDate;
@@ -10,7 +11,12 @@ import java.util.Set;
 public class NewRentalDTO {
 
     private String title;
-    private Double price;
+    private Double basePrice;
+
+    private Double chargePerPerson;
+    private List<String> availableDays;
+
+    private Integer maxPeople;
 
     //Space
     private Integer beds;
@@ -30,15 +36,25 @@ public class NewRentalDTO {
     private Integer minDays;
 
     //Location
-    private String address;
+    private Address address;
     //map
-    private String neighbourhood;
     private String publicTransport;
 
-    public NewRentalDTO(String title, Double price, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, String address, String neighbourhood, String publicTransport) {
-        super();
+    //Amenities
+    private Boolean hasWiFi;
+    private Boolean hasAC;
+    private Boolean hasHeating;
+    private Boolean hasKitchen;
+    private Boolean hasTV;
+    private Boolean hasParking;
+    private Boolean hasElevator;
+
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDays, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
-        this.price = price;
+        this.basePrice = basePrice;
+        this.chargePerPerson = chargePerPerson;
+        this.availableDays = availableDays;
+        this.maxPeople = maxPeople;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -51,8 +67,14 @@ public class NewRentalDTO {
         this.allowEvents = allowEvents;
         this.minDays = minDays;
         this.address = address;
-        this.neighbourhood = neighbourhood;
         this.publicTransport = publicTransport;
+        this.hasWiFi = hasWiFi;
+        this.hasAC = hasAC;
+        this.hasHeating = hasHeating;
+        this.hasKitchen = hasKitchen;
+        this.hasTV = hasTV;
+        this.hasParking = hasParking;
+        this.hasElevator = hasElevator;
     }
 
     public String getTitle() {
@@ -63,12 +85,20 @@ public class NewRentalDTO {
         this.title = title;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getBasePrice() {
+        return basePrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setBasePrice(Double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public Integer getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(Integer maxPeople) {
+        this.maxPeople = maxPeople;
     }
 
     public Integer getBeds() {
@@ -159,20 +189,12 @@ public class NewRentalDTO {
         this.minDays = minDays;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getNeighbourhood() {
-        return neighbourhood;
-    }
-
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
     }
 
     public String getPublicTransport() {
@@ -181,6 +203,78 @@ public class NewRentalDTO {
 
     public void setPublicTransport(String publicTransport) {
         this.publicTransport = publicTransport;
+    }
+
+    public Boolean getHasWiFi() {
+        return hasWiFi;
+    }
+
+    public void setHasWiFi(Boolean hasWiFi) {
+        this.hasWiFi = hasWiFi;
+    }
+
+    public Boolean getHasAC() {
+        return hasAC;
+    }
+
+    public void setHasAC(Boolean hasAC) {
+        this.hasAC = hasAC;
+    }
+
+    public Boolean getHasHeating() {
+        return hasHeating;
+    }
+
+    public void setHasHeating(Boolean hasHeating) {
+        this.hasHeating = hasHeating;
+    }
+
+    public Boolean getHasKitchen() {
+        return hasKitchen;
+    }
+
+    public void setHasKitchen(Boolean hasKitchen) {
+        this.hasKitchen = hasKitchen;
+    }
+
+    public Boolean getHasTV() {
+        return hasTV;
+    }
+
+    public void setHasTV(Boolean hasTV) {
+        this.hasTV = hasTV;
+    }
+
+    public Boolean getHasParking() {
+        return hasParking;
+    }
+
+    public void setHasParking(Boolean hasParking) {
+        this.hasParking = hasParking;
+    }
+
+    public Boolean getHasElevator() {
+        return hasElevator;
+    }
+
+    public void setHasElevator(Boolean hasElevator) {
+        this.hasElevator = hasElevator;
+    }
+
+    public Double getChargePerPerson() {
+        return chargePerPerson;
+    }
+
+    public void setChargePerPerson(Double chargePerPerson) {
+        this.chargePerPerson = chargePerPerson;
+    }
+
+    public List<String> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<String> availableDays) {
+        this.availableDays = availableDays;
     }
 
     public String toString(){

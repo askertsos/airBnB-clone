@@ -2,8 +2,13 @@ package com.rbbnbb.TediTry1.domain;
 
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import jakarta.persistence.*;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @Entity
 public class Rental {
@@ -14,7 +19,10 @@ public class Rental {
     private Long id;
 
     private String title;
-    private Double price;
+    private Double basePrice;
+    private Double chargePerPerson;
+    private Integer maxPeople;
+    private List<LocalDate> availableDays;
 
     //Space
     private Integer beds;
@@ -35,21 +43,40 @@ public class Rental {
 
 
     //Location
-    private String address;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    private Address address;
     //map
-    private String neighbourhood;
     private String publicTransport;
 
     //Photos
     //private Set<Photo> photos;
 
+    //Amenities
+    private Boolean hasWiFi;
+    private Boolean hasAC;
+    private Boolean hasHeating;
+    private Boolean hasKitchen;
+    private Boolean hasTV;
+    private Boolean hasParking;
+    private Boolean hasElevator;
+
+    @OneToMany(mappedBy = "rental")
+    private Set<Review> reviews;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private User host;
 
-    public Rental(Long id, String title, Double price, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, String address, String neighbourhood, String publicTransport) {
+    public Rental(){
+
+    }
+    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, List<LocalDate> availableDays, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String neighbourhood, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host) {
         this.id = id;
         this.title = title;
-        this.price = price;
+        this.basePrice = basePrice;
+        this.chargePerPerson = chargePerPerson;
+        this.availableDays = availableDays;
+        this.maxPeople = maxPeople;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -62,13 +89,32 @@ public class Rental {
         this.allowEvents = allowEvents;
         this.minDays = minDays;
         this.address = address;
-        this.neighbourhood = neighbourhood;
         this.publicTransport = publicTransport;
+        this.hasWiFi = hasWiFi;
+        this.hasAC = hasAC;
+        this.hasHeating = hasHeating;
+        this.hasKitchen = hasKitchen;
+        this.hasTV = hasTV;
+        this.hasParking = hasParking;
+        this.hasElevator = hasElevator;
+        this.reviews = reviews;
+        this.host = host;
     }
 
-    public Rental(Long id, NewRentalDTO dto){
+    public Rental(Long id, NewRentalDTO dto, User user){
         this.title = dto.getTitle();
-        this.price = dto.getPrice();
+        this.basePrice = dto.getBasePrice();
+        this.chargePerPerson = dto.getChargePerPerson();
+
+        this.availableDays = new ArrayList<LocalDate>();
+        if (!dto.getAvailableDays().isEmpty()) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+            for (String date : dto.getAvailableDays()) {
+                LocalDate localDate = LocalDate.parse(date, formatter);
+                this.availableDays.add(localDate);
+            }
+        }
+        this.maxPeople = dto.getMaxPeople();
         this.beds = dto.getBeds();
         this.bedrooms = dto.getBedrooms();
         this.bathrooms = dto.getBathrooms();
@@ -81,16 +127,20 @@ public class Rental {
         this.allowEvents = dto.getAllowEvents();
         this.minDays = dto.getMinDays();
         this.address = dto.getAddress();
-        this.neighbourhood = dto.getNeighbourhood();
         this.publicTransport = dto.getPublicTransport();
+        this.hasWiFi = dto.getHasWiFi();
+        this.hasAC = dto.getHasAC();
+        this.hasHeating = dto.getHasHeating();
+        this.hasKitchen = dto.getHasKitchen();
+        this.hasTV = dto.getHasTV();
+        this.hasParking = dto.getHasParking();
+        this.hasElevator = dto.getHasElevator();
+        this.host = user;
+        this.reviews = new HashSet<Review>();
 
     }
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -101,12 +151,20 @@ public class Rental {
         this.title = title;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getBasePrice() {
+        return basePrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setBasePrice(Double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public Integer getMaxPeople() {
+        return maxPeople;
+    }
+
+    public void setMaxPeople(Integer maxPeople) {
+        this.maxPeople = maxPeople;
     }
 
     public Integer getBeds() {
@@ -197,20 +255,12 @@ public class Rental {
         this.minDays = minDays;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public String getNeighbourhood() {
-        return neighbourhood;
-    }
-
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
     }
 
     public String getPublicTransport() {
@@ -227,5 +277,103 @@ public class Rental {
 
     public void setHost(User host) {
         this.host = host;
+    }
+
+    public Boolean getHasWiFi() {
+        return hasWiFi;
+    }
+
+    public void setHasWiFi(Boolean hasWiFi) {
+        this.hasWiFi = hasWiFi;
+    }
+
+    public Boolean getHasAC() {
+        return hasAC;
+    }
+
+    public void setHasAC(Boolean hasAC) {
+        this.hasAC = hasAC;
+    }
+
+    public Boolean getHasHeating() {
+        return hasHeating;
+    }
+
+    public void setHasHeating(Boolean hasHeating) {
+        this.hasHeating = hasHeating;
+    }
+
+    public Boolean getHasKitchen() {
+        return hasKitchen;
+    }
+
+    public void setHasKitchen(Boolean hasKitchen) {
+        this.hasKitchen = hasKitchen;
+    }
+
+    public Boolean getHasTV() {
+        return hasTV;
+    }
+
+    public void setHasTV(Boolean hasTV) {
+        this.hasTV = hasTV;
+    }
+
+    public Boolean getHasParking() {
+        return hasParking;
+    }
+
+    public void setHasParking(Boolean hasParking) {
+        this.hasParking = hasParking;
+    }
+
+    public Boolean getHasElevator() {
+        return hasElevator;
+    }
+
+    public void setHasElevator(Boolean hasElevator) {
+        this.hasElevator = hasElevator;
+    }
+
+    public Double getChargePerPerson() {
+        return chargePerPerson;
+    }
+
+    public void setChargePerPerson(Double chargePerPerson) {
+        this.chargePerPerson = chargePerPerson;
+    }
+
+    public List<LocalDate> getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(List<LocalDate> availableDays) {
+        this.availableDays = availableDays;
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(Set<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review){
+        this.reviews.add(review);
+    }
+
+    public Double getRating(){
+        if (this.reviews.isEmpty()) return null;
+        Double sum = 0.0;
+        for (Review review:this.reviews) {
+            sum += review.getStars();
+        }
+        return sum / this.reviews.size();
+    }
+
+    public Double getPrice(Integer days, Integer tenants){
+        //Assume days >= minDays
+        return (basePrice + tenants*chargePerPerson)*days;
     }
 }
