@@ -9,14 +9,14 @@ function Home() {
 			<h1> Welcome to rBBnBB! </h1>
 			<div>
 				{loggedIn !== "null" &&
-					<a href = 'http://localhost:3000/auth/logout'>Logout</a>
+					<a href = 'https://localhost:3000/auth/logout'>Logout</a>
 				}
 			</div>
 			<div>
 				{loggedIn === "null" &&
 					<>
 						<div>
-							<a href = 'http://localhost:3000/auth/login'>Login </a> or <a href = 'http://localhost:3000/auth/register'>Register</a>
+							<a href = 'https://localhost:3000/auth/login'>Login </a> or <a href = 'https://localhost:3000/auth/register'>Register</a>
 						</div>
 					</>
 				}

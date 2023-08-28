@@ -81,7 +81,10 @@ function Register() {
 			.then((response) => {
 				if (response.status === 200) {
 					navigate("/auth/register/complete")
-				} else return Promise.reject("Register attempt failed");
+				} else if (response.status === 401) {
+                    alert("Username already taken. Try a different one.");
+                    return;
+                } else return Promise.reject("Register attempt failed");
 			})
 			.catch((message) => {
 				alert(message);

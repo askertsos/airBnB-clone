@@ -24,7 +24,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin("*")
 public class UserController {
 
     @Autowired
@@ -44,14 +43,7 @@ public class UserController {
 
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
-
-//        if (jwt.isBlank() || jwt.isEmpty() || jwt.equals("null") ) return ResponseEntity.status(401).build();
-//        Jwt decodedJWT = jwtDecoder.decode(jwt);
-//        String username = decodedJWT.getSubject();
-//        if (userRepository.findByUsername(username).isPresent())
-            return ResponseEntity.ok().build();
-//        return ResponseEntity.status(401).build();
-
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/new_rental")

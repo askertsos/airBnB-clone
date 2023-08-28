@@ -5,8 +5,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### REACT CERTIFICATES ###
-web/react_certificates/*
+
+### Certificates ###
+*.pem
 
 ### STS ###
 .apt_generated
