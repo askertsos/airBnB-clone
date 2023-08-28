@@ -6,7 +6,7 @@ target/
 !**/src/test/**/target/
 
 ### REACT CERTIFICATES ###
-web/react_certificates/
+web/react_certificates/*
 
 ### STS ###
 .apt_generated
