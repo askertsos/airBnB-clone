@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.controller;
 
+import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.Review;
 import com.rbbnbb.TediTry1.domain.User;
@@ -31,7 +32,7 @@ public class UserController {
 
     @Autowired
     RentalRepository rentalRepository;
-//
+
     @Autowired
     ReviewRepository reviewRepository;
 
@@ -68,10 +69,6 @@ public class UserController {
             System.out.println("User not found");
             return ResponseEntity.status(404).build();
         }
-
-////        Create new simple jpa repository to save the new entity
-//        SimpleJpaRepository<Rental, Long> simpleJpaRepository;
-//        simpleJpaRepository = new SimpleJpaRepository<Rental, Long>(Rental.class,entityManager);
 //
 //        //Save the new Rental object
 //        User user = optionalUser.get();
