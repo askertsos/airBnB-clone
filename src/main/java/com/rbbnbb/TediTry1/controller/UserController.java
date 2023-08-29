@@ -49,8 +49,8 @@ public class UserController {
     @PostMapping("/new_rental")
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body,@RequestHeader("Authorization") String jwt){
-        //Find user by decoding jwt
 
+        //Find user by decoding jwt
         String pureJwt = jwt;
         pureJwt = pureJwt.replaceFirst("Bearer ", "");
         Jwt decodedJWT = jwtDecoder.decode(pureJwt);
