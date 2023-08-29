@@ -19,7 +19,7 @@ const LoginPost = () => {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("http://localhost:8080/auth/login", fetchOptions)
+		fetch("https://localhost:8080/auth/login", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					const auth = response.headers.get("authorization");

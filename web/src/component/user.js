@@ -17,7 +17,7 @@ function User() {
 			},
 			method: "get",
 		};
-		fetch("http://localhost:8080/user/auth", fetchOptions)
+		fetch("https://localhost:8080/user/auth", fetchOptions)
 			.then((response) => {
 				console.log(response.status);
 				console.log(response.headers);

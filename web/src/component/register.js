@@ -77,7 +77,7 @@ function Register() {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("http://localhost:8080/auth/register", fetchOptions)
+		fetch("https://localhost:8080/auth/register", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					navigate("/auth/register/complete")
