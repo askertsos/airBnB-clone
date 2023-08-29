@@ -10,6 +10,7 @@ target/
 
 # certificates
 *.pem
+*.p12
 
 # dependencies
 web/node_modules
