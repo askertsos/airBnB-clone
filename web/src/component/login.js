@@ -20,16 +20,24 @@ const LoginPost = () => {
 			body: JSON.stringify(reqBody),
 		};
 		fetch("https://localhost:8080/auth/login", fetchOptions)
-			.then((response) => {
-				if (response.status === 200) {
-					const auth = response.headers.get("authorization");
-					localStorage.setItem("jwt", auth);
-					navigate("/home")
-				} else return Promise.reject("Login attempt failed");
-			})
-			.catch((message) => {
-				alert(message);
-			});
+		.then((response) => response.json())
+		.then(response => {
+			console.log("jwt : " + response.jwt);
+			console.log("AuthenticatedHost : " + response.isAuthenticatedHost);
+			console.log("isHost : " + response.isHost);
+
+			if( response.isHost === "true" && response.isAuthenticatedHost === "false"){
+				navigate("/auth/login/unauthenticatedHostLogin");
+				return;
+			}
+
+			localStorage.setItem("jwt", response.jwt);
+			navigate("/home")
+
+		})
+		.catch((message) => {
+			alert(message);
+		});
 	};
 
 	return (

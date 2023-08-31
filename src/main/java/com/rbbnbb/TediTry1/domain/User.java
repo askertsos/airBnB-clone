@@ -21,8 +21,10 @@ public class User implements UserDetails {
     private String last_name;
 
     private String email;
+
     //private Photo picture
 
+    private boolean isAuthenticatedHost;
     private String phoneNumber;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -53,6 +55,7 @@ public class User implements UserDetails {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.authorities = authorities;
+        this.isAuthenticatedHost = false;
     }
 
     public Long getId() {
@@ -70,6 +73,10 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public boolean getIsAuthenticatedHost() { return isAuthenticatedHost; }
+
+    public void setAuthenticatedHost(boolean authenticatedHost) { isAuthenticatedHost = authenticatedHost; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

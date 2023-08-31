@@ -79,9 +79,21 @@ function Register() {
 		};
 		fetch("https://localhost:8080/auth/register", fetchOptions)
 			.then((response) => {
+				console.log(response);
 				if (response.status === 200) {
-					navigate("/auth/register/complete")
-				} else if (response.status === 401) {
+					if (roles === "host"){
+						navigate("/auth/register/hostComplete")
+						return;
+					}
+					else if ( roles === "both"){
+						navigate("/auth/register/bothComplete")
+						return;
+					}
+					else{
+						navigate("/auth/register/tenantComplete")
+						return;
+					}
+				} else if (response.status === 409) {
                     alert("Username already taken. Try a different one.");
                     return;
                 } else return Promise.reject("Register attempt failed");
