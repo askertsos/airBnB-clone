@@ -32,7 +32,7 @@ function UserList() {
             setLoading(false);
         })
         .catch((message) => console.log(message));
-	});
+	}, [pageNum, pageSize]);
 
     const nextPage = (e) => {
         if (pageNum + 1 < maxPage){
@@ -138,8 +138,8 @@ function UserList() {
         .catch((message) => console.log(message));
     };
 
-    const changePageSize = (e) => {
-        setPageSize(e);
+    const changePageSize = (newPageSize) => {
+        setPageSize(newPageSize);
         const reqBody = {
             "pageNo" : pageNum,
             "pageSize" : pageSize,
@@ -179,11 +179,14 @@ function UserList() {
                         <p>Last name : {data.last_name}</p>
                         <p>E-mail : {data.email}</p>
                         <p>Phone Number : {data.phoneNumber}</p>
-                        {/* <p>Authorities : : {<li key={data.authorities}> </li>}</p> */}
-                        <p>Enabled : {data.enabled}</p>
+                        <p>Roles : [ { data.authorities.map( (roles) => (String(roles.authority + " , ") ) ) } ]</p>
+                        <p>Authenticated host : {String(data.isAuthenticatedHost)}</p>
                     </li>
                 ))}
                 </ul>
+            </div>
+            <div>
+                Current page : {pageNum + 1}
             </div>
             <div>
                 <button id="submit" type="button" onClick={() => nextPage()}>
@@ -218,7 +221,6 @@ function UserList() {
 					Users per page : 
                 </label>
                 <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
-                    <option></option>
                     <option value= {1}> 1 </option>
                     <option value={2}> 2 </option>
                     <option value={5}> 5 </option>
