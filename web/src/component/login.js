@@ -25,14 +25,22 @@ const LoginPost = () => {
 			console.log("jwt : " + response.jwt);
 			console.log("AuthenticatedHost : " + response.isAuthenticatedHost);
 			console.log("isHost : " + response.isHost);
+			console.log("isAdmin : " + response.isAdmin);
 
 			if( response.isHost === "true" && response.isAuthenticatedHost === "false"){
 				navigate("/auth/login/unauthenticatedHostLogin");
 				return;
 			}
-
-			localStorage.setItem("jwt", response.jwt);
-			navigate("/home")
+			else if( response.isAdmin === "true" ){
+				localStorage.setItem("jwt", response.jwt);
+				navigate("/admin/home");
+				return;
+			}
+			else{
+				localStorage.setItem("jwt", response.jwt);
+				navigate("/home")
+				return;
+			}
 
 		})
 		.catch((message) => {

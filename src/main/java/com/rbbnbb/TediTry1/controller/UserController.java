@@ -1,6 +1,5 @@
 package com.rbbnbb.TediTry1.controller;
 
-import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.Review;
 import com.rbbnbb.TediTry1.domain.User;
@@ -13,7 +12,6 @@ import com.rbbnbb.TediTry1.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;

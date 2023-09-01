@@ -9,6 +9,8 @@ import RegistrationTenantComplete from "./component/registrationTenantComplete";
 import RegistrationHostComplete from "./component/registrationHostComplete";
 import RegistrationBothComplete from "./component/registrationBothComplete";
 import UnauthenticatedHostLogin from "./component/unauthenticatedHostLogin";
+import AdminHome from "./component/admin/adminHome";
+import UserList from "./component/admin/userList";
 import "./App.css";
 
 function App() {
@@ -16,17 +18,21 @@ function App() {
 	return (
 		<Router>
 			<Routes>	
-				<Route exact path="/" element={<Home />}></Route>
+
 				<Route exact path="/auth/login" element={<LoginPost />}></Route>
 				<Route exact path="/auth/logout" element={<Logout />}></Route>
-				<Route exact path="/home" element={<Home />}></Route>
-				<Route exact path="/user" element={<User />}></Route>
-				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
 				<Route exact path="/auth/register" element={<Register />}></Route>
 				<Route exact path="/auth/register/tenantComplete" element={<RegistrationTenantComplete />}></Route>
 				<Route exact path="/auth/register/hostComplete" element={<RegistrationHostComplete />}></Route>
 				<Route exact path="/auth/register/bothComplete" element={<RegistrationBothComplete />}></Route>
 				<Route exact path="/auth/login/unauthenticatedHostLogin" element={<UnauthenticatedHostLogin />}></Route>
+
+				<Route exact path="/home" element={<Home />}></Route>
+				<Route exact path="/user" element={<User />}></Route>
+				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
+
+				<Route exact path="/admin/home" element={<AdminHome />}></Route>
+				<Route exact path="/admin/user/list" element={<UserList />}></Route>
 			</Routes>
 		</Router>
 	);
