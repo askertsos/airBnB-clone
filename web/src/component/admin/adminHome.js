@@ -17,14 +17,13 @@ function AdminHome() {
 		};
 		fetch("https://localhost:8080/admin/auth", fetchOptions)
 		.then((response) => {
-			console.log(response);
 			if (response.status !== 200) {
 				navigate("/unauthorized/user");
 			}
 			setLoading(false);
 		})
 		.catch((message) => console.log(message));
-	});
+	}, [navigate]);
 
 	if (loading === true){
 		return (<h1>Loading...</h1>);

@@ -6,7 +6,7 @@ function Logout() {
 
     useEffect(() => {
         localStorage.setItem("jwt", null);
-    })
+    }, [])
 
 	return (
 		<>

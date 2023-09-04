@@ -1,8 +1,10 @@
 // userList.js
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function UserList() {
 
+    const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [maxPage, setMaxPage] = useState();
@@ -27,12 +29,17 @@ function UserList() {
 		fetch("https://localhost:8080/admin/user/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+            console.log(response);
             setUsers(response.Users.content);
             setMaxPage(response.Users.totalPages);
             setLoading(false);
         })
-        .catch((message) => console.log(message));
-	}, [pageNum, pageSize]);
+        .catch((message) => {
+            console.log(message);
+            navigate("/unauthorized/user");
+            
+        });
+	}, [pageNum, pageSize, navigate]);
 
     const nextPage = (e) => {
         if (pageNum + 1 < maxPage){
@@ -132,6 +139,7 @@ function UserList() {
         fetch("https://localhost:8080/admin/user/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+            console.log(response);
             setUsers(response.Users.content);
             setLoading(false);
         })
@@ -174,13 +182,7 @@ function UserList() {
                 <ul>
                     {users.map((data) => (
                     <li key={data.id}>
-                        <p>Username : {data.username}</p>
-                        <p>First name : {data.first_name}</p>
-                        <p>Last name : {data.last_name}</p>
-                        <p>E-mail : {data.email}</p>
-                        <p>Phone Number : {data.phoneNumber}</p>
-                        <p>Roles : [ { data.authorities.map( (roles) => (String(roles.authority + " , ") ) ) } ]</p>
-                        <p>Authenticated host : {String(data.isAuthenticatedHost)}</p>
+                        <p><a href={"https://localhost:3000/admin/user/" + data.id + "/details"}>{data.username}</a></p>
                     </li>
                 ))}
                 </ul>

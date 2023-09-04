@@ -9,8 +9,10 @@ import RegistrationTenantComplete from "./component/registrationTenantComplete";
 import RegistrationHostComplete from "./component/registrationHostComplete";
 import RegistrationBothComplete from "./component/registrationBothComplete";
 import UnauthenticatedHostLogin from "./component/unauthenticatedHostLogin";
+import RedirectToHome from "./component/redirectToHome";
 import AdminHome from "./component/admin/adminHome";
 import UserList from "./component/admin/userList";
+import UserDetails from "./component/admin/userDetails";
 import "./App.css";
 
 function App() {
@@ -27,12 +29,14 @@ function App() {
 				<Route exact path="/auth/register/bothComplete" element={<RegistrationBothComplete />}></Route>
 				<Route exact path="/auth/login/unauthenticatedHostLogin" element={<UnauthenticatedHostLogin />}></Route>
 
+				<Route exact path="/" element={<RedirectToHome />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
 				<Route exact path="/user" element={<User />}></Route>
 				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
 
 				<Route exact path="/admin/home" element={<AdminHome />}></Route>
 				<Route exact path="/admin/user/list" element={<UserList />}></Route>
+				<Route exact path="/admin/user/:id/details" element={<UserDetails />}></Route>
 			</Routes>
 		</Router>
 	);

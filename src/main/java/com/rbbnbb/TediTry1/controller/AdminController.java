@@ -2,6 +2,7 @@ package com.rbbnbb.TediTry1.controller;
 
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.PageRequestDTO;
+import com.rbbnbb.TediTry1.dto.UserDetailsDTO;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +30,14 @@ public class AdminController {
         Page<User> userPaginatedList = userRepository.findAll(dto.getPageable(dto));
         Map<String, Object> ResponseBody = new HashMap<String, Object>();
         ResponseBody.put("Users", userPaginatedList);
+        return ResponseEntity.ok().body(ResponseBody);
+    }
+
+    @PostMapping("/user/details")
+    public ResponseEntity<?> detailsUser(@RequestBody UserDetailsDTO body){
+        User user = userRepository.findById(body.getId()).get();
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Users", user);
         return ResponseEntity.ok().body(ResponseBody);
     }
 

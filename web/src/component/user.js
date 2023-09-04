@@ -28,7 +28,7 @@ function User() {
 				setLoading(false);
 			})
 			.catch((message) => console.log(message));
-	});
+	}, [navigate]);
 
 	if (loading === true){
 		return (<h1>Loading...</h1>);
