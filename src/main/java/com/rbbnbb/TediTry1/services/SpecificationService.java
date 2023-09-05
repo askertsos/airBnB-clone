@@ -1,29 +1,28 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.dto.SearchRequestDTO;
 import com.rbbnbb.TediTry1.dto.SpecificationDTO;
+import com.rbbnbb.TediTry1.repository.RentalRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class SpecificationService<T> {
-
-//    public Specification<T> getSearchSpecification(SearchRequestDTO searchRequestDTO){
-//        return new Specification<T>() {
-//            @Override
-//            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-////                return criteriaBuilder.equal(root.get(searchRequestDTO.getColumn()),searchRequestDTO.getValue());
-//            }
-//        };
-//    }
 
     public Specification<T> getSearchSpecification(SearchRequestDTO searchRequestDTO){
         return (root, query, criteriaBuilder) -> {
@@ -35,28 +34,99 @@ public class SpecificationService<T> {
                         Predicate equal = criteriaBuilder.equal(root.get(specDTO.getColumn()),specDTO.getValue());
                         predicates.add(equal);
                         break;
+
                     case IN:
-                        String[] values = specDTO.getValue().split(",");
-                        Predicate in = root.get(specDTO.getColumn()).in(Arrays.asList(values));
+                        String[] inValues = specDTO.getValue().split(",");
+                        Predicate in = root.get(specDTO.getColumn()).in(Arrays.asList(inValues));
                         predicates.add(in);
                         break;
+
                     case LIKE:
                         Predicate like = criteriaBuilder.like(root.get(specDTO.getColumn()),specDTO.getValue()+"%");
                         predicates.add(like);
                         break;
+
                     case BETWEEN:
+                        String[] betweenValues = specDTO.getValue().split(",");
+                        if (betweenValues.length != 2){
+                            throw new IllegalArgumentException("Between call must have 2 comma-separated values");
+                        }
+                        Predicate between = criteriaBuilder.between(root.get(specDTO.getColumn()),betweenValues[0],betweenValues[1]);
+                        predicates.add(between);
                         break;
-                    case LESS_THAN:
-                        break;
+
                     case GREATER_THAN:
+                        Predicate greaterThan = criteriaBuilder.greaterThan(root.get(specDTO.getColumn()),specDTO.getValue());
+                        predicates.add(greaterThan);
                         break;
+
+                    case LESS_THAN:
+                        Predicate lessThan = criteriaBuilder.lessThan(root.get(specDTO.getColumn()),specDTO.getValue());
+                        predicates.add(lessThan);
+                        break;
+
+                    case JOIN:
+                        Predicate join = criteriaBuilder.equal(root.join(specDTO.getJoinTable()).get(specDTO.getColumn()),specDTO.getValue());
+                        predicates.add(join);
+                        break;
+
+                    case DATES:
+                        //Split the dates
+                        String[] stringDates = specDTO.getValue().split(",");
+
+                        //Convert them to LocalDate and insert them into a list
+                        List<LocalDate> datesList = new ArrayList<>();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                        List<Predicate> predicateList = new ArrayList<>();
+                        for (String stringDate: stringDates) {
+                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
+                                datesList.add(localDate);
+                                System.out.println("Adding date " + localDate);
+                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
+
+                        }
+                        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+
+                        //Every element of the list must be in the "availableDates" field
+//                        for (LocalDate localDate: datesList) {
+//                            predicates.add(root.get("availableDates").in(localDate));
+//                        }
+//                        System.out.println("before root.get.in");
+//                        Predicate date = root.get("availableDates").in(datesList);
+//                        predicates.add(date);
+
+//                        Predicate isMember = criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
+//                        predicates.add(isMember);
+
+
+
+
+
+
+//                        for (LocalDate availableDate: root.get("availableDates")){
+//
+//                        }
+
+
+//                        LocalDate[] dateArray = new LocalDate[datesList.size()];
+//                        dateArray = datesList.toArray(new LocalDate[0]);
+//                        CriteriaBuilder.In<Rental> inClause = criteriaBuilder.in(root.get("availableDates"));
+//                        for (LocalDate date: datesList) {
+//                            inClause.value(date);
+//                        }
+//                        query.select(root).where(inClause);
+
                     default: throw new IllegalStateException("Invalid operator");
                 }
 
             }
-            if (searchRequestDTO.getGlobalOperator().equals(SearchRequestDTO.GlobalOperator.AND))
+            if (Objects.isNull(searchRequestDTO.getGlobalOperator())){
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-            else return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+            }
+            if (searchRequestDTO.getGlobalOperator().equals(SearchRequestDTO.GlobalOperator.OR))
+                return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+
+            else return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }

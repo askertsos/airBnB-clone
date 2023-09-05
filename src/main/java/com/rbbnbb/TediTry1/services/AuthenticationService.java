@@ -1,10 +1,8 @@
 package com.rbbnbb.TediTry1.services;
 
 
-import com.rbbnbb.TediTry1.domain.Review;
 import com.rbbnbb.TediTry1.domain.Role;
 import com.rbbnbb.TediTry1.domain.User;
-import com.rbbnbb.TediTry1.dto.LoginResponseDTO;
 import com.rbbnbb.TediTry1.dto.RegisterDTO;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import com.rbbnbb.TediTry1.repository.ReviewRepository;
@@ -18,13 +16,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -43,9 +42,11 @@ public class AuthenticationService {
     @Autowired
     private RentalRepository rentalRepository;
 
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -102,6 +103,14 @@ public class AuthenticationService {
         }catch(AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    public Optional<User> getUserByJwt(String jwt){
+        String pureJwt = jwt;
+        pureJwt = pureJwt.replaceFirst("Bearer ", "");
+        Jwt decodedJWT = jwtDecoder.decode(pureJwt);
+        String username = decodedJWT.getSubject();
+        return userRepository.findByUsername(username);
     }
 
 }

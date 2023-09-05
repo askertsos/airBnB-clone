@@ -3,18 +3,22 @@ package com.rbbnbb.TediTry1.dto;
 public class SpecificationDTO {
 
     public enum Operation{
-        EQUAL, IN, LIKE, BETWEEN, GREATER_THAN, LESS_THAN
+        EQUAL, IN, LIKE, BETWEEN, GREATER_THAN, LESS_THAN, JOIN, DATES, NORMAL
     }
     private String column;
+    //private Double valueDouble, private Integer valueInteger, private List<String> valueStringList, k.o.k
     private String value;
     private Operation operation;
 
+    private String joinTable;
+
     public SpecificationDTO() {}
 
-    public SpecificationDTO(String column, String value, Operation operation) {
+    public SpecificationDTO(String column, String value, Operation operation, String joinTable) {
         this.column = column;
         this.value = value;
         this.operation = operation;
+        this.joinTable = joinTable;
     }
 
     public String getColumn() {
@@ -39,5 +43,13 @@ public class SpecificationDTO {
 
     public void setOperation(Operation operation) {
         this.operation = operation;
+    }
+
+    public String getJoinTable() {
+        return joinTable;
+    }
+
+    public void setJoinTable(String joinTable) {
+        this.joinTable = joinTable;
     }
 }

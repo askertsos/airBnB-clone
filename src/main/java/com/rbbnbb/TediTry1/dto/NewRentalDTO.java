@@ -14,7 +14,7 @@ public class NewRentalDTO {
     private Double basePrice;
 
     private Double chargePerPerson;
-    private List<String> availableDays;
+    private List<String> availableDates;
 
     private Integer maxPeople;
 
@@ -49,11 +49,11 @@ public class NewRentalDTO {
     private Boolean hasParking;
     private Boolean hasElevator;
 
-    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDays, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
-        this.availableDays = availableDays;
+        this.availableDates = availableDates;
         this.maxPeople = maxPeople;
         this.beds = beds;
         this.bedrooms = bedrooms;
@@ -269,13 +269,15 @@ public class NewRentalDTO {
         this.chargePerPerson = chargePerPerson;
     }
 
-    public List<String> getAvailableDays() {
-        return availableDays;
+    public List<String> getAvailableDates() {
+        return availableDates;
     }
 
-    public void setAvailableDays(List<String> availableDays) {
-        this.availableDays = availableDays;
+    public void setAvailableDates(List<String> availableDates) {
+        this.availableDates = availableDates;
     }
+
+
 
     public String toString(){
         return "New Rental: title: " + this.title;

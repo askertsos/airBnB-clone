@@ -12,10 +12,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecificationExecutor<Rental> {
@@ -25,6 +22,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecif
 //    Collection<Rental> getHostRentals(User host);
 
     List<Rental> findByHost(User host);
+
+    Optional<Rental> findByTitleIgnoreCase(String title);
 
     //Might concern address, availableDates, #of_people()
     //List<Rental> searchRentals(List<SearchDTO> dtos);

@@ -9,6 +9,8 @@ public class SearchRequestDTO {
 
     private List<SpecificationDTO> specificationList;
 
+    private PageRequestDTO pageRequestDTO;
+
     public GlobalOperator getGlobalOperator() {
         return globalOperator;
     }
@@ -23,5 +25,13 @@ public class SearchRequestDTO {
 
     public void setSpecificationList(List<SpecificationDTO> specificationList) {
         this.specificationList = specificationList;
+    }
+
+    public PageRequestDTO getPageRequestDTO() {
+        return pageRequestDTO;
+    }
+
+    public void setPageRequestDTO(PageRequestDTO pageRequestDTO) {
+        this.pageRequestDTO = pageRequestDTO;
     }
 }

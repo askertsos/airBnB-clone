@@ -60,13 +60,14 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/tenant/**").hasAnyRole("TENANT","ADMIN");
+                    auth.requestMatchers("/host/**").hasAnyRole("HOST","ADMIN");
                     auth.requestMatchers("/user/**").hasAnyRole("TENANT", "HOST", "ADMIN");
                     auth.requestMatchers("/search/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
         return http.build();
     }
 
