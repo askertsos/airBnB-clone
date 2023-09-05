@@ -59,7 +59,7 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/auth/**").permitAll();
-                    auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                    auth.requestMatchers("/admin/**").permitAll();
                     auth.requestMatchers("/tenant/**").hasAnyRole("TENANT","ADMIN");
                     auth.requestMatchers("/host/**").hasAnyRole("HOST","ADMIN");
                     auth.requestMatchers("/user/**").hasAnyRole("TENANT", "HOST", "ADMIN");

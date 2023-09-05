@@ -55,7 +55,6 @@ public class HostController {
     @PostMapping("/{rental_id}/info")
     @Transactional
     public ResponseEntity<?> updateRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt, @RequestBody NewRentalDTO dto){
-        System.out.println("in alterRental");
         Optional<Rental> optionalRental = rentalRepository.findById(Long.parseLong(id));
         if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();

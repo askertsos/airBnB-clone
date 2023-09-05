@@ -1,5 +1,8 @@
 package com.rbbnbb.TediTry1.domain;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DialectOverride;
@@ -13,6 +16,7 @@ import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Entity
+@JacksonXmlRootElement(localName = "rental")
 public class Rental {
 
     public enum RentalType {privateRoom, publicRoom, house}
@@ -81,32 +85,10 @@ public class Rental {
         this.reviews.add(review);
     }
 
-    public void removeAvailableDates(List<String> stringDates) throws IllegalArgumentException{
-
-        if (stringDates.isEmpty()) throw new IllegalArgumentException();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        List<LocalDate> bookingDates = new ArrayList<>();
-        try {
-            for (String date : stringDates) {
-                LocalDate localDate = LocalDate.parse(date, formatter);
-                bookingDates.add(localDate);
-            }
-        }
-        catch (DateTimeParseException d){
-            throw new IllegalArgumentException("invalid date format");
-        }
-
-
-        //Make sure all dates are available
-        for (LocalDate date: bookingDates) {
-            if (!availableDates.contains(date)) throw new IllegalArgumentException("date is not available");
-        }
-
+    public void removeAvailableDates(List<LocalDate> bookingDates){
         for (LocalDate date: bookingDates) {
             availableDates.remove(date);
         }
-
     }
 
     public Double getPrice(Integer days, Integer tenants){
@@ -192,6 +174,10 @@ public class Rental {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -208,12 +194,28 @@ public class Rental {
         this.basePrice = basePrice;
     }
 
+    public Double getChargePerPerson() {
+        return chargePerPerson;
+    }
+
+    public void setChargePerPerson(Double chargePerPerson) {
+        this.chargePerPerson = chargePerPerson;
+    }
+
     public Integer getMaxPeople() {
         return maxPeople;
     }
 
     public void setMaxPeople(Integer maxPeople) {
         this.maxPeople = maxPeople;
+    }
+
+    public List<LocalDate> getAvailableDates() {
+        return availableDates;
+    }
+
+    public void setAvailableDates(List<LocalDate> availableDates) {
+        this.availableDates = availableDates;
     }
 
     public Integer getBeds() {
@@ -320,14 +322,6 @@ public class Rental {
         this.publicTransport = publicTransport;
     }
 
-    public User getHost() {
-        return host;
-    }
-
-    public void setHost(User host) {
-        this.host = host;
-    }
-
     public Boolean getHasWiFi() {
         return hasWiFi;
     }
@@ -384,22 +378,6 @@ public class Rental {
         this.hasElevator = hasElevator;
     }
 
-    public Double getChargePerPerson() {
-        return chargePerPerson;
-    }
-
-    public void setChargePerPerson(Double chargePerPerson) {
-        this.chargePerPerson = chargePerPerson;
-    }
-
-    public List<LocalDate> getAvailableDates() {
-        return availableDates;
-    }
-
-    public void setAvailableDates(List<LocalDate> availableDates) {
-        this.availableDates = availableDates;
-    }
-
     public Set<Review> getReviews() {
         return reviews;
     }
@@ -408,6 +386,19 @@ public class Rental {
         this.reviews = reviews;
     }
 
+    public User getHost() {
+        return host;
+    }
 
+    public void setHost(User host) {
+        this.host = host;
+    }
 
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
 }

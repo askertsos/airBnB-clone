@@ -18,11 +18,11 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "booker_id", referencedColumnName = "id")
     private User booker;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private Rental rental;
 
@@ -81,6 +81,10 @@ public class Booking {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public User getBooker() {
         return booker;
     }
@@ -101,15 +105,31 @@ public class Booking {
         return dates;
     }
 
+    public void setDates(List<LocalDate> dates) {
+        this.dates = dates;
+    }
+
     public Integer getGuests() {
         return guests;
+    }
+
+    public void setGuests(Integer guests) {
+        this.guests = guests;
     }
 
     public Double getPrice() {
         return price;
     }
 
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     public LocalDateTime getBookedAt() {
         return bookedAt;
+    }
+
+    public void setBookedAt(LocalDateTime bookedAt) {
+        this.bookedAt = bookedAt;
     }
 }

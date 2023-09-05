@@ -1,5 +1,7 @@
 package com.rbbnbb.TediTry1.domain;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +27,8 @@ public class User implements UserDetails {
 
     private String phoneNumber;
 
+    @JacksonXmlElementWrapper(localName = "authorities")
+    @JacksonXmlProperty(localName = "authority")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="users_roles",
@@ -41,7 +45,7 @@ public class User implements UserDetails {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.authorities=authorities;
+        this.authorities = authorities;
     }
 
     public User(Long id, String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
@@ -54,6 +58,7 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
         this.authorities = authorities;
     }
+
 
     public Long getId() {
         return id;
