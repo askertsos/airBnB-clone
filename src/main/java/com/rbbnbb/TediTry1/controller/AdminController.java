@@ -41,4 +41,12 @@ public class AdminController {
         return ResponseEntity.ok().body(ResponseBody);
     }
 
+    @PostMapping("/user/activateHost")
+    public ResponseEntity<?> activateHost(@RequestBody UserDetailsDTO body){
+        User user = userRepository.findById(body.getId()).get();
+        user.setAuthenticatedHost(true);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
 }

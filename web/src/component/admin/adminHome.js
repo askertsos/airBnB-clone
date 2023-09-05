@@ -33,6 +33,7 @@ function AdminHome() {
 		<>
 			<h1> Welcome to the admin site! </h1>
 			<div> See list of all users <a href = "https://localhost:3000/admin/user/list" >here</a> .</div>
+			<div> <a href = 'https://localhost:3000/auth/logout'>Logout</a> </div>
 		</>
 	);
 }

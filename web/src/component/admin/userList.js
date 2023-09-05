@@ -229,6 +229,7 @@ function UserList() {
                     <option value={10}> 10 </option>
                 </select>
             </div>
+            <div> <a href = 'https://localhost:3000/admin/home'>Go back</a> </div>
 		</>
 	);
 }

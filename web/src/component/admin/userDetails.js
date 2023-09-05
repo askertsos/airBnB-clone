@@ -30,9 +30,36 @@ function UserDetails() {
         .catch((message) => {
             console.log(message);
             navigate("/unauthorized/user");
-            
         });
 	}, [routeParams, navigate]);
+
+
+    const activateHost = () => {
+        const reqBody = {
+            "id" : routeParams.id
+        };
+		const fetchOptions = {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": "Bearer "  + localStorage.getItem("jwt"),
+			},
+			method: "post",
+            body: JSON.stringify(reqBody)
+		};
+		fetch("https://localhost:8080/admin/user/activateHost", fetchOptions)
+        .then((response) =>{
+            console.log(response);
+            if(response.status === 401){
+                navigate("/unauthorized/user");
+            }
+            else if(response.status !== 200){
+                alert("Failed to activate host.");
+            }
+            else{
+                window.location.reload(false);
+            }
+        });
+    }
 
     if(loading){
         return(<h1>Loading...</h1>)
@@ -54,6 +81,9 @@ function UserDetails() {
                     <p>Authenticated host : {String(user.isAuthenticatedHost)}</p>
                 </li>
                 </ul>
+            </div>
+            <div>
+                <button onClick={() => activateHost()}> Activate Host </button>
             </div>
             <a href="https://localhost:3000/admin/user/list">User List</a>
         </>
