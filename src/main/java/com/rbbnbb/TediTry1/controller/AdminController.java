@@ -37,7 +37,8 @@ public class AdminController {
     public ResponseEntity<?> detailsUser(@RequestBody UserDetailsDTO body){
         User user = userRepository.findById(body.getId()).get();
         Map<String, Object> ResponseBody = new HashMap<String, Object>();
-        ResponseBody.put("Users", user);
+        ResponseBody.put("user", user);
+        ResponseBody.put("isHost", user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("HOST")) ? "true" : "false");
         return ResponseEntity.ok().body(ResponseBody);
     }
 

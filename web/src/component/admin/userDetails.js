@@ -8,6 +8,7 @@ function UserDetails() {
     const navigate = useNavigate();
     const [loading ,setLoading] = useState(true);
     const [user, setUser] = useState([]);
+    const [isHost, setIsHost] = useState();
 
 	useEffect(() => {
         const reqBody = {
@@ -24,7 +25,9 @@ function UserDetails() {
 		fetch("https://localhost:8080/admin/user/details", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setUser(response.Users);
+            console.log(response);
+            setUser(response.user);
+            setIsHost(response.isHost);
             setLoading(false);
         })
         .catch((message) => {
@@ -78,13 +81,17 @@ function UserDetails() {
                     <p>E-mail : {user.email}</p>
                     <p>Phone Number : {user.phoneNumber}</p>
                     {user.authorities.map( (roles) => <p>Role : {roles.authority}</p>)}
-                    <p>Authenticated host : {String(user.isAuthenticatedHost)}</p>
+                    { isHost === "true" &&
+                        <p>Authenticated host : {String(user.isAuthenticatedHost)}</p>
+                    }
                 </li>
                 </ul>
             </div>
-            <div>
-                <button onClick={() => activateHost()}> Activate Host </button>
-            </div>
+            { isHost === "true" &&
+                <div>
+                    <button onClick={() => activateHost()}> Activate Host </button>
+                </div>
+            }
             <a href="https://localhost:3000/admin/user/list">User List</a>
         </>
     )
