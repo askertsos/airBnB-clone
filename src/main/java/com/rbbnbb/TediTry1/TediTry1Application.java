@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +19,6 @@ public class TediTry1Application {
 	public static void main(String[] args) {
 		SpringApplication.run(TediTry1Application.class, args);
 	}
-
 	@Bean
 	CommandLineRunner run(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
 		return args ->{
