@@ -58,7 +58,9 @@ public class Rental {
     private String publicTransport;
 
     //Photos
-    //private Set<Photo> photos;
+    @ElementCollection(targetClass = Photo.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "rental_photos", joinColumns = @JoinColumn(name = "rental_id"))
+    private Set<Photo> photos;
 
     //Amenities
     private Boolean hasWiFi;
@@ -85,6 +87,8 @@ public class Rental {
         this.reviews.add(review);
     }
 
+    public void addPhoto(Photo photo) {this.photos.add(photo); }
+
     public void removeAvailableDates(List<LocalDate> bookingDates){
         for (LocalDate date: bookingDates) {
             availableDates.remove(date);
@@ -96,16 +100,15 @@ public class Rental {
         return (basePrice + tenants*chargePerPerson)*days;
     }
 
-    public Rental(){
+    public Rental(){}
 
-    }
-    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, List<LocalDate> availableDates, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host) {
+    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, Integer maxPeople, List<LocalDate> availableDates, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Set<Photo> photos, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host, Double rating) {
         this.id = id;
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
-        this.availableDates = availableDates;
         this.maxPeople = maxPeople;
+        this.availableDates = availableDates;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -119,6 +122,7 @@ public class Rental {
         this.minDays = minDays;
         this.address = address;
         this.publicTransport = publicTransport;
+        this.photos = photos;
         this.hasWiFi = hasWiFi;
         this.hasAC = hasAC;
         this.hasHeating = hasHeating;
@@ -128,6 +132,7 @@ public class Rental {
         this.hasElevator = hasElevator;
         this.reviews = reviews;
         this.host = host;
+        this.rating = rating;
     }
 
     public Rental(Long id, NewRentalDTO dto, User user){
@@ -320,6 +325,14 @@ public class Rental {
 
     public void setPublicTransport(String publicTransport) {
         this.publicTransport = publicTransport;
+    }
+
+    public Set<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
     }
 
     public Boolean getHasWiFi() {

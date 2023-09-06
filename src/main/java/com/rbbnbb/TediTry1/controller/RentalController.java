@@ -47,44 +47,35 @@ public class RentalController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @GetMapping("/{rental}")
-    public ResponseEntity<?> rentalInfo(@PathVariable("rental") String rentalTitle){
+    @GetMapping("/{rentalId}")
+    public ResponseEntity<?> rentalInfo(@PathVariable("rentalId") Long rentalId){
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{rental}/book")
+    @PostMapping("/{rentalId}/book")
     @Transactional
-    public ResponseEntity<?> bookRental(@PathVariable("rental") String title, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
-//
-//        //Find the rental
-//        Optional<Rental> optionalRental = rentalRepository.findByTitleIgnoreCase(title);
-//        if (optionalRental.isEmpty()) return ResponseEntity.status(404).build();
-//        Rental rental = optionalRental.get();
-//
-//
-//
-//        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
-//        if (optionalUser.isEmpty()) return ResponseEntity.status(404).build();
-//        User user = optionalUser.get();
-//
-//        try {
-//            rental.removeAvailableDates(dto.getDates());
-//        }
-//        catch (IllegalArgumentException e){
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        //Save the new booking
-//        Booking newBooking = new Booking(0L,user,rental,dto);
-//        bookingRepository.save(newBooking);
+    public ResponseEntity<?> bookRental(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
 
-        Booking newBooking = rentalService.constructBooking(jwt,title,dto);
+        Booking newBooking = rentalService.constructBooking(jwt,rentalId,dto);
+        if (Objects.isNull(newBooking)) return ResponseEntity.badRequest().build();
+
+        Rental rental = rentalRepository.findById(rentalId).get();
+
+        dto.setPrice(rental.getPrice(dto.getGuests(),dto.getDates().size()));
+
+        return ResponseEntity.ok().body(dto);
+    }
+
+    @PostMapping("/{rentalId}/book/confirm")
+    @Transactional
+    public ResponseEntity<?> confirmBooking(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
+
+        Booking newBooking = rentalService.constructBooking(jwt,rentalId,dto);
         if (Objects.isNull(newBooking)) return ResponseEntity.badRequest().build();
 
         bookingRepository.save(newBooking);
 
         return ResponseEntity.ok().body(newBooking);
-
     }
 
 }

@@ -21,11 +21,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecif
 //    @Query("SELECT r FROM Rental r WHERE r.host = ?1")
 //    Collection<Rental> getHostRentals(User host);
 
-    List<Rental> findByHost(User host);
-
-    Optional<Rental> findByTitleIgnoreCase(String title);
-
-    //Might concern address, availableDates, #of_people()
-    //List<Rental> searchRentals(List<SearchDTO> dtos);
+    Set<Rental> findByHost(User host);
 
 }

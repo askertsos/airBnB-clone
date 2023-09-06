@@ -22,9 +22,11 @@ public class User implements UserDetails {
 
     private String last_name;
 
+    @Column(nullable = false, unique = true)
     private String email;
     //private Photo picture
 
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @JacksonXmlElementWrapper(localName = "authorities")

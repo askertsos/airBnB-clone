@@ -35,10 +35,10 @@ public class RentalService {
 
     //Constructs the new booking based on the user, rental and booking info.
     //Returns the instance if all info is valid, null otherwise
-    public Booking constructBooking(String jwt, String rentalTitle, BookingDTO bookingDTO){
+    public Booking constructBooking(String jwt, Long rentalId, BookingDTO bookingDTO){
 
         //Find the rental
-        Optional<Rental> optionalRental = rentalRepository.findByTitleIgnoreCase(rentalTitle);
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;
         Rental rental = optionalRental.get();
 

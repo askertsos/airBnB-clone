@@ -4,6 +4,7 @@ import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.Review;
 import com.rbbnbb.TediTry1.domain.User;
+import com.rbbnbb.TediTry1.dto.HostInfoDTO;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import com.rbbnbb.TediTry1.dto.ReviewDTO;
 import com.rbbnbb.TediTry1.dto.UserDTO;
@@ -23,7 +24,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
@@ -65,5 +68,19 @@ public class UserController {
     //        reviewRepo = new SimpleJpaRepository<Review, Long>(Review.class,entityManager);
 
 
+    @GetMapping("/hosts/{id}")
+    public ResponseEntity<?> getHostInfo(@PathVariable("id") Long id){
+        Optional<User> optionalHost = userRepository.findById(id);
+        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
+
+        User host = optionalHost.get();
+        Set<Rental> hostRentals = rentalRepository.findByHost(host);
+
+        HostInfoDTO dto = new HostInfoDTO(host);
+        dto.setHostRentals(hostRentals);
+
+        return ResponseEntity.ok().body(dto);
+
+    }
 
 }
