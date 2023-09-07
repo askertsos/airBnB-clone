@@ -26,7 +26,7 @@ public class Rental {
     private String title;
     private Double basePrice;
     private Double chargePerPerson;
-    private Integer maxPeople;
+    private Integer maxGuests;
 
     @ElementCollection(targetClass = LocalDate.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "rental_available_dates", joinColumns = @JoinColumn(name = "rental_id"))
@@ -102,12 +102,12 @@ public class Rental {
 
     public Rental(){}
 
-    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, Integer maxPeople, List<LocalDate> availableDates, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Set<Photo> photos, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host, Double rating) {
+    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, Integer maxGuests, List<LocalDate> availableDates, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Set<Photo> photos, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host, Double rating) {
         this.id = id;
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
-        this.maxPeople = maxPeople;
+        this.maxGuests = maxGuests;
         this.availableDates = availableDates;
         this.beds = beds;
         this.bedrooms = bedrooms;
@@ -149,7 +149,7 @@ public class Rental {
                 this.availableDates.add(localDate);
             }
         }
-        this.maxPeople = dto.getMaxPeople();
+        this.maxGuests = dto.getMaxGuests();
         this.beds = dto.getBeds();
         this.bedrooms = dto.getBedrooms();
         this.bathrooms = dto.getBathrooms();
@@ -207,12 +207,12 @@ public class Rental {
         this.chargePerPerson = chargePerPerson;
     }
 
-    public Integer getMaxPeople() {
-        return maxPeople;
+    public Integer getMaxGuests() {
+        return maxGuests;
     }
 
-    public void setMaxPeople(Integer maxPeople) {
-        this.maxPeople = maxPeople;
+    public void setMaxGuests(Integer maxGuests) {
+        this.maxGuests = maxGuests;
     }
 
     public List<LocalDate> getAvailableDates() {

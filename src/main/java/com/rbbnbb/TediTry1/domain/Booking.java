@@ -31,35 +31,36 @@ public class Booking {
     private List<LocalDate> dates;
 
     private Integer guests;
-    @Formula("(" +
-                "(" +
-                    "SELECT r.base_price " +
-                    "FROM booking b INNER JOIN rental r ON b.rental_id=r.id " +
-                    "WHERE b.id=id" +
-                ")" +
-                "*" +
-                "(" +
-                    "SELECT COUNT(*) " +
-                    "FROM booking b INNER JOIN booking_dates bd ON b.id=bd.booking_id " +
-                    "WHERE b.id=id" +
-                ")" +
-                "* guests" +
-            ")")
+//    @Formula("(" +
+//                "(" +
+//                    "SELECT r.base_price " +
+//                    "FROM booking b INNER JOIN rental r ON b.rental_id=r.id " +
+//                    "WHERE b.id=id" +
+//                ")" +
+//                "*" +
+//                "(" +
+//                    "SELECT COUNT(*) " +
+//                    "FROM booking b INNER JOIN booking_dates bd ON b.id=bd.booking_id " +
+//                    "WHERE b.id=id" +
+//                ")" +
+//                "* guests" +
+//            ")")
     private Double price;
     private LocalDateTime bookedAt;
 
     public Booking() {}
 
-    public Booking(Long id, User booker, Rental rental, List<LocalDate> dates, Integer guests, LocalDateTime bookedAt) {
+    public Booking(Long id, User booker, Rental rental, List<LocalDate> dates, Integer guests, Double price, LocalDateTime bookedAt) {
         this.id = id;
         this.booker = booker;
         this.rental = rental;
         this.dates = dates;
         this.guests = guests;
+        this.price = price;
         this.bookedAt = bookedAt;
     }
 
-    public Booking(Long id, User booker, Rental rental, BookingDTO bookingDTO){
+    public Booking(Long id, User booker, Rental rental, BookingDTO bookingDTO) throws IllegalArgumentException{
         this.id = id;
         this.booker = booker;
         this.rental = rental;
@@ -71,9 +72,10 @@ public class Booking {
             }
         }
         catch(DateTimeParseException e){
-            System.out.println("Conversion to LocalDate unsuccessful");
+            throw new IllegalArgumentException();
         }
         this.guests = bookingDTO.getGuests();
+        this.price = rental.getPrice(this.dates.size(),this.guests);
         this.bookedAt = LocalDateTime.now();
     }
 

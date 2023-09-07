@@ -48,7 +48,7 @@ public class RentalService {
         User user = optionalUser.get();
 
         //Assert that the guest number, as well as the booking dates are valid
-        if (bookingDTO.getGuests() > rental.getMaxPeople()) return null;
+        if (bookingDTO.getGuests() > rental.getMaxGuests()) return null;
         if (bookingDTO.getDates().isEmpty()) return null;
         if (bookingDTO.getDates().size() < rental.getMinDays()) return null;
 
@@ -71,7 +71,14 @@ public class RentalService {
         rentalRepository.save(rental);
 
         //Save the new booking instance
-        return new Booking(0L,user,rental,bookingDTO);
+        Booking newBooking;
+        try {
+            newBooking = new Booking(0L, user, rental, bookingDTO);
+        }
+        catch (IllegalArgumentException e){
+            return null;
+        }
+        return newBooking;
     }
 
     public void updateRental(Long id, NewRentalDTO dto) throws IllegalArgumentException{
@@ -99,7 +106,7 @@ public class RentalService {
             rental.setAvailableDates(dates);
         }
 
-        if (Objects.nonNull(dto.getMaxPeople())) rental.setMaxPeople(dto.getMaxPeople());
+        if (Objects.nonNull(dto.getMaxGuests())) rental.setMaxGuests(dto.getMaxGuests());
         if (Objects.nonNull(dto.getBeds())) rental.setBeds(dto.getBeds());
         if (Objects.nonNull(dto.getBedrooms())) rental.setBedrooms(dto.getBedrooms());
         if (Objects.nonNull(dto.getBathrooms())) rental.setBathrooms(dto.getBathrooms());

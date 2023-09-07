@@ -1,14 +1,21 @@
 package com.rbbnbb.TediTry1.controller;
 
+import com.rbbnbb.TediTry1.domain.Message;
+import com.rbbnbb.TediTry1.domain.MessageHistory;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
+import com.rbbnbb.TediTry1.repository.MessageHistoryRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import com.rbbnbb.TediTry1.repository.ReviewRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import com.rbbnbb.TediTry1.services.RentalService;
+import com.rbbnbb.TediTry1.services.UserService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -26,18 +33,27 @@ public class HostController {
     private AuthenticationService authenticationService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private RentalService rentalService;
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    RentalRepository rentalRepository;
+    private RentalRepository rentalRepository;
 
     @Autowired
-    JwtDecoder jwtDecoder;
+    private MessageHistoryRepository messageHistoryRepository;
 
-    @PostMapping("/new_rental")
+    @Autowired
+    private JwtDecoder jwtDecoder;
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @PostMapping("/new")
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
 
@@ -74,5 +90,54 @@ public class HostController {
         }
 
         return ResponseEntity.ok().body(rental);
+    }
+
+    @GetMapping("/message_history/{tenantId}")
+    public ResponseEntity<?> getMessageHistory(@PathVariable("tenantId") Long tenantId, @RequestHeader("Authorization") String jwt){
+        Optional<User> optionalHost = authenticationService.getUserByJwt(jwt);
+        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
+        User host = optionalHost.get();
+        if (!userService.isHost(host)) return ResponseEntity.badRequest().build();
+
+        Optional<User> optionalTenant = userRepository.findById(tenantId);
+        if (optionalTenant.isEmpty()) return ResponseEntity.badRequest().build();
+        User tenant = optionalTenant.get();
+        if (!userService.isTenant(tenant)) return ResponseEntity.badRequest().build();
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
+        if (optionalMessageHistory.isEmpty()) return ResponseEntity.ok().build();
+        MessageHistory messageHistory = optionalMessageHistory.get();
+
+        return ResponseEntity.ok().body(messageHistory.getMessageSet());
+    }
+
+    @PostMapping("/message/{tenantId}")
+    @Transactional
+    public ResponseEntity<?> sendMessage(@PathVariable("tenantId") Long tenantId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
+        Optional<User> optionalHost = authenticationService.getUserByJwt(jwt);
+        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
+        User host = optionalHost.get();
+        if (!userService.isHost(host)) return ResponseEntity.badRequest().build();
+
+        Optional<User> optionalTenant = userRepository.findById(tenantId);
+        if (optionalTenant.isEmpty()) return ResponseEntity.badRequest().build();
+        User tenant = optionalTenant.get();
+        if (!userService.isTenant(tenant)) return ResponseEntity.badRequest().build();
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
+        if (optionalMessageHistory.isEmpty()) return ResponseEntity.badRequest().build();
+
+        MessageHistory messageHistory = optionalMessageHistory.get();
+
+        SimpleJpaRepository<Message, Long> messageRepo;
+        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
+
+        Message newMessage = new Message(host,tenant,text);
+        messageRepo.save(newMessage);
+
+        messageHistory.addMessage(newMessage);
+        messageHistoryRepository.save(messageHistory);
+
+        return ResponseEntity.ok().body(text);
     }
 }

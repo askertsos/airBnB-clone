@@ -1,22 +1,12 @@
 package com.rbbnbb.TediTry1.dto;
 
 public class ReviewDTO {
-    private Long rentalId;
     private String text;
     private Integer stars;
 
     public ReviewDTO(Long rentalId, String text, Integer stars) {
-        this.rentalId = rentalId;
         this.text = text;
         this.stars = stars;
-    }
-
-    public Long getRentalId() {
-        return rentalId;
-    }
-
-    public void setRentalId(Long rentalId) {
-        this.rentalId = rentalId;
     }
 
     public String getText() {

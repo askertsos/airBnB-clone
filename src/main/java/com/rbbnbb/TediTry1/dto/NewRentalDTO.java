@@ -3,20 +3,15 @@ package com.rbbnbb.TediTry1.dto;
 import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Rental;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Set;
 
 public class NewRentalDTO {
 
     private String title;
     private Double basePrice;
-
     private Double chargePerPerson;
     private List<String> availableDates;
-
-    private Integer maxPeople;
+    private Integer maxGuests;
 
     //Space
     private Integer beds;
@@ -26,7 +21,7 @@ public class NewRentalDTO {
     private Boolean hasLivingRoom;
     private Double surfaceArea;
 
-    //Descriprtion
+    //Description
     private String description;
 
     //Rules
@@ -49,12 +44,12 @@ public class NewRentalDTO {
     private Boolean hasParking;
     private Boolean hasElevator;
 
-    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
         this.availableDates = availableDates;
-        this.maxPeople = maxPeople;
+        this.maxGuests = maxGuests;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -93,12 +88,12 @@ public class NewRentalDTO {
         this.basePrice = basePrice;
     }
 
-    public Integer getMaxPeople() {
-        return maxPeople;
+    public Integer getMaxGuests() {
+        return maxGuests;
     }
 
-    public void setMaxPeople(Integer maxPeople) {
-        this.maxPeople = maxPeople;
+    public void setMaxGuests(Integer maxGuests) {
+        this.maxGuests = maxGuests;
     }
 
     public Integer getBeds() {

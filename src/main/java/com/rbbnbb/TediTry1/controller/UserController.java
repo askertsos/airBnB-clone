@@ -1,16 +1,9 @@
 package com.rbbnbb.TediTry1.controller;
 
-import com.rbbnbb.TediTry1.domain.Address;
-import com.rbbnbb.TediTry1.domain.Rental;
-import com.rbbnbb.TediTry1.domain.Review;
-import com.rbbnbb.TediTry1.domain.User;
+import com.rbbnbb.TediTry1.domain.*;
 import com.rbbnbb.TediTry1.dto.HostInfoDTO;
-import com.rbbnbb.TediTry1.dto.NewRentalDTO;
-import com.rbbnbb.TediTry1.dto.ReviewDTO;
 import com.rbbnbb.TediTry1.dto.UserDTO;
-import com.rbbnbb.TediTry1.repository.RentalRepository;
-import com.rbbnbb.TediTry1.repository.ReviewRepository;
-import com.rbbnbb.TediTry1.repository.UserRepository;
+import com.rbbnbb.TediTry1.repository.*;
 
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import com.rbbnbb.TediTry1.services.UserService;
@@ -19,12 +12,11 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -33,17 +25,23 @@ import java.util.Set;
 public class UserController {
     @Autowired
     private AuthenticationService authenticationService;
-
     @Autowired
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private RentalRepository rentalRepository;
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private MessageHistoryRepository messageHistoryRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
@@ -51,7 +49,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/info")
+    @PostMapping("/profile")
     @Transactional
     public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String jwt, @RequestBody UserDTO userDTO){
 
@@ -81,6 +79,42 @@ public class UserController {
 
         return ResponseEntity.ok().body(dto);
 
+    }
+
+    @PostMapping("/hosts/{hostId}/message")
+    @Transactional
+    public ResponseEntity<?> messageHost(@PathVariable("hostId") Long hostId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
+        Optional<User> optionalHost = userRepository.findById(hostId);
+        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
+        User host = optionalHost.get();
+
+        if (!userService.isHost(host)) return ResponseEntity.badRequest().build();
+
+        Optional<User> optionalTenant = authenticationService.getUserByJwt(jwt);
+        if (optionalTenant.isEmpty()) return ResponseEntity.badRequest().build();
+        User tenant = optionalTenant.get();
+
+        if (!userService.isTenant(tenant)) return ResponseEntity.badRequest().build();
+
+        Message newMessage = new Message(tenant,host,text);
+
+        SimpleJpaRepository<Message, Long> messageRepo;
+        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
+        messageRepo.save(newMessage);
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
+        MessageHistory messageHistory;
+        if (optionalMessageHistory.isEmpty()){
+            messageHistory = new MessageHistory(0L,tenant,host,newMessage);
+        }
+        else{
+            messageHistory = optionalMessageHistory.get();
+            messageHistory.addMessage(newMessage);
+        }
+        messageHistoryRepository.save(messageHistory);
+
+
+        return ResponseEntity.ok().body(newMessage);
     }
 
 }

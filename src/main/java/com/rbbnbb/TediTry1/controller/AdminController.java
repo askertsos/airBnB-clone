@@ -23,8 +23,15 @@ public class AdminController {
         return "is Admin";
     }
 
-    @GetMapping(value = "/json", produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getJson(){
+        List<Rental> allRentals = rentalRepository.findAll();
+
+        return ResponseEntity.ok(allRentals);
+    }
+
+    @GetMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<?> getXml(){
         List<Rental> allRentals = rentalRepository.findAll();
 
         return ResponseEntity.ok(allRentals);

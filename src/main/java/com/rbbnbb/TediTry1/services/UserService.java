@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Role;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.UserDTO;
 import com.rbbnbb.TediTry1.repository.UserRepository;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Objects;
 
 @Service
@@ -38,6 +40,24 @@ public class UserService implements UserDetailsService {
 
         userRepository.save(user);
 
+    }
+
+    public Boolean isTenant(User user){
+        Collection<?> grantedAuthorities = user.getAuthorities();
+        for (var grantedAuthority: grantedAuthorities) {
+            Role role = (Role) grantedAuthority;
+            if (role.getAuthority().equals("TENANT")) return true;
+        }
+        return false;
+    }
+
+    public Boolean isHost(User user){
+        Collection<?> grantedAuthorities = user.getAuthorities();
+        for (var grantedAuthority: grantedAuthorities) {
+            Role role = (Role) grantedAuthority;
+            if (role.getAuthority().equals("HOST")) return true;
+        }
+        return false;
     }
 
 }
