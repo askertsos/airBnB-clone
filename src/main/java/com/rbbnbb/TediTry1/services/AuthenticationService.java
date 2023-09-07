@@ -105,12 +105,5 @@ public class AuthenticationService {
         }
     }
 
-    public Optional<User> getUserByJwt(String jwt){
-        String pureJwt = jwt;
-        pureJwt = pureJwt.replaceFirst("Bearer ", "");
-        Jwt decodedJWT = jwtDecoder.decode(pureJwt);
-        String username = decodedJWT.getSubject();
-        return userRepository.findByUsername(username);
-    }
 
 }

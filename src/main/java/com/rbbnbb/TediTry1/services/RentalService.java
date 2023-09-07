@@ -1,9 +1,14 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Booking;
 import com.rbbnbb.TediTry1.domain.Rental;
+import com.rbbnbb.TediTry1.domain.User;
+import com.rbbnbb.TediTry1.dto.BookingDTO;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
+import com.rbbnbb.TediTry1.repository.BookingRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +25,66 @@ import java.util.Optional;
 public class RentalService {
 
     @Autowired
+    private AuthenticationService authenticationService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
     private RentalRepository rentalRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
+
+    //Constructs the new booking based on the user, rental and booking info.
+    //Returns the instance if all info is valid, null otherwise
+    public Booking constructBooking(String jwt, Long rentalId, BookingDTO bookingDTO){
+
+        //Find the rental
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return null;
+        Rental rental = optionalRental.get();
+
+        //Find the user
+//        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
+//        if (optionalUser.isEmpty()) return null;
+//        User user = optionalUser.get();
+        User booker = userService.assertUserHasAuthority(jwt,"TENANT");
+        if (Objects.isNull(booker)) return null;
+
+        //Assert that the guest number, as well as the booking dates are valid
+        if (bookingDTO.getGuests() > rental.getMaxGuests()) return null;
+        if (bookingDTO.getDates().isEmpty()) return null;
+        if (bookingDTO.getDates().size() < rental.getMinDays()) return null;
+
+        //Convert all dates from String to LocalDate and, if one is invalid, return null
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+        List<LocalDate> bookingDates = new ArrayList<>();
+        try {
+            for (String date : bookingDTO.getDates()) {
+                LocalDate localDate = LocalDate.parse(date, formatter);
+                if (!rental.getAvailableDates().contains(localDate)) return null;
+                bookingDates.add(localDate);
+            }
+        }
+        catch (DateTimeParseException d){return null;}
+
+        //All dates are both valid and available in the rental, go through with removing them and creating the new booking
+        rental.removeAvailableDates(bookingDates);
+
+        //Save changes
+        rentalRepository.save(rental);
+
+        //Save the new booking instance
+        Booking newBooking;
+        try {
+            newBooking = new Booking(0L, booker, rental, bookingDTO);
+        }
+        catch (IllegalArgumentException e){
+            return null;
+        }
+        return newBooking;
+    }
 
     public void updateRental(Long id, NewRentalDTO dto) throws IllegalArgumentException{
 
@@ -47,7 +111,7 @@ public class RentalService {
             rental.setAvailableDates(dates);
         }
 
-        if (Objects.nonNull(dto.getMaxPeople())) rental.setMaxPeople(dto.getMaxPeople());
+        if (Objects.nonNull(dto.getMaxGuests())) rental.setMaxGuests(dto.getMaxGuests());
         if (Objects.nonNull(dto.getBeds())) rental.setBeds(dto.getBeds());
         if (Objects.nonNull(dto.getBedrooms())) rental.setBedrooms(dto.getBedrooms());
         if (Objects.nonNull(dto.getBathrooms())) rental.setBathrooms(dto.getBathrooms());
