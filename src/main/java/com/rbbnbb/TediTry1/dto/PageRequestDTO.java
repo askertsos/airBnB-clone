@@ -9,6 +9,7 @@ import java.util.Objects;
 public class PageRequestDTO {
 
     private Integer pageNo = 0;
+
     private Integer pageSize = 10;
 
     private Sort.Direction sort = Sort.Direction.ASC;

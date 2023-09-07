@@ -1,5 +1,7 @@
 package com.rbbnbb.TediTry1.controller;
 
+import com.rbbnbb.TediTry1.dto.NewRentalDTO;
+import com.rbbnbb.TediTry1.dto.ReviewDTO;
 import com.rbbnbb.TediTry1.domain.*;
 import com.rbbnbb.TediTry1.dto.HostInfoDTO;
 import com.rbbnbb.TediTry1.dto.UserDTO;
@@ -10,7 +12,6 @@ import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.transaction.annotation.Transactional;
