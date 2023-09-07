@@ -12,6 +12,7 @@ import com.rbbnbb.TediTry1.repository.ReviewRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import com.rbbnbb.TediTry1.services.RentalService;
+import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class RentalController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    @Autowired
+    private UserService userService;
     @Autowired
     private RentalService rentalService;
 
@@ -91,20 +94,22 @@ public class RentalController {
     @PostMapping("/{rentalId}/review")
     @Transactional
     public ResponseEntity<?> submitReview(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody ReviewDTO body){
-        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
-
-        if (optionalUser.isEmpty()) return ResponseEntity.badRequest().build();
-        User user = optionalUser.get();
+//        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
+//
+//        if (optionalUser.isEmpty()) return ResponseEntity.badRequest().build();
+//        User user = optionalUser.get();
+        User reviewer = userService.assertUserHasAuthority(jwt,"TENANT");
+        if (Objects.isNull(reviewer)) return ResponseEntity.badRequest().build();
 
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
 
         //Assert that this user has booked this rental before
-        List<Booking> bookingList = bookingRepository.findByBookerAndRental(user,rental);
+        List<Booking> bookingList = bookingRepository.findByBookerAndRental(reviewer,rental);
         if (bookingList.isEmpty()) return ResponseEntity.badRequest().build();
 
-        Review review = new Review(0L,body,user,rental);
+        Review review = new Review(0L,body,reviewer,rental);
         reviewRepository.save(review);
         rental.addReview(review);
 

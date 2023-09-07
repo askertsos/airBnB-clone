@@ -28,6 +28,9 @@ public class RentalService {
     private AuthenticationService authenticationService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private RentalRepository rentalRepository;
 
     @Autowired
@@ -43,9 +46,11 @@ public class RentalService {
         Rental rental = optionalRental.get();
 
         //Find the user
-        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
-        if (optionalUser.isEmpty()) return null;
-        User user = optionalUser.get();
+//        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
+//        if (optionalUser.isEmpty()) return null;
+//        User user = optionalUser.get();
+        User booker = userService.assertUserHasAuthority(jwt,"TENANT");
+        if (Objects.isNull(booker)) return null;
 
         //Assert that the guest number, as well as the booking dates are valid
         if (bookingDTO.getGuests() > rental.getMaxGuests()) return null;
@@ -73,7 +78,7 @@ public class RentalService {
         //Save the new booking instance
         Booking newBooking;
         try {
-            newBooking = new Booking(0L, user, rental, bookingDTO);
+            newBooking = new Booking(0L, booker, rental, bookingDTO);
         }
         catch (IllegalArgumentException e){
             return null;

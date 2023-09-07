@@ -57,12 +57,10 @@ public class HostController {
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
 
-        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
+        User host = userService.assertUserHasAuthority(jwt,"HOST");
+        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
 
-        if (optionalUser.isEmpty()) return ResponseEntity.status(404).build();
-
-        User user = optionalUser.get();
-        Rental newRental = new Rental(0L,body,user);
+        Rental newRental = new Rental(0L,body,host);
         rentalRepository.save(newRental);
 
         return ResponseEntity.ok().body(newRental);
@@ -75,11 +73,9 @@ public class HostController {
         if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
 
+        User host = userService.assertUserHasAuthority(jwt,"HOST");
+        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
 
-        Optional<User> optionalHost = authenticationService.getUserByJwt(jwt);
-        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
-
-        User host = optionalHost.get();
         if (!rental.getHost().equals(host)) return ResponseEntity.badRequest().build();
 
         try {
@@ -94,15 +90,15 @@ public class HostController {
 
     @GetMapping("/message_history/{tenantId}")
     public ResponseEntity<?> getMessageHistory(@PathVariable("tenantId") Long tenantId, @RequestHeader("Authorization") String jwt){
-        Optional<User> optionalHost = authenticationService.getUserByJwt(jwt);
-        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
-        User host = optionalHost.get();
-        if (!userService.isHost(host)) return ResponseEntity.badRequest().build();
 
-        Optional<User> optionalTenant = userRepository.findById(tenantId);
-        if (optionalTenant.isEmpty()) return ResponseEntity.badRequest().build();
-        User tenant = optionalTenant.get();
-        if (!userService.isTenant(tenant)) return ResponseEntity.badRequest().build();
+        User host = userService.assertUserHasAuthority(jwt,"HOST");
+        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
+
+        User tenant = userService.assertUserHasAuthority(tenantId,"TENANT");
+        if (Objects.isNull(tenant)) return ResponseEntity.badRequest().build();
+
+        //Assert that host and tenant are not the same user
+        if (host.equals(tenant)) return ResponseEntity.badRequest().build();
 
         Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
         if (optionalMessageHistory.isEmpty()) return ResponseEntity.ok().build();
@@ -114,15 +110,15 @@ public class HostController {
     @PostMapping("/message/{tenantId}")
     @Transactional
     public ResponseEntity<?> sendMessage(@PathVariable("tenantId") Long tenantId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
-        Optional<User> optionalHost = authenticationService.getUserByJwt(jwt);
-        if (optionalHost.isEmpty()) return ResponseEntity.badRequest().build();
-        User host = optionalHost.get();
-        if (!userService.isHost(host)) return ResponseEntity.badRequest().build();
 
-        Optional<User> optionalTenant = userRepository.findById(tenantId);
-        if (optionalTenant.isEmpty()) return ResponseEntity.badRequest().build();
-        User tenant = optionalTenant.get();
-        if (!userService.isTenant(tenant)) return ResponseEntity.badRequest().build();
+        User host = userService.assertUserHasAuthority(jwt,"HOST");
+        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
+
+        User tenant = userService.assertUserHasAuthority(tenantId,"TENANT");
+        if (Objects.isNull(tenant)) return ResponseEntity.badRequest().build();
+
+        //Assert that host and tenant are not the same user
+        if (host.equals(tenant)) return ResponseEntity.badRequest().build();
 
         Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
         if (optionalMessageHistory.isEmpty()) return ResponseEntity.badRequest().build();

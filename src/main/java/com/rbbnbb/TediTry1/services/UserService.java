@@ -9,16 +9,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private PasswordEncoder encoder;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -30,7 +36,7 @@ public class UserService implements UserDetailsService {
 
     public void updateUser(User user, UserDTO userDTO){
         if (Objects.nonNull(userDTO.getUsername())) user.setUsername(userDTO.getUsername());
-        if (Objects.nonNull(userDTO.getPassword())) user.setPassword(encoder.encode(userDTO.getPassword()));
+        if (Objects.nonNull(userDTO.getPassword())) user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         if (Objects.nonNull(userDTO.getFirst_name())) user.setFirst_name(userDTO.getFirst_name());
         if (Objects.nonNull(userDTO.getLast_name())) user.setLast_name(userDTO.getLast_name());
         if (Objects.nonNull(userDTO.getEmail())) user.setEmail(userDTO.getEmail());
@@ -42,22 +48,39 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public Boolean isTenant(User user){
+    public User assertUserHasAuthority(User user, String authority){
         Collection<?> grantedAuthorities = user.getAuthorities();
         for (var grantedAuthority: grantedAuthorities) {
             Role role = (Role) grantedAuthority;
-            if (role.getAuthority().equals("TENANT")) return true;
+            if (role.getAuthority().equals(authority)) return user;
         }
-        return false;
+        return null;
     }
 
-    public Boolean isHost(User user){
-        Collection<?> grantedAuthorities = user.getAuthorities();
-        for (var grantedAuthority: grantedAuthorities) {
-            Role role = (Role) grantedAuthority;
-            if (role.getAuthority().equals("HOST")) return true;
-        }
-        return false;
+    //Takes in the user id, and returns the user if they exist and have the specified authority, null otherwise
+    public User assertUserHasAuthority(Long id, String authority){
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+        return assertUserHasAuthority(user,authority);
     }
+
+    //Takes in the jwt token, and returns the user if they exist and have the specified authority, null otherwise
+    public User assertUserHasAuthority(String jwt, String authority){
+        Optional<User> optionalUser = getUserByJwt(jwt);
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+        return assertUserHasAuthority(user,authority);
+    }
+
+    public Optional<User> getUserByJwt(String jwt){
+        String pureJwt = jwt;
+        pureJwt = pureJwt.replaceFirst("Bearer ", "");
+        Jwt decodedJWT = jwtDecoder.decode(pureJwt);
+        String username = decodedJWT.getSubject();
+        return userRepository.findByUsername(username);
+    }
+
+
 
 }
