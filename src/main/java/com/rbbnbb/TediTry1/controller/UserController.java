@@ -1,128 +1,127 @@
 package com.rbbnbb.TediTry1.controller;
 
-import com.rbbnbb.TediTry1.domain.Rental;
-import com.rbbnbb.TediTry1.domain.Review;
-import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import com.rbbnbb.TediTry1.dto.ReviewDTO;
-import com.rbbnbb.TediTry1.repository.RentalRepository;
-import com.rbbnbb.TediTry1.repository.ReviewRepository;
-import com.rbbnbb.TediTry1.repository.UserRepository;
+import com.rbbnbb.TediTry1.domain.*;
+import com.rbbnbb.TediTry1.dto.HostInfoDTO;
+import com.rbbnbb.TediTry1.dto.UserDTO;
+import com.rbbnbb.TediTry1.repository.*;
 
+import com.rbbnbb.TediTry1.services.AuthenticationService;
+import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    private AuthenticationService authenticationService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private RentalRepository rentalRepository;
 
     @Autowired
-    UserRepository userRepository;
+    private ReviewRepository reviewRepository;
 
     @Autowired
-    RentalRepository rentalRepository;
-
-    @Autowired
-    ReviewRepository reviewRepository;
-
-    @Autowired
-    JwtDecoder jwtDecoder;
+    private MessageHistoryRepository messageHistoryRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
+
+    //--------------------------------------------------------------------------------------------
+    //-----------------                    ALL USERS                    --------------------------
+    //--------------------------------------------------------------------------------------------
 
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/new_rental")
+
+    @PostMapping("/profile")
     @Transactional
-    public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body,@RequestHeader("Authorization") String jwt){
-        //Find user by decoding jwt
+    public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String jwt, @RequestBody UserDTO userDTO){
 
-        String pureJwt = jwt;
-        pureJwt = pureJwt.replaceFirst("Bearer ", "");
-        Jwt decodedJWT = jwtDecoder.decode(pureJwt);
-        String username = decodedJWT.getSubject();
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-
-        if (!optionalUser.isPresent()) {
-            System.out.println("User not found");
-            return ResponseEntity.status(404).build();
-        }
-//
-//        //Save the new Rental object
-//        User user = optionalUser.get();
-//        simpleJpaRepository.save(new Rental(0L,body,user));
-
+        Optional<User> optionalUser = userService.getUserByJwt(jwt);
+        if (optionalUser.isEmpty()) return ResponseEntity.badRequest().build();
         User user = optionalUser.get();
-        rentalRepository.save(new Rental(0L,body,user));
 
-        return ResponseEntity.ok().body(body);
+        userService.updateUser(user,userDTO);
+
+        return ResponseEntity.ok().body(user);
     }
 
-    @PostMapping("/review")
+    //        SimpleJpaRepository<Review, Long> reviewRepo;
+    //        reviewRepo = new SimpleJpaRepository<Review, Long>(Review.class,entityManager);
+
+
+    @GetMapping("/hosts/{id}")
+    public ResponseEntity<?> getHostInfo(@PathVariable("id") Long id){
+        User host = userService.assertUserHasAuthority(id,"HOST");
+        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
+
+        //Empty set is still a valid output
+        Set<Rental> hostRentals = rentalRepository.findByHost(host);
+
+        HostInfoDTO dto = new HostInfoDTO(host);
+        dto.setHostRentals(hostRentals);
+
+        return ResponseEntity.ok().body(dto);
+
+    }
+
+    //--------------------------------------------------------------------------------------------
+    //-----------------                     TENANTS                     --------------------------
+    //--------------------------------------------------------------------------------------------
+
+    @PostMapping("/hosts/{hostId}/message")
     @Transactional
-    public ResponseEntity<?> submitReview(@RequestHeader("Authorization") String jwt, @RequestBody ReviewDTO body){
-        String pureJwt = jwt;
-        pureJwt = pureJwt.replaceFirst("Bearer ", "");
-        Jwt decodedJWT = jwtDecoder.decode(pureJwt);
-        String username = decodedJWT.getSubject();
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+    public ResponseEntity<?> messageHost(@PathVariable("hostId") Long hostId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
+        User tenant = userService.assertUserHasAuthority(jwt,"TENANT");
+        if (Objects.isNull(tenant)) return ResponseEntity.badRequest().build();
 
-        if (!optionalUser.isPresent()) {
-            System.out.println("User not found");
-            return ResponseEntity.status(404).build();
+        User host = userService.assertUserHasAuthority(hostId,"HOST");
+        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
+
+        //Assert that tenant and host are not the same user
+        if (tenant.equals(host)) return ResponseEntity.badRequest().build();
+
+        Message newMessage = new Message(tenant,host,text);
+
+        SimpleJpaRepository<Message, Long> messageRepo;
+        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
+        messageRepo.save(newMessage);
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
+        MessageHistory messageHistory;
+        if (optionalMessageHistory.isEmpty()){
+            messageHistory = new MessageHistory(0L,tenant,host,newMessage);
         }
-        User user = optionalUser.get();
-
-//        SimpleJpaRepository<Rental, Long> rentalRepo;
-//        rentalRepo = new SimpleJpaRepository<Rental, Long>(Rental.class,entityManager);
-//
-//        Optional<Rental> optionalRental = rentalRepo.findById(body.getRentalId());
-//        if (!optionalRental.isPresent()){
-//            System.out.println("Invalid rental_id");
-//            return ResponseEntity.status(404).build();
-//        }
-//        Rental rental = optionalRental.get();
-//
-//        Review review = new Review(0L,body,user,rental);
-//        SimpleJpaRepository<Review, Long> reviewRepo;
-//        reviewRepo = new SimpleJpaRepository<Review, Long>(Review.class,entityManager);
-//
-//        reviewRepo.save(review);
-
-        Optional<Rental> optionalRental = rentalRepository.findById(body.getRentalId());
-        if (!optionalRental.isPresent()){
-            System.out.println("invalid rental id");
-            return ResponseEntity.status(404).build();
+        else{
+            messageHistory = optionalMessageHistory.get();
+            messageHistory.addMessage(newMessage);
         }
-        Rental rental = optionalRental.get();
+        messageHistoryRepository.save(messageHistory);
 
-        Review review = new Review(0L,body,user,rental);
-        reviewRepository.save(review);
-        rental.addReview(review);
-
-
-//        reviewRepository.save(review);
-//
-//        Optional<Rental> optionalRental = rentalRepository.findById(body.getRentalId());
-//        if (!optionalRental.isPresent()){
-//            System.out.println("Rental not found");
-//            return ResponseEntity.status(404).build();
-//        }
-
-
-        return ResponseEntity.ok().body(body);
+        return ResponseEntity.ok().body(newMessage);
     }
 
 }

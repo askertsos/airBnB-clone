@@ -1,5 +1,7 @@
 package com.rbbnbb.TediTry1.domain;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,18 +22,24 @@ public class User implements UserDetails {
 
     private String last_name;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
     //private Photo picture
 
+
     private boolean isAuthenticatedHost;
+
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
+    @JacksonXmlElementWrapper(localName = "authorities")
+    @JacksonXmlProperty(localName = "authority")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name="users_roles",
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
+            joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
+            inverseJoinColumns={@JoinColumn(name="role_id", referencedColumnName="id")})
     private Set<Role> authorities;
 
     public User(){
@@ -43,7 +51,7 @@ public class User implements UserDetails {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.authorities=authorities;
+        this.authorities = authorities;
     }
 
     public User(Long id, String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
@@ -57,6 +65,7 @@ public class User implements UserDetails {
         this.authorities = authorities;
         this.isAuthenticatedHost = false;
     }
+
 
     public Long getId() {
         return id;

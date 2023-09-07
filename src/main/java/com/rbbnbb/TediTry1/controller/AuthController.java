@@ -1,8 +1,6 @@
 package com.rbbnbb.TediTry1.controller;
 
-import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.LoginDTO;
-import com.rbbnbb.TediTry1.dto.LoginResponseDTO;
 import com.rbbnbb.TediTry1.dto.RegisterDTO;
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;

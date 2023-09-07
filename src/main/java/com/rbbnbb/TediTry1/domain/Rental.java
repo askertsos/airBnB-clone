@@ -1,28 +1,36 @@
 package com.rbbnbb.TediTry1.domain;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.Formula;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+
 @Entity
+@JacksonXmlRootElement(localName = "rental")
 public class Rental {
 
-    public enum RentalType {privateRoom, publicRoom, house};
+    public enum RentalType {privateRoom, publicRoom, house}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
     private Double basePrice;
     private Double chargePerPerson;
-    private Integer maxPeople;
-    private List<LocalDate> availableDays;
+    private Integer maxGuests;
+
+    @ElementCollection(targetClass = LocalDate.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "rental_available_dates", joinColumns = @JoinColumn(name = "rental_id"))
+    private List<LocalDate> availableDates = new ArrayList<LocalDate>();
 
     //Space
     private Integer beds;
@@ -32,7 +40,7 @@ public class Rental {
     private Boolean hasLivingRoom;
     private Double surfaceArea;
 
-    //Descriprtion
+    //Description
     private String description;
 
     //Rules
@@ -50,7 +58,9 @@ public class Rental {
     private String publicTransport;
 
     //Photos
-    //private Set<Photo> photos;
+    @ElementCollection(targetClass = Photo.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "rental_photos", joinColumns = @JoinColumn(name = "rental_id"))
+    private Set<Photo> photos;
 
     //Amenities
     private Boolean hasWiFi;
@@ -67,16 +77,38 @@ public class Rental {
     @ManyToOne(fetch = FetchType.EAGER)
     private User host;
 
-    public Rental(){
+    //Formulas
+//    @Formula("reviews.stream().mapToInt(a->a.getStars()).average().orElse(0)")
+//    @Formula("(SELECT SUM(r1.stars) FROM review r1 INNER JOIN rental r2 ON r1.rental=r2 WHERE r2.id=id) / (SELECT COUNT(*) FROM review r1 INNER JOIN rental r2 ON r1.rental=r2 WHERE r2.id=id)")
+    @Formula("(SELECT AVG(rev.stars) FROM review rev INNER JOIN rental ren ON rev.rental_id=ren.id WHERE ren.id=id)")
+    private Double rating;
 
+    public void addReview(Review review){
+        this.reviews.add(review);
     }
-    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, List<LocalDate> availableDays, Integer maxPeople, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String neighbourhood, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host) {
+
+    public void addPhoto(Photo photo) {this.photos.add(photo); }
+
+    public void removeAvailableDates(List<LocalDate> bookingDates){
+        for (LocalDate date: bookingDates) {
+            availableDates.remove(date);
+        }
+    }
+
+    public Double getPrice(Integer days, Integer tenants){
+        //Assume days >= minDays
+        return (basePrice + tenants*chargePerPerson)*days;
+    }
+
+    public Rental(){}
+
+    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, Integer maxGuests, List<LocalDate> availableDates, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Set<Photo> photos, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host, Double rating) {
         this.id = id;
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
-        this.availableDays = availableDays;
-        this.maxPeople = maxPeople;
+        this.maxGuests = maxGuests;
+        this.availableDates = availableDates;
         this.beds = beds;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
@@ -90,6 +122,7 @@ public class Rental {
         this.minDays = minDays;
         this.address = address;
         this.publicTransport = publicTransport;
+        this.photos = photos;
         this.hasWiFi = hasWiFi;
         this.hasAC = hasAC;
         this.hasHeating = hasHeating;
@@ -99,22 +132,24 @@ public class Rental {
         this.hasElevator = hasElevator;
         this.reviews = reviews;
         this.host = host;
+        this.rating = rating;
     }
 
     public Rental(Long id, NewRentalDTO dto, User user){
+        this.id = id;
         this.title = dto.getTitle();
         this.basePrice = dto.getBasePrice();
         this.chargePerPerson = dto.getChargePerPerson();
 
-        this.availableDays = new ArrayList<LocalDate>();
-        if (!dto.getAvailableDays().isEmpty()) {
+        this.availableDates = new ArrayList<>();
+        if (!dto.getAvailableDates().isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-            for (String date : dto.getAvailableDays()) {
+            for (String date : dto.getAvailableDates()) {
                 LocalDate localDate = LocalDate.parse(date, formatter);
-                this.availableDays.add(localDate);
+                this.availableDates.add(localDate);
             }
         }
-        this.maxPeople = dto.getMaxPeople();
+        this.maxGuests = dto.getMaxGuests();
         this.beds = dto.getBeds();
         this.bedrooms = dto.getBedrooms();
         this.bathrooms = dto.getBathrooms();
@@ -136,11 +171,16 @@ public class Rental {
         this.hasParking = dto.getHasParking();
         this.hasElevator = dto.getHasElevator();
         this.host = user;
-        this.reviews = new HashSet<Review>();
+        this.reviews = new HashSet<>();
 
     }
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -159,12 +199,28 @@ public class Rental {
         this.basePrice = basePrice;
     }
 
-    public Integer getMaxPeople() {
-        return maxPeople;
+    public Double getChargePerPerson() {
+        return chargePerPerson;
     }
 
-    public void setMaxPeople(Integer maxPeople) {
-        this.maxPeople = maxPeople;
+    public void setChargePerPerson(Double chargePerPerson) {
+        this.chargePerPerson = chargePerPerson;
+    }
+
+    public Integer getMaxGuests() {
+        return maxGuests;
+    }
+
+    public void setMaxGuests(Integer maxGuests) {
+        this.maxGuests = maxGuests;
+    }
+
+    public List<LocalDate> getAvailableDates() {
+        return availableDates;
+    }
+
+    public void setAvailableDates(List<LocalDate> availableDates) {
+        this.availableDates = availableDates;
     }
 
     public Integer getBeds() {
@@ -271,12 +327,12 @@ public class Rental {
         this.publicTransport = publicTransport;
     }
 
-    public User getHost() {
-        return host;
+    public Set<Photo> getPhotos() {
+        return photos;
     }
 
-    public void setHost(User host) {
-        this.host = host;
+    public void setPhotos(Set<Photo> photos) {
+        this.photos = photos;
     }
 
     public Boolean getHasWiFi() {
@@ -335,22 +391,6 @@ public class Rental {
         this.hasElevator = hasElevator;
     }
 
-    public Double getChargePerPerson() {
-        return chargePerPerson;
-    }
-
-    public void setChargePerPerson(Double chargePerPerson) {
-        this.chargePerPerson = chargePerPerson;
-    }
-
-    public List<LocalDate> getAvailableDays() {
-        return availableDays;
-    }
-
-    public void setAvailableDays(List<LocalDate> availableDays) {
-        this.availableDays = availableDays;
-    }
-
     public Set<Review> getReviews() {
         return reviews;
     }
@@ -359,21 +399,19 @@ public class Rental {
         this.reviews = reviews;
     }
 
-    public void addReview(Review review){
-        this.reviews.add(review);
+    public User getHost() {
+        return host;
     }
 
-    public Double getRating(){
-        if (this.reviews.isEmpty()) return null;
-        Double sum = 0.0;
-        for (Review review:this.reviews) {
-            sum += review.getStars();
-        }
-        return sum / this.reviews.size();
+    public void setHost(User host) {
+        this.host = host;
     }
 
-    public Double getPrice(Integer days, Integer tenants){
-        //Assume days >= minDays
-        return (basePrice + tenants*chargePerPerson)*days;
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 }
