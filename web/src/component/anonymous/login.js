@@ -36,9 +36,19 @@ const LoginPost = () => {
 				navigate("/admin/home");
 				return;
 			}
+			else if( response.isHost === "true" && response.isTenant === "true" && response.isAuthenticatedHost === "true" ){
+				localStorage.setItem("jwt", response.jwt);
+				navigate("/host/bothHome");
+				return;
+			}
+			else if( response.isHost === "true" && response.isAuthenticatedHost === "true" ){
+				localStorage.setItem("jwt", response.jwt);
+				navigate("/host/hostHome");
+				return;
+			}
 			else{
 				localStorage.setItem("jwt", response.jwt);
-				navigate("/home")
+				navigate("/tenant/home")
 				return;
 			}
 

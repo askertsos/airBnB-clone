@@ -53,6 +53,11 @@ public class HostController {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @GetMapping("/auth")
+    public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/new")
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){

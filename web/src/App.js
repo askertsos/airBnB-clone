@@ -1,18 +1,27 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./component/home";
-import LoginPost from "./component/login";
-import Logout from "./component/logout";
-import User from "./component/user";
-import Register from "./component/register";
-import UserNotLogged from "./component/UserNotLogged";
-import RegistrationTenantComplete from "./component/registrationTenantComplete";
-import RegistrationHostComplete from "./component/registrationHostComplete";
-import RegistrationBothComplete from "./component/registrationBothComplete";
-import UnauthenticatedHostLogin from "./component/unauthenticatedHostLogin";
-import RedirectToHome from "./component/redirectToHome";
+
+import Home from "./component/anonymous/home";
+import LoginPost from "./component/anonymous/login";
+import Logout from "./component/anonymous/logout";
+import Register from "./component/anonymous/register";
+import UserNotLogged from "./component/anonymous/UserNotLogged";
+import RegistrationTenantComplete from "./component/anonymous/registrationTenantComplete";
+import RegistrationHostComplete from "./component/anonymous/registrationHostComplete";
+import RegistrationBothComplete from "./component/anonymous/registrationBothComplete";
+import UnauthenticatedHostLogin from "./component/anonymous/unauthenticatedHostLogin";
+import RedirectToHome from "./component/anonymous/redirectToHome";
+
 import AdminHome from "./component/admin/adminHome";
 import UserList from "./component/admin/userList";
 import UserDetails from "./component/admin/userDetails";
+
+import HostHome from "./component/host/hostHome";
+import BothHome from "./component/host/bothHome";
+import NewRentalComplete from "./component/host/newRentalComplete";
+import NewRental from "./component/host/newRental";
+
+import TenantHome from "./component/tenant/tenantHome";
+
 import "./App.css";
 
 function App() {
@@ -31,12 +40,18 @@ function App() {
 
 				<Route exact path="/" element={<RedirectToHome />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
-				<Route exact path="/user" element={<User />}></Route>
 				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
 
 				<Route exact path="/admin/home" element={<AdminHome />}></Route>
 				<Route exact path="/admin/user/list" element={<UserList />}></Route>
 				<Route exact path="/admin/user/:id/details" element={<UserDetails />}></Route>
+
+				<Route exact path="/host/hostHome" element={<HostHome />}></Route>
+				<Route exact path="/host/bothHome" element={<BothHome />}></Route>
+				<Route exact path="/host/newRental" element={<NewRental />}></Route>
+				<Route exact path="/host/newRentalComplete" element={<NewRentalComplete />}></Route>
+
+				<Route exact path="/tenant/home" element={<TenantHome />}></Route>
 			</Routes>
 		</Router>
 	);

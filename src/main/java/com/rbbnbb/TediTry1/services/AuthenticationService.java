@@ -104,7 +104,8 @@ public class AuthenticationService {
             Map<String, Object> body = new HashMap<String, Object>();
             body.put("jwt", token);
             body.put("isAuthenticatedHost", userRepository.findByUsername(username).get().getIsAuthenticatedHost() ? "true" : "false");
-            body.put("isHost", userRepository.findByUsername(username).get().getAuthorities().stream().allMatch(a -> a.getAuthority().equals("HOST")) ? "true" : "false");
+            body.put("isTenant", userRepository.findByUsername(username).get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("TENANT")) ? "true" : "false");
+            body.put("isHost", userRepository.findByUsername(username).get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("HOST")) ? "true" : "false");
             body.put("isAdmin", userRepository.findByUsername(username).get().getAuthorities().stream().allMatch(a -> a.getAuthority().equals("ADMIN")) ? "true" : "false");
 
 
