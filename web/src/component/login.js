@@ -44,7 +44,7 @@ const LoginPost = () => {
 
 		})
 		.catch((message) => {
-			alert(message);
+			alert("Invalid username and password compination. Try again.");
 		});
 	};
 

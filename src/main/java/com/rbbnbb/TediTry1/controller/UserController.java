@@ -12,6 +12,7 @@ import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.transaction.annotation.Transactional;
