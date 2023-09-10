@@ -25,14 +25,13 @@ function UserDetails() {
 		fetch("https://localhost:8080/admin/user/details", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            console.log(response);
             setUser(response.user);
             setIsHost(response.isHost);
             setLoading(false);
         })
         .catch((message) => {
-            console.log(message);
             navigate("/unauthorized/user");
+            return;
         });
 	}, [routeParams, navigate]);
 
@@ -51,9 +50,9 @@ function UserDetails() {
 		};
 		fetch("https://localhost:8080/admin/user/activateHost", fetchOptions)
         .then((response) =>{
-            console.log(response);
             if(response.status === 401){
                 navigate("/unauthorized/user");
+                return;
             }
             else if(response.status !== 200){
                 alert("Failed to activate host.");

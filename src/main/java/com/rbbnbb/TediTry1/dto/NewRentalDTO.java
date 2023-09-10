@@ -33,7 +33,7 @@ public class NewRentalDTO {
     //Location
     private Address address;
     //map
-    private String publicTransport;
+    private List<String> publicTransport;
 
     //Amenities
     private Boolean hasWiFi;
@@ -44,7 +44,7 @@ public class NewRentalDTO {
     private Boolean hasParking;
     private Boolean hasElevator;
 
-    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, List<String> publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
@@ -192,11 +192,11 @@ public class NewRentalDTO {
         this.address = address;
     }
 
-    public String getPublicTransport() {
+    public List<String> getPublicTransport() {
         return publicTransport;
     }
 
-    public void setPublicTransport(String publicTransport) {
+    public void setPublicTransport(List<String> publicTransport) {
         this.publicTransport = publicTransport;
     }
 

@@ -22,11 +22,6 @@ const LoginPost = () => {
 		fetch("https://localhost:8080/auth/login", fetchOptions)
 		.then((response) => response.json())
 		.then(response => {
-			console.log("jwt : " + response.jwt);
-			console.log("AuthenticatedHost : " + response.isAuthenticatedHost);
-			console.log("isHost : " + response.isHost);
-			console.log("isAdmin : " + response.isAdmin);
-
 			if( response.isHost === "true" && response.isAuthenticatedHost === "false"){
 				navigate("/auth/login/unauthenticatedHostLogin");
 				return;

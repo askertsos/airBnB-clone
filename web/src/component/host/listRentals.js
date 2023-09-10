@@ -1,8 +1,8 @@
-// userList.js
+// listRentals.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function UserList() {
+function ListRentals() {
 
     const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
@@ -232,4 +232,4 @@ function UserList() {
 	);
 }
 
-export default UserList;
+export default ListRentals;
