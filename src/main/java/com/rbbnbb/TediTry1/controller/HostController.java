@@ -58,7 +58,7 @@ public class HostController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/new")
+    @PostMapping("/rental/new")
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
 

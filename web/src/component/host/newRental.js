@@ -175,7 +175,7 @@ function NewRental() {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("https://localhost:8080/host/new", fetchOptions)
+		fetch("https://localhost:8080/host/rental/new", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					setHasLivingRoom(false);
