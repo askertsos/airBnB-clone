@@ -19,6 +19,8 @@ import HostHome from "./component/host/hostHome";
 import BothHome from "./component/host/bothHome";
 import NewRentalComplete from "./component/host/newRentalComplete";
 import NewRental from "./component/host/newRental";
+import ListRentals from "./component/host/listRentals";
+import RentalDetails from "./component/host/rentalDetails";
 
 import TenantHome from "./component/tenant/tenantHome";
 
@@ -48,6 +50,8 @@ function App() {
 
 				<Route exact path="/host/hostHome" element={<HostHome />}></Route>
 				<Route exact path="/host/bothHome" element={<BothHome />}></Route>
+				<Route exact path="/host/rental/list" element={<ListRentals />}></Route>
+				<Route exact path="/host/rental/:id/details" element={<RentalDetails />}></Route>
 				<Route exact path="/host/newRental" element={<NewRental />}></Route>
 				<Route exact path="/host/newRentalComplete" element={<NewRentalComplete />}></Route>
 

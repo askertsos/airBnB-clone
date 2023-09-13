@@ -6,7 +6,7 @@ function ListRentals() {
 
     const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState([]);
+    const [rentals, setRentals] = useState([]);
     const [maxPage, setMaxPage] = useState();
     const [pageNum, setPageNum] = useState(0);
     const [pageSize, setPageSize] = useState(2);
@@ -26,11 +26,11 @@ function ListRentals() {
 			method: "post",
             body: JSON.stringify(reqBody)
 		};
-		fetch("https://localhost:8080/admin/user/list", fetchOptions)
+		fetch("https://localhost:8080/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setUsers(response.Users.content);
-            setMaxPage(response.Users.totalPages);
+            setRentals(response.Rentals.content);
+            setMaxPage(response.Rentals.totalPages);
             setLoading(false);
         })
         .catch((message) => {
@@ -57,10 +57,10 @@ function ListRentals() {
                 method: "post",
                 body: JSON.stringify(reqBody)
             };
-            fetch("https://localhost:8080/admin/user/list", fetchOptions)
+            fetch("https://localhost:8080/host/rental/list", fetchOptions)
             .then((response) => response.json())
             .then((response) => {
-                setUsers(response.Users.content);
+                setRentals(response.Rentals.content);
                 setLoading(false);
             })
             .catch((message) => console.log(message));
@@ -84,10 +84,10 @@ function ListRentals() {
                 method: "post",
                 body: JSON.stringify(reqBody)
             };
-            fetch("https://localhost:8080/admin/user/list", fetchOptions)
+            fetch("https://localhost:8080/host/rental/list", fetchOptions)
             .then((response) => response.json())
             .then((response) => {
-                setUsers(response.Users.content);
+                setRentals(response.Rentals.content);
                 setLoading(false);
             })
             .catch((message) => console.log(message));
@@ -110,10 +110,10 @@ function ListRentals() {
             method: "post",
             body: JSON.stringify(reqBody)
         };
-        fetch("https://localhost:8080/admin/user/list", fetchOptions)
+        fetch("https://localhost:8080/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setUsers(response.Users.content);
+            setRentals(response.Rentals.content);
             setLoading(false);
         })
         .catch((message) => console.log(message));
@@ -135,10 +135,10 @@ function ListRentals() {
             method: "post",
             body: JSON.stringify(reqBody)
         };
-        fetch("https://localhost:8080/admin/user/list", fetchOptions)
+        fetch("https://localhost:8080/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setUsers(response.Users.content);
+            setRentals(response.Rentals.content);
             setLoading(false);
         })
         .catch((message) => console.log(message));
@@ -160,10 +160,10 @@ function ListRentals() {
             method: "post",
             body: JSON.stringify(reqBody)
         };
-        fetch("https://localhost:8080/admin/user/list", fetchOptions)
+        fetch("https://localhost:8080/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setUsers(response.Users.content);
+            setRentals(response.Rentals.content);
             setLoading(false);
         })
         .catch((message) => console.log(message));
@@ -175,12 +175,12 @@ function ListRentals() {
 
 	return (
 		<>
-			<h1> User list : </h1>
+			<h1> Rental list : </h1>
             <div>
                 <ul>
-                    {users.map((data) => (
+                    {rentals.map((data) => (
                     <li key={data.id}>
-                        <p><a href={"https://localhost:3000/admin/user/" + data.id + "/details"}>{data.username}</a></p>
+                        <p><a href={"https://localhost:3000/host/rental/" + data.id + "/details"}>{data.title}</a></p>
                     </li>
                 ))}
                 </ul>
@@ -218,7 +218,7 @@ function ListRentals() {
             </div>
             <div>
                 <label for="numPages" >
-					Users per page : 
+					Rentals per page : 
                 </label>
                 <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
                     <option value= {1}> 1 </option>
@@ -227,7 +227,7 @@ function ListRentals() {
                     <option value={10}> 10 </option>
                 </select>
             </div>
-            <div> <a href = 'https://localhost:3000/admin/home'>Go back</a> </div>
+            <div> <a href = 'https://localhost:3000/host/hostHome'>Homepage</a> </div>
 		</>
 	);
 }

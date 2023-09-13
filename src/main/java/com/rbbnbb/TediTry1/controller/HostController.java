@@ -5,6 +5,8 @@ import com.rbbnbb.TediTry1.domain.MessageHistory;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
+import com.rbbnbb.TediTry1.dto.PageRequestDTO;
+import com.rbbnbb.TediTry1.dto.UserDetailsDTO;
 import com.rbbnbb.TediTry1.repository.MessageHistoryRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import com.rbbnbb.TediTry1.repository.ReviewRepository;
@@ -15,6 +17,7 @@ import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -22,6 +25,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -71,26 +76,34 @@ public class HostController {
         return ResponseEntity.ok().body(newRental);
     }
 
-    @PostMapping("/{rental_id}/info")
+    @PostMapping("/rental/list")
     @Transactional
-    public ResponseEntity<?> updateRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt, @RequestBody NewRentalDTO dto){
+    public ResponseEntity<?> listRental(@RequestBody PageRequestDTO dto, @RequestHeader("Authorization") String jwt){
+
+        User host = userService.getUserByJwt(jwt).get();
+
+        Page<Rental> listRentalsPaginated = rentalRepository.findByHostWithPagination(host, dto.getPageable(dto));
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Rentals", listRentalsPaginated);
+
+        return ResponseEntity.ok().body(ResponseBody);
+    }
+
+    @GetMapping("/{rental_id}/info")
+    @Transactional
+    public ResponseEntity<?> updateRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt){
+
         Optional<Rental> optionalRental = rentalRepository.findById(Long.parseLong(id));
-        if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        if(optionalRental.isEmpty()) return ResponseEntity.notFound().build();
         Rental rental = optionalRental.get();
 
         User host = userService.assertUserHasAuthority(jwt,"HOST");
-        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
-
         if (!rental.getHost().equals(host)) return ResponseEntity.badRequest().build();
 
-        try {
-            rentalService.updateRental(rental.getId(), dto);
-        }
-        catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().build();
-        }
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Rental", rental);
 
-        return ResponseEntity.ok().body(rental);
+        return ResponseEntity.ok().body(ResponseBody);
     }
 
     @GetMapping("/message_history/{tenantId}")

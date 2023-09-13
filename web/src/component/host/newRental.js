@@ -36,7 +36,7 @@ function NewRental() {
 
 	const [bus,setBus] = useState(false);
 	const [train,setTrain] = useState(false);
-	const [subWay,setSubWay] = useState(false);
+	const [subway,setSubway] = useState(false);
 	const [tram,setTram] = useState(false);
 
 	const [loading, setLoading] = useState(true);
@@ -132,7 +132,7 @@ function NewRental() {
 		if (bus === true) tempPublicTransport.push("bus");
 		if (train === true) tempPublicTransport.push("train");
 		if (tram === true) tempPublicTransport.push("tram");
-		if (subWay === true) tempPublicTransport.push("subWay");
+		if (subway === true) tempPublicTransport.push("subway");
 
 		const reqBody = {
             title :  title,
@@ -599,12 +599,12 @@ function NewRental() {
 				<label>
 					Subway:
 					<input
-						id="subWay"
-						name="subWay"
+						id="subway"
+						name="subway"
 						type="checkbox"
-						placeholder="subWay"
-						onChange={(event) => handleCheckbox(subWay, setSubWay)}
-						value={subWay}
+						placeholder="subway"
+						onChange={(event) => handleCheckbox(subway, setSubway)}
+						value={subway}
 					/>
 				</label>
 			</div>
@@ -703,6 +703,7 @@ function NewRental() {
 			<button id="submit" type="button" onClick={() => onSubmit()}>
 				Add rental
 			</button>
+			<div> <a href = 'https://localhost:3000/host/hostHome'>Homepage</a> </div>
 		</>
 	);
 }

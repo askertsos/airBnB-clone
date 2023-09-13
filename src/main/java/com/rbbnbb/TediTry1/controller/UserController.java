@@ -89,40 +89,4 @@ public class UserController {
 
     }
 
-    //--------------------------------------------------------------------------------------------
-    //-----------------                     TENANTS                     --------------------------
-    //--------------------------------------------------------------------------------------------
-
-    @PostMapping("/hosts/{hostId}/message")
-    @Transactional
-    public ResponseEntity<?> messageHost(@PathVariable("hostId") Long hostId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
-        User tenant = userService.assertUserHasAuthority(jwt,"TENANT");
-        if (Objects.isNull(tenant)) return ResponseEntity.badRequest().build();
-
-        User host = userService.assertUserHasAuthority(hostId,"HOST");
-        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
-
-        //Assert that tenant and host are not the same user
-        if (tenant.equals(host)) return ResponseEntity.badRequest().build();
-
-        Message newMessage = new Message(tenant,host,text);
-
-        SimpleJpaRepository<Message, Long> messageRepo;
-        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
-        messageRepo.save(newMessage);
-
-        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
-        MessageHistory messageHistory;
-        if (optionalMessageHistory.isEmpty()){
-            messageHistory = new MessageHistory(0L,tenant,host,newMessage);
-        }
-        else{
-            messageHistory = optionalMessageHistory.get();
-            messageHistory.addMessage(newMessage);
-        }
-        messageHistoryRepository.save(messageHistory);
-
-        return ResponseEntity.ok().body(newMessage);
-    }
-
 }
