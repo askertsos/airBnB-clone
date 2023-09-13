@@ -21,7 +21,7 @@ import java.util.*;
 @JacksonXmlRootElement(localName = "rental")
 public class Rental {
 
-    public enum RentalType {privateRoom, publicRoom, house}
+    public enum RentalType {publicRoom, privateRoom, house}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
