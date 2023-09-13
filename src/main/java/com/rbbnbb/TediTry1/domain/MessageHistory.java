@@ -17,8 +17,8 @@ public class MessageHistory {
     private User tenant;
 
     @ManyToOne
-    @JoinColumn(name = "host_id", referencedColumnName = "id")
-    private User host;
+    @JoinColumn(name = "rental_id", referencedColumnName = "id")
+    private Rental rental;
 
     @ElementCollection
     @CollectionTable(name = "history_messages", joinColumns = @JoinColumn(name = "message_id"))
@@ -28,17 +28,16 @@ public class MessageHistory {
 
     public MessageHistory() {}
 
-    public MessageHistory(Long id, User tenant, User host, Set<Message> messageSet) {
+    public MessageHistory(Long id, User tenant, Rental rental, Set<Message> messageSet) {
         this.id = id;
         this.tenant = tenant;
-        this.host = host;
+        this.rental = rental;
         this.messageSet = messageSet;
     }
 
-    public MessageHistory(Long id, User tenant, User host, Message message){
-        this.id = id;
+    public MessageHistory(User tenant, Rental rental, Message message){
         this.tenant = tenant;
-        this.host = host;
+        this.rental = rental;
         this.messageSet.add(message);
     }
 
@@ -59,12 +58,9 @@ public class MessageHistory {
     }
 
     public User getHost() {
-        return host;
+        return rental.getHost();
     }
 
-    public void setHost(User host) {
-        this.host = host;
-    }
 
     public Set<Message> getMessageSet() {
         return messageSet;

@@ -1,9 +1,11 @@
 package com.rbbnbb.TediTry1.dto;
 
 import com.rbbnbb.TediTry1.domain.Address;
+import com.rbbnbb.TediTry1.domain.Photo;
 import com.rbbnbb.TediTry1.domain.Rental;
 
 import java.util.List;
+import java.util.Set;
 
 public class NewRentalDTO {
 
@@ -23,6 +25,8 @@ public class NewRentalDTO {
 
     //Description
     private String description;
+
+    private List<String> photoPaths;
 
     //Rules
     private Boolean allowSmoking;
@@ -44,7 +48,9 @@ public class NewRentalDTO {
     private Boolean hasParking;
     private Boolean hasElevator;
 
-    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO() {}
+
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, List<String> photoPaths, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
@@ -57,6 +63,7 @@ public class NewRentalDTO {
         this.hasLivingRoom = hasLivingRoom;
         this.surfaceArea = surfaceArea;
         this.description = description;
+        this.photoPaths = photoPaths;
         this.allowSmoking = allowSmoking;
         this.allowPets = allowPets;
         this.allowEvents = allowEvents;
@@ -86,6 +93,22 @@ public class NewRentalDTO {
 
     public void setBasePrice(Double basePrice) {
         this.basePrice = basePrice;
+    }
+
+    public Double getChargePerPerson() {
+        return chargePerPerson;
+    }
+
+    public void setChargePerPerson(Double chargePerPerson) {
+        this.chargePerPerson = chargePerPerson;
+    }
+
+    public List<String> getAvailableDates() {
+        return availableDates;
+    }
+
+    public void setAvailableDates(List<String> availableDates) {
+        this.availableDates = availableDates;
     }
 
     public Integer getMaxGuests() {
@@ -150,6 +173,14 @@ public class NewRentalDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<String> getPhotoPaths() {
+        return photoPaths;
+    }
+
+    public void setPhotoPaths(List<String> photoPaths) {
+        this.photoPaths = photoPaths;
     }
 
     public Boolean getAllowSmoking() {
@@ -255,24 +286,6 @@ public class NewRentalDTO {
     public void setHasElevator(Boolean hasElevator) {
         this.hasElevator = hasElevator;
     }
-
-    public Double getChargePerPerson() {
-        return chargePerPerson;
-    }
-
-    public void setChargePerPerson(Double chargePerPerson) {
-        this.chargePerPerson = chargePerPerson;
-    }
-
-    public List<String> getAvailableDates() {
-        return availableDates;
-    }
-
-    public void setAvailableDates(List<String> availableDates) {
-        this.availableDates = availableDates;
-    }
-
-
 
     public String toString(){
         return "New Rental: title: " + this.title;

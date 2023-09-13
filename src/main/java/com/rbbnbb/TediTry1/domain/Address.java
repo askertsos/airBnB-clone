@@ -24,8 +24,7 @@ public class Address {
         this.number = address.getNumber();
         this.floorNo = address.getFloorNo();
     }
-    public Address(Long id, String city, String neighbourhood, String street, Integer number, Integer floorNo) {
-        this.id = id;
+    public Address(String city, String neighbourhood, String street, Integer number, Integer floorNo) {
         this.city = city;
         this.neighbourhood = neighbourhood;
         this.street = street;

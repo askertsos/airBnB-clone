@@ -16,11 +16,5 @@ import java.util.*;
 
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecificationExecutor<Rental> {
-
-
-//    @Query("SELECT r FROM Rental r WHERE r.host = ?1")
-//    Collection<Rental> getHostRentals(User host);
-
     Set<Rental> findByHost(User host);
-
 }

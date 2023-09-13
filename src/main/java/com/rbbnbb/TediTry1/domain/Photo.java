@@ -9,13 +9,17 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String filePath; //Path in local file system
 
     public Photo() {}
 
     public Photo(Long id, String filePath) {
         this.id = id;
+        this.filePath = filePath;
+    }
+
+    public Photo(String filePath) {
         this.filePath = filePath;
     }
 

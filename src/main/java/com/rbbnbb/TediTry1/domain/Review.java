@@ -17,7 +17,7 @@ public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime dateTime;
+    private LocalDateTime issuedAt;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable=false)
     private User reviewer;
@@ -32,17 +32,16 @@ public class Review {
     public Review(){
 
     }
-    public Review(Long id, LocalDateTime dateTime, User reviewer, Rental rental, String text, Integer stars) {
+    public Review(Long id, LocalDateTime issuedAt, User reviewer, Rental rental, String text, Integer stars) {
         this.id = id;
-        this.dateTime = dateTime;
+        this.issuedAt = issuedAt;
         this.reviewer = reviewer;
         this.rental = rental;
         this.text = text;
         this.stars = stars;
     }
-    public Review(Long id, ReviewDTO dto, User reviewer, Rental rental){
-        this.id = id;
-        this.dateTime = LocalDateTime.now();
+    public Review(ReviewDTO dto, User reviewer, Rental rental){
+        this.issuedAt = LocalDateTime.now();
         this.reviewer = reviewer;
         this.rental = rental;
         this.text = dto.getText();
@@ -59,12 +58,12 @@ public class Review {
         this.id = id;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getIssuedAt() {
+        return issuedAt;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setIssuedAt(LocalDateTime issuedAt) {
+        this.issuedAt = issuedAt;
     }
 
     public User getReviewer() {

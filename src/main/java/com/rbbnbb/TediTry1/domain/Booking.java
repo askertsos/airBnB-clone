@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Booking {
@@ -26,9 +27,9 @@ public class Booking {
     @JoinColumn(name = "rental_id", referencedColumnName = "id")
     private Rental rental;
 
-    @ElementCollection(targetClass = LocalDate.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "booking_dates", joinColumns = @JoinColumn(name = "booking_id"))
-    private List<LocalDate> dates;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     private Integer guests;
 //    @Formula("(" +
@@ -50,32 +51,24 @@ public class Booking {
 
     public Booking() {}
 
-    public Booking(Long id, User booker, Rental rental, List<LocalDate> dates, Integer guests, Double price, LocalDateTime bookedAt) {
+    public Booking(Long id, User booker, Rental rental, LocalDate startDate, LocalDate endDate, Integer guests, Double price, LocalDateTime bookedAt) {
         this.id = id;
         this.booker = booker;
         this.rental = rental;
-        this.dates = dates;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.guests = guests;
         this.price = price;
         this.bookedAt = bookedAt;
     }
 
-    public Booking(Long id, User booker, Rental rental, BookingDTO bookingDTO) throws IllegalArgumentException{
-        this.id = id;
+    public Booking(User booker, Rental rental, LocalDate startDate, LocalDate endDate, Integer guests){
         this.booker = booker;
         this.rental = rental;
-        this.dates = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-        try{
-            for (String stringDate: bookingDTO.getDates()) {
-                this.dates.add(LocalDate.parse(stringDate,formatter));
-            }
-        }
-        catch(DateTimeParseException e){
-            throw new IllegalArgumentException();
-        }
-        this.guests = bookingDTO.getGuests();
-        this.price = rental.getPrice(this.dates.size(),this.guests);
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.guests = guests;
+        this.price = rental.getPrice(startDate.datesUntil(endDate).toList().size(),this.guests);
         this.bookedAt = LocalDateTime.now();
     }
 
@@ -103,12 +96,20 @@ public class Booking {
         this.rental = rental;
     }
 
-    public List<LocalDate> getDates() {
-        return dates;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setDates(List<LocalDate> dates) {
-        this.dates = dates;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Integer getGuests() {

@@ -1,15 +1,9 @@
 package com.rbbnbb.TediTry1.controller;
 
-import com.rbbnbb.TediTry1.domain.Booking;
-import com.rbbnbb.TediTry1.domain.Rental;
-import com.rbbnbb.TediTry1.domain.Review;
-import com.rbbnbb.TediTry1.domain.User;
+import com.rbbnbb.TediTry1.domain.*;
 import com.rbbnbb.TediTry1.dto.BookingDTO;
 import com.rbbnbb.TediTry1.dto.ReviewDTO;
-import com.rbbnbb.TediTry1.repository.BookingRepository;
-import com.rbbnbb.TediTry1.repository.RentalRepository;
-import com.rbbnbb.TediTry1.repository.ReviewRepository;
-import com.rbbnbb.TediTry1.repository.UserRepository;
+import com.rbbnbb.TediTry1.repository.*;
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import com.rbbnbb.TediTry1.services.RentalService;
 import com.rbbnbb.TediTry1.services.UserService;
@@ -18,11 +12,12 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,7 +47,10 @@ public class RentalController {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private JwtDecoder jwtDecoder;
+    private MessageHistoryRepository messageHistoryRepository;
+
+    @Autowired
+    private DateTimeFormatter dateTimeFormatter;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -62,19 +60,21 @@ public class RentalController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{rentalId}/book")
-    @Transactional
+    @PostMapping("/{rentalId}/get_price")
     public ResponseEntity<?> bookRental(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
-
-        Booking newBooking = rentalService.constructBooking(jwt,rentalId,dto);
-        if (Objects.isNull(newBooking)) return ResponseEntity.badRequest().build();
-
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
-
         Rental rental = optionalRental.get();
 
-        dto.setPrice(rental.getPrice(dto.getGuests(),dto.getDates().size()));
+        LocalDate startDate = LocalDate.parse(dto.getStartDate(),dateTimeFormatter);
+        LocalDate endDate = LocalDate.parse(dto.getEndDate(),dateTimeFormatter);
+
+        Integer nDays = startDate.
+                datesUntil(endDate.plusDays(1L)).
+                toList().
+                size();
+
+        dto.setPrice(rental.getPrice(nDays,dto.getGuests()));
 
         return ResponseEntity.ok().body(dto);
     }
@@ -82,11 +82,31 @@ public class RentalController {
     @PostMapping("/{rentalId}/book/confirm")
     @Transactional
     public ResponseEntity<?> confirmBooking(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
 
-        Booking newBooking = rentalService.constructBooking(jwt,rentalId,dto);
+        LocalDate startDate, endDate;
+        try {
+            startDate = LocalDate.parse(dto.getStartDate(), dateTimeFormatter);
+            endDate = LocalDate.parse(dto.getEndDate(), dateTimeFormatter);
+        }
+        catch (DateTimeParseException e){
+            return ResponseEntity.badRequest().build();
+        }
+        System.out.println("before constructBooking");
+        Booking newBooking = rentalService.constructBooking(jwt,rental,dto,startDate,endDate);
         if (Objects.isNull(newBooking)) return ResponseEntity.badRequest().build();
+        System.out.println("after constructBooking");
+
+        //Update the rental entity
+        List<LocalDate> remainingDates = rental.getAvailableDates();
+        remainingDates.removeAll(startDate.datesUntil(endDate.plusDays(1L)).toList());
+        rental.setAvailableDates(remainingDates);
+        rentalRepository.save(rental);
 
         bookingRepository.save(newBooking);
+
 
         return ResponseEntity.ok().body(newBooking);
     }
@@ -94,12 +114,7 @@ public class RentalController {
     @PostMapping("/{rentalId}/review")
     @Transactional
     public ResponseEntity<?> submitReview(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody ReviewDTO body){
-//        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
-//
-//        if (optionalUser.isEmpty()) return ResponseEntity.badRequest().build();
-//        User user = optionalUser.get();
-        User reviewer = userService.assertUserHasAuthority(jwt,"TENANT");
-        if (Objects.isNull(reviewer)) return ResponseEntity.badRequest().build();
+        User reviewer = userService.getUserByJwt(jwt).get();
 
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
@@ -109,11 +124,45 @@ public class RentalController {
         List<Booking> bookingList = bookingRepository.findByBookerAndRental(reviewer,rental);
         if (bookingList.isEmpty()) return ResponseEntity.badRequest().build();
 
-        Review review = new Review(0L,body,reviewer,rental);
+        Review review = new Review(body,reviewer,rental);
         reviewRepository.save(review);
         rental.addReview(review);
 
         return ResponseEntity.ok().body(review);
+    }
+
+    @PostMapping("/{rentalId}/message_host")
+    @Transactional
+    public ResponseEntity<?> messageHost(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
+        User tenant = userService.getUserByJwt(jwt).get();
+
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
+
+        User host = rental.getHost();
+
+        //Assert that tenant and host are not the same user
+        if (tenant.equals(host)) return ResponseEntity.badRequest().build();
+
+        Message newMessage = new Message(tenant,host,text);
+
+        SimpleJpaRepository<Message, Long> messageRepo;
+        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
+        messageRepo.save(newMessage);
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
+        MessageHistory messageHistory;
+        if (optionalMessageHistory.isEmpty()){
+            messageHistory = new MessageHistory(tenant,rental,newMessage);
+        }
+        else{
+            messageHistory = optionalMessageHistory.get();
+            messageHistory.addMessage(newMessage);
+        }
+        messageHistoryRepository.save(messageHistory);
+
+        return ResponseEntity.ok().body(newMessage);
     }
 
 }

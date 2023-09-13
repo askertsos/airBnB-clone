@@ -44,26 +44,25 @@ public class UserController {
     private EntityManager entityManager;
 
 
-
     //--------------------------------------------------------------------------------------------
     //-----------------                    ALL USERS                    --------------------------
     //--------------------------------------------------------------------------------------------
 
     @GetMapping("/auth")
-    public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
+    public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt) {
         return ResponseEntity.ok().build();
     }
 
 
     @PostMapping("/profile")
     @Transactional
-    public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String jwt, @RequestBody UserDTO userDTO){
+    public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String jwt, @RequestBody UserDTO userDTO) {
 
         Optional<User> optionalUser = userService.getUserByJwt(jwt);
         if (optionalUser.isEmpty()) return ResponseEntity.badRequest().build();
         User user = optionalUser.get();
 
-        userService.updateUser(user,userDTO);
+        userService.updateUser(user, userDTO);
 
         return ResponseEntity.ok().body(user);
     }
@@ -73,8 +72,8 @@ public class UserController {
 
 
     @GetMapping("/hosts/{id}")
-    public ResponseEntity<?> getHostInfo(@PathVariable("id") Long id){
-        User host = userService.assertUserHasAuthority(id,"HOST");
+    public ResponseEntity<?> getHostInfo(@PathVariable("id") Long id) {
+        User host = userService.assertUserHasAuthority(id, "HOST");
         if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
 
         //Empty set is still a valid output
@@ -84,43 +83,9 @@ public class UserController {
         dto.setHostRentals(hostRentals);
 
         return ResponseEntity.ok().body(dto);
-
     }
 
     //--------------------------------------------------------------------------------------------
     //-----------------                     TENANTS                     --------------------------
     //--------------------------------------------------------------------------------------------
-
-    @PostMapping("/hosts/{hostId}/message")
-    @Transactional
-    public ResponseEntity<?> messageHost(@PathVariable("hostId") Long hostId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
-        User tenant = userService.assertUserHasAuthority(jwt,"TENANT");
-        if (Objects.isNull(tenant)) return ResponseEntity.badRequest().build();
-
-        User host = userService.assertUserHasAuthority(hostId,"HOST");
-        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
-
-        //Assert that tenant and host are not the same user
-        if (tenant.equals(host)) return ResponseEntity.badRequest().build();
-
-        Message newMessage = new Message(tenant,host,text);
-
-        SimpleJpaRepository<Message, Long> messageRepo;
-        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
-        messageRepo.save(newMessage);
-
-        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
-        MessageHistory messageHistory;
-        if (optionalMessageHistory.isEmpty()){
-            messageHistory = new MessageHistory(0L,tenant,host,newMessage);
-        }
-        else{
-            messageHistory = optionalMessageHistory.get();
-            messageHistory.addMessage(newMessage);
-        }
-        messageHistoryRepository.save(messageHistory);
-
-        return ResponseEntity.ok().body(newMessage);
-    }
-
 }

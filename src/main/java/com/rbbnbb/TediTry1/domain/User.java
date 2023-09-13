@@ -24,7 +24,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false, unique = true)
     private String email;
-    //private Photo picture
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Photo profilePicture;
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
@@ -50,8 +52,7 @@ public class User implements UserDetails {
         this.authorities = authorities;
     }
 
-    public User(Long id, String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
-        this.id = id;
+    public User(String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
         this.username = username;
         this.password = password;
         this.first_name = first_name;
@@ -125,6 +126,14 @@ public class User implements UserDetails {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Photo getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Photo profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     @Override

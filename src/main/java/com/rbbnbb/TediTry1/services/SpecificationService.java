@@ -1,19 +1,11 @@
 package com.rbbnbb.TediTry1.services;
 
-import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.dto.SearchRequestDTO;
 import com.rbbnbb.TediTry1.dto.SpecificationDTO;
-import com.rbbnbb.TediTry1.repository.RentalRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
