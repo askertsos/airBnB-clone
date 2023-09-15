@@ -1,7 +1,7 @@
 // rentalDetails.js
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Calendar from 'react-multiple-datepicker'
+import MultipleDatePicker from "react-multi-date-picker";
 
 function RentalDetails() {
 
@@ -9,6 +9,7 @@ function RentalDetails() {
     const navigate = useNavigate();
     const [loading ,setLoading] = useState(true);
     const [rental, setRental] = useState([]);
+    const [selectedDates, setSelectedDates] = useState([]);
     const rentalId = routeParams.id;
 
 	useEffect(() => {
@@ -23,18 +24,18 @@ function RentalDetails() {
         .then((response) => response.json())
         .then((response) => {
             setRental(response.Rental);
+            setSelectedDates(response.Rental.availableDates);
             setLoading(false);
         })
         .catch((message) => {
             navigate("/unauthorized/user");
             return;
         });
-	}, [rentalId, navigate]);
+	}, [rentalId,navigate]);
 
     if(loading){
         return(<h1>Loading...</h1>)
     }
-    
 
     return (
         <>
@@ -43,13 +44,13 @@ function RentalDetails() {
                 <ul>
                 <li key={rental.id}>
                     <h2>Basic : </h2>
-                        <p>Id : {rental.id}</p>
                         <p>Title : {rental.title}</p>
                         <p>Charge per person : {rental.chargePerPerson}</p>
                         <p>Max guests : {rental.maxGuests}</p>
                         <p>Available dates : 
-                            <Calendar
-                                markedDates = {rental.availableDates}
+                            <MultipleDatePicker
+                                value={selectedDates}
+                                onSubmit={() => {}}
                             />
                         </p>
 

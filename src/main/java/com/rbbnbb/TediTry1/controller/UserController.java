@@ -66,8 +66,9 @@ public class UserController {
         User user = optionalUser.get();
 
         userService.updateUser(user,userDTO);
+        User responseBody = userService.getUserByJwt(jwt).get();
 
-        return ResponseEntity.ok().body(user);
+        return ResponseEntity.ok().body(responseBody);
     }
 
     //        SimpleJpaRepository<Review, Long> reviewRepo;

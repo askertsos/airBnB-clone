@@ -135,8 +135,7 @@ public class Rental {
         this.rating = rating;
     }
 
-    public Rental(Long id, NewRentalDTO dto, User user){
-        this.id = id;
+    public Rental(NewRentalDTO dto, User user){
         this.title = dto.getTitle();
         this.basePrice = dto.getBasePrice();
         this.chargePerPerson = dto.getChargePerPerson();

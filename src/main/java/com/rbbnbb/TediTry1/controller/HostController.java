@@ -6,6 +6,7 @@ import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import com.rbbnbb.TediTry1.dto.PageRequestDTO;
+import com.rbbnbb.TediTry1.dto.UserDTO;
 import com.rbbnbb.TediTry1.dto.UserDetailsDTO;
 import com.rbbnbb.TediTry1.repository.MessageHistoryRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
@@ -67,13 +68,31 @@ public class HostController {
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
 
-        User host = userService.assertUserHasAuthority(jwt,"HOST");
-        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
+        User host = userService.getUserByJwt(jwt).get();
 
-        Rental newRental = new Rental(0L,body,host);
+        Rental newRental = new Rental(body,host);
         rentalRepository.save(newRental);
 
         return ResponseEntity.ok().body(newRental);
+    }
+
+    @PostMapping("/rental/{rental_id}/update")
+    @Transactional
+    public ResponseEntity<?> updateRentalInfo(@PathVariable("rental_id") Long rental_id, @RequestBody NewRentalDTO dto, @RequestHeader("Authorization") String jwt){
+
+        Rental rental;
+        try {
+            rental = rentalRepository.findById(rental_id).get();
+        } catch(Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+
+        User host = userService.getUserByJwt(jwt).get();
+        if (!host.equals(rental.getHost())) return ResponseEntity.badRequest().build();
+        rentalService.updateRental(rental_id, dto);
+        Rental responseBody = rentalRepository.findById(rental_id).get();
+
+        return ResponseEntity.ok().body(responseBody);
     }
 
     @PostMapping("/rental/list")
@@ -91,7 +110,7 @@ public class HostController {
 
     @GetMapping("/{rental_id}/info")
     @Transactional
-    public ResponseEntity<?> updateRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt){
+    public ResponseEntity<?> detailRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt){
 
         Optional<Rental> optionalRental = rentalRepository.findById(Long.parseLong(id));
         if(optionalRental.isEmpty()) return ResponseEntity.notFound().build();

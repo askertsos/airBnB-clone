@@ -1,9 +1,9 @@
-// newRental.js
+// updateRental.js
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import MultipleDatePicker from "react-multi-date-picker";
+import { useNavigate, useParams } from "react-router-dom";
+import MultipleDatePicker from 'react-multiple-datepicker'
 
-function NewRental() {
+function UpdateRental() {
 
     const [title,setTitle] = useState(null);
     const [basePrice,setBasePrice] = useState(null);
@@ -13,7 +13,7 @@ function NewRental() {
     const [beds,setBeds] = useState(null);
     const [bedrooms,setBedrooms] = useState(null);
     const [bathrooms,setBathrooms] = useState(null);
-    const [type,seTtype] = useState(null);
+    const [type,seType] = useState(null);
     const [hasLivingRoom,setHasLivingRoom] = useState(false);
     const [surfaceArea,setSurfaceArea] = useState(null);
     const [description,setDescription] = useState("");
@@ -41,6 +41,7 @@ function NewRental() {
 
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
+    const rentalId = routeParams.id;
 
 	useEffect(() => {
 		const fetchOptions = {
@@ -48,85 +49,50 @@ function NewRental() {
 				"Content-Type": "application/json",
 				"Authorization": "Bearer "  + localStorage.getItem("jwt"),
 			},
-			method: "get",
+			method: "get"
 		};
-		fetch("https://localhost:8080/host/auth", fetchOptions)
-		.then((response) => {
-			if (response.status !== 200) {
-				navigate("/unauthorized/user");
-			}
-			setLoading(false);
-		})
-		.catch((message) => console.log(message));
-	}, [navigate]);
+		fetch("https://localhost:8080/host/" + rentalId + "/info", fetchOptions)
+        .then((response) => response.json())
+        .then((response) => {
+            setTitle(response.Rental.title);
+            setBasePrice(response.Rental.basePrice);
+            setChargePerPerson(response.Rental.chargePerPerson);
+            setAvailableDates(response.Rental.availableDates);
+            setMaxGuests(response.Rental.maxGuests);
+            setBeds(response.Rental.beds);
+            setBedrooms(response.Rental.bedrooms);
+            setBathrooms(response.Rental.bathrooms);
+            seType(response.Rental.type);
+            setHasLivingRoom(response.Rental.hasLivingRoom);
+            setSurfaceArea(response.Rental.surfaceArea);
+            setDescription(response.Rental.description);
+            setAllowSmoking(response.Rental.allowSmoking);
+            setAllowPets(response.Rental.allowPets);
+            setAllowEvents(response.Rental.allowEvents);
+            setMinDays(response.Rental.minDays);
+            setCity(response.Rental.city);
+            setNeighbourhood(response.Rental.neighbourhood);
+            setStreet(response.Rental.street);
+            setStreetNumber(response.Rental.streetNumber);
+            setFloorNo(response.Rental.floorNo);
+            setPublicTransport(response.Rental.publicTransport);
+            setHasWiFi(response.Rental.hasWiFi);
+            setHasAC(response.Rental.hasAC);
+            setHasHeating(response.Rental.hasHeating);
+            setHasKitchen(response.Rental.hasKitchen);
+            setHasTV(response.Rental.hasTV);
+            setHasParking(response.Rental.hasParking);
+            setHasElevator(response.Rental.hasElevator);
+            setLoading(false);
+        })
+        .catch((message) => {
+            navigate("/unauthorized/user");
+            return;
+        });
+	}, [rentalId,navigate]);
 
 
 	const onSubmit = (e) => {
-
-		if (title === null){
-			alert("Title cannot be empty");
-			return;
-		}
-		else if (basePrice === null){
-			alert("Base price cannot be empty");
-			return;
-		}
-		else if (chargePerPerson === null){
-			alert("Charge per person cannot be empty");
-			return;
-		}
-		else if (availableDates === null){
-			alert("Available dates cannot be empty");
-			return;
-		}
-		else if (maxGuests === null){
-			alert("Max guests cannot be empty");
-			return;
-		}
-		else if (beds === null){
-			alert("Beds cannot be empty");
-			return;
-		}
-		else if (bedrooms === null){
-			alert("Bedrooms cannot be empty");
-			return;
-		}
-		else if (bathrooms === null){
-			alert("Bathrooms cannot be empty");
-			return;
-		}
-		else if (type === "null"){
-			alert("Type cannot be empty");
-			return;
-		}
-		else if (surfaceArea === null){
-			alert("Surface area cannot be empty");
-			return;
-		}
-		else if (minDays === null){
-			alert("Min days cannot be empty");
-			return;
-		}
-		else if (city === null){
-			alert("City cannot be empty");
-			return;
-		}
-		else if (neighbourhood === null){
-			alert("Neighbourhood cannot be empty");
-			return;
-		}
-		else if (street === null){
-			alert("Street cannot be empty");
-			return;
-		}
-		else if (streetNumber === null){
-			alert("Street number cannot be empty");
-			return;
-		}
-		else if (floorNo === null){
-			alert("Floor No cannot be empty");
-			return;
-		}
 
 		var tempPublicTransport = [];
 		if (bus === true) tempPublicTransport.push("bus");
@@ -186,7 +152,7 @@ function NewRental() {
 					setHasTV(false);
 					setHasParking(false);
 					setHasElevator(false);
-					navigate("/host/newRentalComplete");
+					navigate("/host/UpdateRentalComplete");
 					return;
                 }
 				else {
@@ -304,16 +270,14 @@ function NewRental() {
 			</div>
             <div>
 				Available Dates :
-				<MultipleDatePicker
-					onSubmit={dates => {
-						const tempDates = [];
-						dates.forEach((date) => {
-							tempDates.push(reformatDate(date));
-						})
-						setAvailableDates(tempDates);
-					}}
-					multiple
-					minDate={new Date()} />
+				<MultipleDatePicker onSubmit={dates => {
+					const tempDates = [];
+					dates.forEach((date) => {
+						tempDates.push(reformatDate(date));
+					})
+					setAvailableDates(tempDates);
+				}}
+				minDate={new Date()} />
 			</div>
             <h2>Space :</h2>
             <div>
@@ -710,4 +674,4 @@ function NewRental() {
 	);
 }
 
-export default NewRental;
+export default UpdateRental;
