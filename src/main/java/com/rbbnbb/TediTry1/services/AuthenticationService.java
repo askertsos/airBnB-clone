@@ -56,6 +56,9 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private RecommendationService recommendationService;
+
     public ResponseEntity<?> registerUser(RegisterDTO body){
         String username = body.getUsername();
         String encodedPassword = passwordEncoder.encode(body.getPassword());
@@ -113,6 +116,7 @@ public class AuthenticationService {
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.add(HttpHeaders.AUTHORIZATION,token);
             responseHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,HttpHeaders.AUTHORIZATION);
+            recommendationService.recommend((User)auth.getPrincipal());
             return ResponseEntity.ok()
                     .headers(responseHeaders)
                     .body((User)auth.getPrincipal());

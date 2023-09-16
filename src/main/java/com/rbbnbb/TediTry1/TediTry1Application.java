@@ -4,6 +4,7 @@ import com.rbbnbb.TediTry1.domain.Role;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.repository.RoleRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
+import com.rbbnbb.TediTry1.services.RecommendationService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

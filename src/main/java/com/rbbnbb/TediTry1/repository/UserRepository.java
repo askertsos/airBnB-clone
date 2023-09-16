@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
-    @Query("SELECT r FROM user r WHERE ?1 IN r.authorities")
-    List<User> findByRole(Role role);
+//    @Query("SELECT r FROM user r WHERE ?1 IN r.authorities")
+//    List<User> findByRole(Role role);
 
 }

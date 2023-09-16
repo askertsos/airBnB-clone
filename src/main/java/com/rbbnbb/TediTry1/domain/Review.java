@@ -29,9 +29,7 @@ public class Review {
     private String text;
     private Integer stars;
 
-    public Review(){
-
-    }
+    public Review(){}
     public Review(Long id, LocalDateTime issuedAt, User reviewer, Rental rental, String text, Integer stars) {
         this.id = id;
         this.issuedAt = issuedAt;
