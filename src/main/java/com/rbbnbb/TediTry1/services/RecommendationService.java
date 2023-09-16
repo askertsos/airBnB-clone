@@ -29,8 +29,8 @@ public class RecommendationService {
     private static final Double epsilon = 0.001;
     private static final Integer steps = 5000;
 
-    private Double[][]P;
-    private Double[][]Q;
+    private RentalInfo[][] P;
+    private RentalInfo[][] Q;
 
     public RecommendationService(){}
 
@@ -38,8 +38,14 @@ public class RecommendationService {
         private Rental rental;
         private Double expRating;
 
+        public RentalInfo() {}
+
         public RentalInfo(Rental rental, Double expRating) {
             this.rental = rental;
+            this.expRating = expRating;
+        }
+
+        public RentalInfo(Double expRating){
             this.expRating = expRating;
         }
 
@@ -82,22 +88,37 @@ public class RecommendationService {
 
 
 
-        Integer[][] R = new Integer[allReviewers.size()][allRentals.size()];
+
+
+
+        RentalInfo[][] R = new RentalInfo[allReviewers.size()][allRentals.size()];
+        P = new RentalInfo[R.length][K];
+        Q = new RentalInfo[K][R[0].length];
 
         int userIndex = -1;
-        List<Integer> alreadyReviewed = new ArrayList<>();
+        List<Rental> alreadyReviewed = new ArrayList<>();
+        for (Review r: userReviews) {
+            alreadyReviewed.add(r.getRental());
+        }
+
+        Random rClass = new Random();
 
         for (int i = 0; i < allReviewers.size(); i++) {
            if (allReviewers.get(i).equals(tenant)) userIndex = i;
            for (int j=0; j < allRentals.size(); j++){
+               Rental rental = allRentals.get(j);
+
+               for (int k=0; k<K; k++) {
+                   P[i][k] = new RentalInfo(rental, rClass.nextDouble());
+                   Q[k][j] = new RentalInfo(rental, rClass.nextDouble());
+               }
 
                //Get all reviews made by this user on this rental
-               List<Review> reviewList = reviewRepository.findByReviewerAndRental(allReviewers.get(i),allRentals.get(j));
+               List<Review> reviewList = reviewRepository.findByReviewerAndRental(allReviewers.get(i),rental);
                if (reviewList.isEmpty()){
-                   R[i][j] = 0; //Average of 1,2,3,4,5]
+                   R[i][j] = new RentalInfo(rental,0d); //Average of 1,2,3,4,5]
                    continue;
                }
-               if (userIndex > -1) alreadyReviewed.add(j);
                //reviewList is not empty. Sort it by time of review descending, and get the (chronologically) last review.
                reviewList.sort(new Comparator<Review>() {
                    @Override
@@ -107,74 +128,73 @@ public class RecommendationService {
                    }
                });
                Review r = reviewList.get(0);
-               R[i][j] = r.getStars();
-               rentalIndexList.add(new RentalIndex(r.getRental(),j));
+               R[i][j] = new RentalInfo(rental,(double)r.getStars());
            }
         }
 
-        this.P = fill(R.length,K);
-        this.Q = fill(K,R[0].length);
 
+        matrixFactorization(R,P,Q,K);
 
-        matrixFactorization(R,this.P,this.Q,K);
+        RentalInfo[][] dR = dotProduct(this.P,this.Q);
 
-        Double[][] dR = dotProduct(this.P,this.Q);
-
-        List<RentalIndex> expectedValues = new ArrayList<>();
-
-        for (int j=0; j<dR[userIndex].length; j++){
-            if (!alreadyReviewed.contains(j)){
-                expectedValues.add(dR[userIndex][j]);
+        List<RentalInfo> rentalsOfInterest = new ArrayList<>();
+        for (int j=0; j<dR[userIndex].length; j++) {
+            if (!alreadyReviewed.contains(dR[userIndex][j].getRental())){
+                rentalsOfInterest.add(dR[userIndex][j]);
             }
         }
 
-        expectedValues.sort(Comparator.reverseOrder());
+        rentalsOfInterest.sort(new Comparator<RentalInfo>() {
+            @Override
+            public int compare(RentalInfo r1, RentalInfo r2) {
+                //r2.compareTo(r1) because descending order is warranted
+                return r2.getExpRating().compareTo(r1.getExpRating());
+            }
+        });
 
-        int first = 0;
-        int last = (expectedValues.size() > 4) ? 4 : expectedValues.size()-1;
+        //Get first 5 or all rentals of interest, whichever is lower
+        int last = (rentalsOfInterest.size() > 4) ? 4 : (rentalsOfInterest.size()-1);
 
+        List<Rental> recommendedRentals = new ArrayList<>();
+        rentalsOfInterest = rentalsOfInterest.subList(0,last);
+        for (RentalInfo info: rentalsOfInterest) {
+            recommendedRentals.add(info.getRental());
+            System.out.println("Recommending rental: "+ info.getRental().getTitle());
+        }
 
+        return recommendedRentals;
 
-
-//        for (Double[] doubles : dR) {
-//            System.out.print("[");
-//            for (Double aDouble : doubles) {
-//                System.out.print(aDouble + ", ");
-//            }
-//            System.out.println("]");
-//        }
-//
-//        for (Integer[] ints : R) {
-//            System.out.print("[");
-//            for (Integer integer : ints) {
-//                System.out.print(integer + ", ");
-//            }
-//            System.out.println("]");
-//        }
     }
 
-    private void matrixFactorization(Integer[][] R, Double[][] P, Double[][] Q, int K){
+    private void matrixFactorization(RentalInfo[][] R, RentalInfo[][] P, RentalInfo[][] Q, final int K){
         for (int s=0; s<steps; s++){
             for(int i=0; i<R.length; i++){
                 for(int j=0; j<R[i].length; j++) {
-                    if (R[i][j] > 0){
-                        double eij = R[i][j] - dotProduct(P[i],getColumn(Q,j));
+                    double expRatingR = R[i][j].getExpRating();
+                    if (expRatingR > 0d){
+                        double eij = expRatingR - dotProduct(P[i],getColumn(Q,j));
 
                         for(int k=0; k<K; k++){
-                            P[i][k] = P[i][k] + alpha * (2 * eij * Q[k][j] - beta * P[i][k]);
-                            Q[k][j] = Q[k][j] + alpha * (2 * eij * P[i][k] - beta * Q[k][j]);
+                            RentalInfo p = P[i][k];
+                            RentalInfo q = Q[k][j];
+                            double expRatingP = p.getExpRating();
+                            double expRatingQ = q.getExpRating();
+                            p.setExpRating(expRatingP + alpha * (2 * eij * expRatingP));
+                            q.setExpRating(expRatingQ + alpha * (2 + eij * expRatingQ));
+//                            P[i][k] = P[i][k] + alpha * (2 * eij * Q[k][j] - beta * P[i][k]);
+//                            Q[k][j] = Q[k][j] + alpha * (2 * eij * P[i][k] - beta * Q[k][j]);
                         }
                     }
                 }
             }
-            Double[][] eR = dotProduct(P,Q);
+            RentalInfo[][] eR = dotProduct(P,Q);
             double e = 0d;
 
             for(int i=0; i<R.length; i++){
                 for(int j=0; j<R[i].length; j++){
-                    e = e + Math.pow(R[i][j] - dotProduct(P[i],getColumn(Q,j)),2);
+                    e = e + Math.pow(R[i][j].getExpRating() - dotProduct(P[i],getColumn(Q,j)),2);
                     for(int k=0; k<K; k++){
-                        e = e + (beta / 2) * (Math.pow(P[i][k],2) + Math.pow(Q[k][j],2));
+                        e = e + (beta / 2) * (Math.pow(P[i][k].getExpRating(),2) + Math.pow(Q[k][j].getExpRating(),2));
                     }
                 }
             }
@@ -187,80 +207,83 @@ public class RecommendationService {
     }
 
 
-    private static Double[][] transpose(Double M[][]){
+    private static RentalInfo[][] transpose(RentalInfo[][] M){
         int rows = M.length;
         int columns = M[0].length;
 
-        Double[][] T = new Double[columns][rows];
+        RentalInfo[][] T = new RentalInfo[columns][rows];
 
-        for (int i=0; i<rows; i++){
-            for(int j=0; j<columns; j++){
-                T[j][i] = M[i][j];
+        for (int i=0; i<columns; i++){
+            for(int j=0; j<rows; j++){
+                T[i][j] = M[j][i];
             }
         }
         return T;
     }
-    private static Double dotProduct(Double[] A, Double[] B)
+    private static Double dotProduct(RentalInfo[] A, RentalInfo[] B)
     {
         double product = 0d;
         final int n = A.length;
 
-
         // Loop for calculate dot product
         for (int i = 0; i < n; i++)
-            product += A[i] * B[i];
+            product += A[i].getExpRating() * B[i].getExpRating();
         return product;
     }
 
-    private static Double[][] dotProduct(Double[][] A, Double[][] B){
-        Double[][] D = new Double[A.length][B[0].length];
-        for (Double[] doubles : D)
-            Arrays.fill(doubles, 0d);
+    private RentalInfo[][] dotProduct(RentalInfo[][] A, RentalInfo[][] B){
+        RentalInfo[][] D = new RentalInfo[A.length][B[0].length];
+        for (int i=0; i<A.length; i++) {
+            for(int j=0; j<B[0].length; j++){
+                D[i][j] = new RentalInfo(0d);
+            }
+        }
 
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < B[0].length; j++) {
+                D[i][j].setRental(B[0][j].getRental());
                 for (int k = 0; k < A[0].length; k++) {
-                    D[i][j] += A[i][k] * B[k][j];
+                    D[i][j].setExpRating(D[i][j].getExpRating() + A[i][k].getExpRating() * B[k][j].getExpRating());
                 }
             }
         }
         return D;
     }
 
-    private static Double[] getColumn(Double[][] A, int index){
-        Double[] column = new Double[A.length];
+    private static RentalInfo[] getColumn(RentalInfo[][] A, int index){
+        RentalInfo[] column = new RentalInfo[A.length];
         for(int i=0; i<column.length; i++){
             column[i] = A[i][index];
         }
         return column;
     }
 
-    private Double[][] fill(int rows, int columns) {
-        Random rClass = new Random();
+//    private RentalInfo[][] fill(int rows, int columns) {
+//        Random rClass = new Random();
+//
+//        RentalInfo[][] array = new RentalInfo[rows][columns];
+//
+//        for(int i=0; i<rows; i++){
+//            for(int j=0; j<columns; j++) {
+//                array[i][j] = rClass.nextDouble();
+//            }
+//        }
+//        return array;
+//    }
 
-        Double[][] array = new Double[rows][columns];
-
-        for(int i=0; i<rows; i++){
-            for(int j=0; j<columns; j++) {
-                array[i][j] = rClass.nextDouble();
-            }
-        }
-        return array;
-    }
-
-    public Double[][] getP() {
+    public RentalInfo[][] getP() {
         return P;
     }
 
-    public void setP(Double[][] p) {
+    public void setP(RentalInfo[][] p) {
         P = p;
     }
 
-    public Double[][] getQ() {
+    public RentalInfo[][] getQ() {
         return Q;
     }
 
-    public void setQ(Double[][] q) {
+    public void setQ(RentalInfo[][] q) {
         Q = q;
     }
 }
