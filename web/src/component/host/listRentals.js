@@ -34,139 +34,30 @@ function ListRentals() {
             setLoading(false);
         })
         .catch((message) => {
+            console.log(message);
             navigate("/unauthorized/user");
             return;
-            
         });
 	}, [pageNum, pageSize, navigate]);
 
-    const nextPage = (e) => {
-        if (pageNum + 1 < maxPage){
-            setPageNum(pageNum + 1);
-            const reqBody = {
-                "pageNo" : pageNum,
-                "pageSize" : pageSize,
-                "sort" : "ASC",
-                "sortByColumn" : "id"
-            };
-            const fetchOptions = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer "  + localStorage.getItem("jwt"),
-                },
-                method: "post",
-                body: JSON.stringify(reqBody)
-            };
-            fetch("https://localhost:8080/host/rental/list", fetchOptions)
-            .then((response) => response.json())
-            .then((response) => {
-                setRentals(response.Rentals.content);
-                setLoading(false);
-            })
-            .catch((message) => console.log(message));
-        }
+    const nextPage = () => {
+        if (pageNum + 1 < maxPage) setPageNum(pageNum + 1);
     };
 
-    const previousPage = (e) => {
-        if(pageNum > 0) {
-            setPageNum(pageNum - 1);
-            const reqBody = {
-                "pageNo" : pageNum,
-                "pageSize" : pageSize,
-                "sort" : "ASC",
-                "sortByColumn" : "id"
-            };
-            const fetchOptions = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer "  + localStorage.getItem("jwt"),
-                },
-                method: "post",
-                body: JSON.stringify(reqBody)
-            };
-            fetch("https://localhost:8080/host/rental/list", fetchOptions)
-            .then((response) => response.json())
-            .then((response) => {
-                setRentals(response.Rentals.content);
-                setLoading(false);
-            })
-            .catch((message) => console.log(message));
-        }
+    const previousPage = () => {
+        if (pageNum > 0) setPageNum(pageNum - 1);
     };
 
-    const firstPage = (e) => {
+    const firstPage = () => {
         setPageNum(0);
-        const reqBody = {
-            "pageNo" : pageNum,
-            "pageSize" : pageSize,
-            "sort" : "ASC",
-            "sortByColumn" : "id"
-        };
-        const fetchOptions = {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer "  + localStorage.getItem("jwt"),
-            },
-            method: "post",
-            body: JSON.stringify(reqBody)
-        };
-        fetch("https://localhost:8080/host/rental/list", fetchOptions)
-        .then((response) => response.json())
-        .then((response) => {
-            setRentals(response.Rentals.content);
-            setLoading(false);
-        })
-        .catch((message) => console.log(message));
     };
 
-    const lastPage = (e) => {
+    const lastPage = () => {
         setPageNum(maxPage - 1);
-        const reqBody = {
-            "pageNo" : pageNum,
-            "pageSize" : pageSize,
-            "sort" : "ASC",
-            "sortByColumn" : "id"
-        };
-        const fetchOptions = {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer "  + localStorage.getItem("jwt"),
-            },
-            method: "post",
-            body: JSON.stringify(reqBody)
-        };
-        fetch("https://localhost:8080/host/rental/list", fetchOptions)
-        .then((response) => response.json())
-        .then((response) => {
-            setRentals(response.Rentals.content);
-            setLoading(false);
-        })
-        .catch((message) => console.log(message));
     };
 
     const changePageSize = (newPageSize) => {
         setPageSize(newPageSize);
-        const reqBody = {
-            "pageNo" : pageNum,
-            "pageSize" : pageSize,
-            "sort" : "ASC",
-            "sortByColumn" : "id"
-        };
-        const fetchOptions = {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer "  + localStorage.getItem("jwt"),
-            },
-            method: "post",
-            body: JSON.stringify(reqBody)
-        };
-        fetch("https://localhost:8080/host/rental/list", fetchOptions)
-        .then((response) => response.json())
-        .then((response) => {
-            setRentals(response.Rentals.content);
-            setLoading(false);
-        })
-        .catch((message) => console.log(message));
     };
 
 	if (loading === true){

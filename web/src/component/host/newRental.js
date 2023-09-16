@@ -155,7 +155,7 @@ function NewRental() {
                             city : city ,
                             neighbourhood : neighbourhood ,
                             street : street ,
-                            streetNumber : streetNumber ,
+                            number : streetNumber ,
                             floorNo : floorNo 
                        },
             publicTransport :  tempPublicTransport,
@@ -202,34 +202,6 @@ function NewRental() {
 		if (boolVar === true) setBoolVar(false);
 		else setBoolVar(true);
 	}
-
-	const reformatDate =  (date) => {  
-		if (!(date instanceof Date)) {
-		  throw new Error('Invalid "date" argument. You must pass a date instance')
-		}
-	  
-		const stringDate = String(date);
-		const year = stringDate[11] + stringDate[12] + stringDate[13] + stringDate[14];
-		var month = stringDate[4] + stringDate[5] + stringDate[6];
-		const day = stringDate[8] + stringDate[9];
-
-		if (month === "Jan") month = "01";
-		else if (month === "Feb") month = "02";
-		else if (month === "Mar") month = "03";
-		else if (month === "Apr") month = "04";
-		else if (month === "May") month = "05";
-		else if (month === "Jun") month = "06";
-		else if (month === "Jul") month = "07";
-		else if (month === "Aug") month = "08";
-		else if (month === "Sep") month = "09";
-		else if (month === "Oct") month = "10";
-		else if (month === "Nov") month = "11";
-		else month = "12";
-
-		const reformatedDate = year + "-" + month + "-" + day;
-	  
-		return reformatedDate;
-	  }
 
 	if (loading === true){
 		return (<h1>Loading...</h1>);
@@ -305,10 +277,14 @@ function NewRental() {
             <div>
 				Available Dates :
 				<MultipleDatePicker
-					onSubmit={dates => {
+					onChange={dates => {
 						const tempDates = [];
 						dates.forEach((date) => {
-							tempDates.push(reformatDate(date));
+							let month = date.month;
+							let day = date.day;
+							if (parseInt(date.day) < 10) day = "0" + date.day;
+							if (parseInt(date.month) < 10) month = "0" + date.month;
+							tempDates.push(date.year + "-" + month + "-" + day);
 						})
 						setAvailableDates(tempDates);
 					}}
