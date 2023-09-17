@@ -1,7 +1,7 @@
 // updateRental.js
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import MultipleDatePicker from 'react-multiple-datepicker'
+import MultipleDatePicker from "react-multi-date-picker";
 
 function UpdateRental() {
 
@@ -270,14 +270,21 @@ function UpdateRental() {
 			</div>
             <div>
 				Available Dates :
-				<MultipleDatePicker onSubmit={dates => {
-					const tempDates = [];
-					dates.forEach((date) => {
-						tempDates.push(reformatDate(date));
-					})
-					setAvailableDates(tempDates);
-				}}
-				minDate={new Date()} />
+				<MultipleDatePicker
+					onChange={dates => {
+						const tempDates = [];
+						dates.forEach((date) => {
+							let month = date.month;
+							let day = date.day;
+							if (parseInt(date.day) < 10) day = "0" + date.day;
+							if (parseInt(date.month) < 10) month = "0" + date.month;
+							tempDates.push(date.year + "-" + month + "-" + day);
+						})
+						setAvailableDates(tempDates);
+					}}
+					multiple
+					value={availableDates}
+					minDate={new Date()} />
 			</div>
             <h2>Space :</h2>
             <div>

@@ -98,7 +98,7 @@ public class RentalService {
 
         //Empty list is a valid argument, so there is no need to check for it
         if (Objects.nonNull(dto.getAvailableDates())) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             List<LocalDate> dates = new ArrayList<>();
             try {
                 for (String date : dto.getAvailableDates()) {
