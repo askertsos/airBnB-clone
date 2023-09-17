@@ -58,6 +58,7 @@ function UserList() {
 
     const changePageSize = (newPageSize) => {
         setPageSize(newPageSize);
+        setPageNum(0);
     };
 
 	if (loading === true){
