@@ -69,65 +69,15 @@ function RentalDetails() {
 
     const updateRental = () => {
 
-		if (title === null){
-            setTitle(rental.title);
-		}
-		else if (basePrice === null){
-            setBasePrice(rental.basePrice);
-		}
-		else if (chargePerPerson === null){
-            setChargePerPerson(rental.chargePerPerson);
-		}
-		else if (availableDates === null){
-            setAvailableDates(selectedDates);
-		}
-		else if (maxGuests === null){
-            setMaxGuests(rental.maxGuests);
-		}
-		else if (beds === null){
-            setBeds(rental.beds);
-		}
-		else if (bedrooms === null){
-            setBedrooms(rental.bedrooms);
-		}
-		else if (bathrooms === null){
-            setBathrooms(rental.bathrooms);
-		}
-		else if (type === null){
-            setType(rental.type);
-		}
-		else if (surfaceArea === null){
-            setSurfaceArea(rental.surfaceArea);
-		}
-		else if (minDays === null){
-			alert("Min days cannot be empty");
-			return;
-		}
-		else if (city === null){
-            setCity(rental.address.city);
-		}
-		else if (neighbourhood === null){
-            setNeighbourhood(rental.address.neighbourhood);
-		}
-		else if (street === null){
-            setStreet(rental.address.street);
-		}
-		else if (streetNumber === null){
-            setStreetNumber(rental.address.streetNumber);
-		}
-		else if (floorNo === null){
-            setFloorNo(rental.address.floorNo);
-		}
-
 		let tempPublicTransport = rental.publicTransport;
-		if (bus === true) tempPublicTransport.push("bus");
-        else tempPublicTransport = tempPublicTransport.filter((item) => item !== "bus") ;
-		if (train === true) tempPublicTransport.push("train");
-        else tempPublicTransport = tempPublicTransport.filter((item) => item !== "train") ;
-		if (tram === true) tempPublicTransport.push("tram");
-        else tempPublicTransport = tempPublicTransport.filter((item) => item !== "tram") ;
-		if (subway === true) tempPublicTransport.push("subway");
-        else tempPublicTransport = tempPublicTransport.filter((item) => item !== "subway") ;
+		if (bus === "true" && !tempPublicTransport.includes("bus")) tempPublicTransport.push("bus");
+        else if (bus === "false") tempPublicTransport = tempPublicTransport.filter((item) => item !== "bus");
+		if (train === "true" && !tempPublicTransport.includes("train")) tempPublicTransport.push("train");
+        else if (train === "false") tempPublicTransport = tempPublicTransport.filter((item) => item !== "train");
+		if (tram === "true" && !tempPublicTransport.includes("tram")) tempPublicTransport.push("tram");
+        else if (tram === "false") tempPublicTransport = tempPublicTransport.filter((item) => item !== "tram");
+		if (subway === "true" && !tempPublicTransport.includes("subway")) tempPublicTransport.push("subway");
+        else if (subway === "false") tempPublicTransport = tempPublicTransport.filter((item) => item !== "subway");
 
 		const reqBody = {
             title :  title,
@@ -162,6 +112,7 @@ function RentalDetails() {
             hasParking :  hasParking,
             hasElevator :  hasElevator
 		};
+        console.log(reqBody);
 		const fetchOptions = {
 			headers: {
 				"Content-Type": "application/json",
@@ -539,7 +490,7 @@ function RentalDetails() {
                             <label for="bus" >
                             Add/Remove bus from available public transport : 
                             </label>
-                            <select name="bus" id="bus" value={bus} onChange={(event) => setBus(event.target.value)}>
+                            <select name="bus" id="bus" onChange={(event) => setBus(event.target.value)}>
                                 <option value = {null}></option>
                                 <option value={false}>Remove</option>
                                 <option value={true}>Add</option>

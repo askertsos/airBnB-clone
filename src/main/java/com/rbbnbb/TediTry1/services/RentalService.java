@@ -123,7 +123,13 @@ public class RentalService {
         if (Objects.nonNull(dto.getAllowPets())) rental.setAllowPets(dto.getAllowPets());
         if (Objects.nonNull(dto.getAllowEvents())) rental.setAllowEvents(dto.getAllowEvents());
         if (Objects.nonNull(dto.getMinDays())) rental.setMinDays(dto.getMinDays());
-        if (Objects.nonNull(dto.getAddress())) rental.setAddress(dto.getAddress());
+
+        if (Objects.nonNull(dto.getAddress().getCity())) rental.getAddress().setCity(dto.getAddress().getCity());
+        if (Objects.nonNull(dto.getAddress().getNeighbourhood())) rental.getAddress().setNeighbourhood(dto.getAddress().getNeighbourhood());
+        if (Objects.nonNull(dto.getAddress().getStreet())) rental.getAddress().setStreet(dto.getAddress().getStreet());
+        if (Objects.nonNull(dto.getAddress().getFloorNo())) rental.getAddress().setFloorNo(dto.getAddress().getFloorNo());
+        if (Objects.nonNull(dto.getAddress().getNumber())) rental.getAddress().setNumber(dto.getAddress().getNumber());
+
         if (Objects.nonNull(dto.getPublicTransport())) rental.setPublicTransport(dto.getPublicTransport());
         if (Objects.nonNull(dto.getHasWiFi())) rental.setHasWiFi(dto.getHasWiFi());
         if (Objects.nonNull(dto.getHasAC())) rental.setHasAC(dto.getHasAC());
