@@ -35,6 +35,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void updateUser(User user, UserDTO userDTO){
+        System.out.println("User : " + user);
+        System.out.println("UserDTO : " + userDTO);
         if (Objects.nonNull(userDTO.getUsername())) user.setUsername(userDTO.getUsername());
         if (Objects.nonNull(userDTO.getPassword())) user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         if (Objects.nonNull(userDTO.getFirst_name())) user.setFirst_name(userDTO.getFirst_name());

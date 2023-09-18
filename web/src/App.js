@@ -22,6 +22,9 @@ import NewRental from "./component/host/newRental";
 import ListRentals from "./component/host/listRentals";
 import RentalDetails from "./component/host/rentalDetails";
 
+import Profile from "./component/global/profile";
+import ProfileUpdateComplete from "./component/global/profileUpdateComplete";
+
 import TenantHome from "./component/tenant/tenantHome";
 
 import "./App.css";
@@ -43,6 +46,8 @@ function App() {
 				<Route exact path="/" element={<RedirectToLogin />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
 				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
+				<Route exact path="/user/profile" element={<Profile />}></Route>
+				<Route exact path="/user/profile/update/complete" element={<ProfileUpdateComplete />}></Route>
 
 				<Route exact path="/admin/home" element={<AdminHome />}></Route>
 				<Route exact path="/admin/user/list" element={<UserList />}></Route>

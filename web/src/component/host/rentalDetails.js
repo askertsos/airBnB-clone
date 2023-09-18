@@ -128,7 +128,7 @@ function RentalDetails() {
 					return;
                 }
 				else {
-					alert("Failed to add new rental.");
+					alert("Failed to update rental.");
 				}
 			})
 			.catch((message) => {

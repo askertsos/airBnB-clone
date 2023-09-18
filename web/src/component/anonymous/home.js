@@ -21,6 +21,9 @@ function Home() {
 					</>
 				}
 			</div>
+			<div>
+				<h2>Search for rentals to book :</h2>
+			</div>
 		</>
 	);
 }

@@ -84,6 +84,9 @@ const LoginPost = () => {
 			<button id="submit" type="button" onClick={() => onSubmit()}>
 				Login
 			</button>
+			<div>
+				<a href = "https://localhost:3000/home" >Home page</a>
+			</div>
 		</>
 	);
 };

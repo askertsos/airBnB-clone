@@ -61,7 +61,8 @@ public class HostController {
 
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
-        return ResponseEntity.ok().build();
+        User host = userService.getUserByJwt(jwt).get();
+        return ResponseEntity.ok().body(host.getAuthorities());
     }
 
     @PostMapping("/rental/new")

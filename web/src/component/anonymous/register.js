@@ -221,6 +221,9 @@ function Register() {
 			<button id="submit" type="button" onClick={() => onSubmit()}>
 				Register
 			</button>
+			<div>
+				<a href = "https://localhost:3000/home" >Home page</a>
+			</div>
 		</>
 	);
 }
