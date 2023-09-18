@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "../../css/login.css"
+
 const LoginPost = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -55,37 +57,37 @@ const LoginPost = () => {
 
 	return (
 		<>
-			<div>
-				<label>
-					Username:
-					<input
-						id="username"
-						name="username"
-						type="text"
-						placeholder="username"
-						onChange={(event) => setUsername(event.target.value)}
-						value={username}
-					/>
-				</label>
-			</div>
-			<div>
-				<label>
-					Password:
-					<input
-						id="password"
-						name="password"
-						type="password"
-						placeholder="password"
-						onChange={(event) => setPassword(event.target.value)}
-						value={password}
-					/>
-				</label>
-			</div>
-			<button id="submit" type="button" onClick={() => onSubmit()}>
-				Login
-			</button>
-			<div>
-				<a href = "https://localhost:3000/home" >Home page</a>
+			<div className="login-bg">
+				<div className="box-form">
+						<h2 className="login-h2"> Username: </h2>
+						<input
+							className="login-input"
+							id="username"
+							name="username"
+							type="text"
+							placeholder="username"
+							onChange={(event) => setUsername(event.target.value)}
+							value={username}
+						/>
+						<h2 className="login-h2"> Password: </h2>
+						<input
+							className="login-input"
+							id="password"
+							name="password"
+							type="password"
+							placeholder="password"
+							onChange={(event) => setPassword(event.target.value)}
+							value={password}
+						/>
+						<button className="login-btn btn1" id="submit" type="button" onClick={() => onSubmit()}>
+							Login
+						</button>
+				</div>
+				<a href = "https://localhost:3000/home">
+					<button className="login-btn btn2" id="submit" type="button" onClick={() => onSubmit()}>
+						Homepage
+					</button>
+				</a>
 			</div>
 		</>
 	);

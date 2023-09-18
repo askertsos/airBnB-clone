@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import "./css/home.css"
+import "../../css/home.css"
 
 function Home() {
 	const loggedIn = localStorage.getItem("jwt");
@@ -43,7 +43,7 @@ function Home() {
 
 	return (
 		<>
-			<div className="bg">
+			<div className="home-bg">
 				{loggedIn === "null" &&
 					<div className="main-bar">
 						<a href = 'https://localhost:3000/auth/login'>

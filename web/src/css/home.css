@@ -3,7 +3,6 @@
     font-size: 30px;
     padding: 12px 28px;
     border: 2px solid #030a03;
-    transition-duration: 0.4s;
     width: 1821px;
     height: 50px;
     float: left;
@@ -31,9 +30,9 @@
 .bar-button:hover{
     background-color: #c3c0ca;
     color: rgb(8, 7, 7);
-  }
+}
 
-.bg {
+.home-bg {
     background-image : url("./images/home_background.jpg");
     position:absolute;
     height : 939px;
