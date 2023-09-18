@@ -41,7 +41,7 @@ function HostHome() {
 			<div> <a href = 'https://localhost:3000/host/newRental'>Add new rental</a> </div>
 			<div> <a href = 'https://localhost:3000/host/rental/list'>List of your rentals</a> </div>
 			<div> <a href = 'https://localhost:3000/user/profile'>View your profile</a> </div>
-			{isBoth === true && <div> <a href = 'https://localhost:3000/tenant/home'>Tenant interface</a> </div>}
+			{isBoth === true && <div> <a href = 'https://localhost:3000/home'>Tenant interface</a> </div>}
 			<div> <a href = 'https://localhost:3000/auth/logout'>Logout</a> </div>
 
 		</>

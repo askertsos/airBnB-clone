@@ -25,8 +25,6 @@ import RentalDetails from "./component/host/rentalDetails";
 import Profile from "./component/global/profile";
 import ProfileUpdateComplete from "./component/global/profileUpdateComplete";
 
-import TenantHome from "./component/tenant/tenantHome";
-
 import "./App.css";
 
 function App() {
@@ -60,7 +58,6 @@ function App() {
 				<Route exact path="/host/newRental" element={<NewRental />}></Route>
 				<Route exact path="/host/newRentalComplete" element={<NewRentalComplete />}></Route>
 
-				<Route exact path="/tenant/home" element={<TenantHome />}></Route>
 			</Routes>
 		</Router>
 	);

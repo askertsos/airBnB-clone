@@ -32,7 +32,7 @@ function BothHome() {
 	return (
 		<>
 			<h1> Welcome! </h1>
-            <div> <a href = 'https://localhost:3000/tenant/home'>Tenant interface</a> </div>
+            <div> <a href = 'https://localhost:3000/home'>Tenant interface</a> </div>
             <div> <a href = 'https://localhost:3000/host/hostHome'>Host interface</a> </div>
 			<div> <a href = 'https://localhost:3000/user/profile'>View your profile</a> </div>
 			<div> <a href = 'https://localhost:3000/auth/logout'>Logout</a> </div>

@@ -223,7 +223,7 @@ function Profile() {
 			<div>
 				{ isBoth === true && <a href="https://localhost:3000/host/bothHome">Home page</a> }
 				{ isHost === true && isBoth === false && <a href="https://localhost:3000/host/hostHome">Home page</a> }
-				{ isTenant === true && isBoth === false && <a href="https://localhost:3000/tenant/home">Home page</a> }
+				{ isTenant === true && isBoth === false && <a href="https://localhost:3000/home">Home page</a> }
 			</div>
 		</>
 	);

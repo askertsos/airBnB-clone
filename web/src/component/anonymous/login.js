@@ -43,7 +43,7 @@ const LoginPost = () => {
 			}
 			else{
 				localStorage.setItem("jwt", response.jwt);
-				navigate("/tenant/home")
+				navigate("/home")
 				return;
 			}
 
