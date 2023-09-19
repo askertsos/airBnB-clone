@@ -58,8 +58,6 @@ function Register() {
             return;
         }
 
-        console.log("Form validation complete.");
-
 		const reqBody = {
 			username: username,
 			password: password,
@@ -79,7 +77,6 @@ function Register() {
 		};
 		fetch("https://localhost:8080/auth/register", fetchOptions)
 			.then((response) => {
-				console.log(response);
 				if (response.status === 200) {
 					if (roles === "host"){
 						navigate("/auth/register/hostComplete")
@@ -224,6 +221,9 @@ function Register() {
 			<button id="submit" type="button" onClick={() => onSubmit()}>
 				Register
 			</button>
+			<div>
+				<a href = "https://localhost:3000/home" >Home page</a>
+			</div>
 		</>
 	);
 }

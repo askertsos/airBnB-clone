@@ -7,6 +7,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.spi.PersistenceProvider;
 import org.hibernate.jpa.HibernatePersistenceProvider;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -22,5 +24,11 @@ public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecif
 //    Collection<Rental> getHostRentals(User host);
 
     Set<Rental> findByHost(User host);
+
+    @Query( "SELECT r " +
+            "FROM Rental r " +
+            "WHERE r.host = ?1"
+    )
+    Page<Rental> findByHostWithPagination(User host, Pageable pageable);
 
 }
