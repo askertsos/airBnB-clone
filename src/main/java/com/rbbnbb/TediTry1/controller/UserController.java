@@ -18,9 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -53,25 +51,30 @@ public class UserController {
 
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
-        return ResponseEntity.ok().build();
+        User user = userService.getUserByJwt(jwt).get();
+        return ResponseEntity.ok().body(user.getAuthorities());
     }
 
 
-    @PostMapping("/profile")
+    @GetMapping("/profile")
     @Transactional
-    public ResponseEntity<?> updateUserInfo(@RequestHeader("Authorization") String jwt, @RequestBody UserDTO userDTO){
-
+    public ResponseEntity<?> viewProfileUser(@RequestHeader("Authorization") String jwt){
         Optional<User> optionalUser = userService.getUserByJwt(jwt);
-        if (optionalUser.isEmpty()) return ResponseEntity.badRequest().build();
         User user = optionalUser.get();
 
-        userService.updateUser(user,userDTO);
-
-        return ResponseEntity.ok().body(user);
+        Map<String, Object> responseBody = new HashMap<String, Object>();
+        responseBody.put("User", user);
+        return ResponseEntity.ok().body(responseBody);
     }
 
-    //        SimpleJpaRepository<Review, Long> reviewRepo;
-    //        reviewRepo = new SimpleJpaRepository<Review, Long>(Review.class,entityManager);
+    @PostMapping("/profile/update")
+    @Transactional
+    public ResponseEntity<?> updateProfileUser(@RequestBody UserDTO userDTO, @RequestHeader("Authorization") String jwt){
+        Optional<User> optionalUser = userService.getUserByJwt(jwt);
+        User user = optionalUser.get();
+        userService.updateUser(user,userDTO);
+        return ResponseEntity.ok().build();
+    }
 
 
     @GetMapping("/hosts/{id}")
@@ -87,42 +90,6 @@ public class UserController {
 
         return ResponseEntity.ok().body(dto);
 
-    }
-
-    //--------------------------------------------------------------------------------------------
-    //-----------------                     TENANTS                     --------------------------
-    //--------------------------------------------------------------------------------------------
-
-    @PostMapping("/hosts/{hostId}/message")
-    @Transactional
-    public ResponseEntity<?> messageHost(@PathVariable("hostId") Long hostId, @RequestHeader("Authorization") String jwt, @RequestBody String text){
-        User tenant = userService.assertUserHasAuthority(jwt,"TENANT");
-        if (Objects.isNull(tenant)) return ResponseEntity.badRequest().build();
-
-        User host = userService.assertUserHasAuthority(hostId,"HOST");
-        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
-
-        //Assert that tenant and host are not the same user
-        if (tenant.equals(host)) return ResponseEntity.badRequest().build();
-
-        Message newMessage = new Message(tenant,host,text);
-
-        SimpleJpaRepository<Message, Long> messageRepo;
-        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
-        messageRepo.save(newMessage);
-
-        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndHost(tenant,host);
-        MessageHistory messageHistory;
-        if (optionalMessageHistory.isEmpty()){
-            messageHistory = new MessageHistory(0L,tenant,host,newMessage);
-        }
-        else{
-            messageHistory = optionalMessageHistory.get();
-            messageHistory.addMessage(newMessage);
-        }
-        messageHistoryRepository.save(messageHistory);
-
-        return ResponseEntity.ok().body(newMessage);
     }
 
 }

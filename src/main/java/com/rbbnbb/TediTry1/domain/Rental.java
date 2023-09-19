@@ -55,7 +55,7 @@ public class Rental {
     @JoinColumn(referencedColumnName = "id")
     private Address address;
     //map
-    private String publicTransport;
+    private List<String> publicTransport;
 
     //Photos
     @ElementCollection(targetClass = Photo.class, fetch = FetchType.EAGER)
@@ -102,7 +102,7 @@ public class Rental {
 
     public Rental(){}
 
-    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, Integer maxGuests, List<LocalDate> availableDates, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Set<Photo> photos, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host, Double rating) {
+    public Rental(Long id, String title, Double basePrice, Double chargePerPerson, Integer maxGuests, List<LocalDate> availableDates, Integer beds, Integer bedrooms, Integer bathrooms, RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, List<String> publicTransport, Set<Photo> photos, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator, Set<Review> reviews, User host, Double rating) {
         this.id = id;
         this.title = title;
         this.basePrice = basePrice;
@@ -135,15 +135,14 @@ public class Rental {
         this.rating = rating;
     }
 
-    public Rental(Long id, NewRentalDTO dto, User user){
-        this.id = id;
+    public Rental(NewRentalDTO dto, User user){
         this.title = dto.getTitle();
         this.basePrice = dto.getBasePrice();
         this.chargePerPerson = dto.getChargePerPerson();
 
         this.availableDates = new ArrayList<>();
         if (!dto.getAvailableDates().isEmpty()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             for (String date : dto.getAvailableDates()) {
                 LocalDate localDate = LocalDate.parse(date, formatter);
                 this.availableDates.add(localDate);
@@ -319,11 +318,11 @@ public class Rental {
         this.address = address;
     }
 
-    public String getPublicTransport() {
+    public List<String> getPublicTransport() {
         return publicTransport;
     }
 
-    public void setPublicTransport(String publicTransport) {
+    public void setPublicTransport(List<String> publicTransport) {
         this.publicTransport = publicTransport;
     }
 

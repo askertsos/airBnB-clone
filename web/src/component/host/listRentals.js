@@ -1,12 +1,12 @@
-// userList.js
+// listRentals.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function UserList() {
+function ListRentals() {
 
     const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState([]);
+    const [rentals, setRentals] = useState([]);
     const [maxPage, setMaxPage] = useState();
     const [pageNum, setPageNum] = useState(0);
     const [pageSize, setPageSize] = useState(2);
@@ -26,17 +26,17 @@ function UserList() {
 			method: "post",
             body: JSON.stringify(reqBody)
 		};
-		fetch("https://localhost:8080/admin/user/list", fetchOptions)
+		fetch("https://localhost:8080/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setUsers(response.Users.content);
-            setMaxPage(response.Users.totalPages);
+            setRentals(response.Rentals.content);
+            setMaxPage(response.Rentals.totalPages);
             setLoading(false);
         })
         .catch((message) => {
+            console.log(message);
             navigate("/unauthorized/user");
             return;
-            
         });
 	}, [pageNum, pageSize, navigate]);
 
@@ -67,12 +67,12 @@ function UserList() {
 
 	return (
 		<>
-			<h1> User list : </h1>
+			<h1> Rental list : </h1>
             <div>
                 <ul>
-                    {users.map((data) => (
+                    {rentals.map((data) => (
                     <li key={data.id}>
-                        <p><a href={"https://localhost:3000/admin/user/" + data.id + "/details"}>{data.username}</a></p>
+                        <p><a href={"https://localhost:3000/host/rental/" + data.id + "/details"}>{data.title}</a></p>
                     </li>
                 ))}
                 </ul>
@@ -110,7 +110,7 @@ function UserList() {
             </div>
             <div>
                 <label for="numPages" >
-					Users per page : 
+					Rentals per page : 
                 </label>
                 <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
                     <option value= {1}> 1 </option>
@@ -119,9 +119,9 @@ function UserList() {
                     <option value={10}> 10 </option>
                 </select>
             </div>
-            <div> <a href = 'https://localhost:3000/admin/home'>Go back</a> </div>
+            <div> <a href = 'https://localhost:3000/host/hostHome'>Homepage</a> </div>
 		</>
 	);
 }
 
-export default UserList;
+export default ListRentals;
