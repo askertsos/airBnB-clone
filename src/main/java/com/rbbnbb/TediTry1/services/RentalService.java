@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Booking;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.User;
@@ -8,6 +9,7 @@ import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import com.rbbnbb.TediTry1.repository.BookingRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,11 @@ import java.util.Optional;
 @Service
 @Transactional
 public class RentalService {
+
+    @Bean
+    DateTimeFormatter dateTimeFormatter(){
+        return DateTimeFormatter.ofPattern("yyyy-MM-d");
+    }
 
     @Autowired
     private AuthenticationService authenticationService;
@@ -46,11 +53,7 @@ public class RentalService {
         Rental rental = optionalRental.get();
 
         //Find the user
-//        Optional<User> optionalUser = authenticationService.getUserByJwt(jwt);
-//        if (optionalUser.isEmpty()) return null;
-//        User user = optionalUser.get();
-        User booker = userService.assertUserHasAuthority(jwt,"TENANT");
-        if (Objects.isNull(booker)) return null;
+        User booker = userService.getUserByJwt(jwt).get();
 
         //Assert that the guest number, as well as the booking dates are valid
         if (bookingDTO.getGuests() > rental.getMaxGuests()) return null;
@@ -58,11 +61,10 @@ public class RentalService {
         if (bookingDTO.getDates().size() < rental.getMinDays()) return null;
 
         //Convert all dates from String to LocalDate and, if one is invalid, return null
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
         List<LocalDate> bookingDates = new ArrayList<>();
         try {
             for (String date : bookingDTO.getDates()) {
-                LocalDate localDate = LocalDate.parse(date, formatter);
+                LocalDate localDate = LocalDate.parse(date, dateTimeFormatter());
                 if (!rental.getAvailableDates().contains(localDate)) return null;
                 bookingDates.add(localDate);
             }
@@ -98,17 +100,26 @@ public class RentalService {
 
         //Empty list is a valid argument, so there is no need to check for it
         if (Objects.nonNull(dto.getAvailableDates())) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
             List<LocalDate> dates = new ArrayList<>();
             try {
                 for (String date : dto.getAvailableDates()) {
-                    LocalDate localDate = LocalDate.parse(date, formatter);
+                    LocalDate localDate = LocalDate.parse(date, dateTimeFormatter());
                     dates.add(localDate);
                 }
             } catch (DateTimeParseException dateTimeParseException) {
                 throw new IllegalArgumentException();
             }
             rental.setAvailableDates(dates);
+        }
+
+        if (Objects.nonNull(dto.getAddress())){
+            Address address = dto.getAddress();
+            if (Objects.nonNull(address.getCountry())) rental.getAddress().setCountry(address.getCountry());
+            if (Objects.nonNull(address.getCity())) rental.getAddress().setCity(address.getCity());
+            if (Objects.nonNull(address.getNeighbourhood())) rental.getAddress().setNeighbourhood(address.getNeighbourhood());
+            if (Objects.nonNull(address.getStreet())) rental.getAddress().setStreet(address.getStreet());
+            if (Objects.nonNull(address.getNumber())) rental.getAddress().setNumber(address.getNumber());
+            if (Objects.nonNull(address.getFloorNo())) rental.getAddress().setFloorNo(address.getFloorNo());
         }
 
         if (Objects.nonNull(dto.getMaxGuests())) rental.setMaxGuests(dto.getMaxGuests());
