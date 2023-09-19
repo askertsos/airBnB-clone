@@ -3,6 +3,7 @@ package com.rbbnbb.TediTry1.services;
 import com.rbbnbb.TediTry1.dto.SearchRequestDTO;
 import com.rbbnbb.TediTry1.dto.SpecificationDTO;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,9 @@ import java.util.Objects;
 
 @Service
 public class SpecificationService<T> {
+
+    @Autowired
+    private DateTimeFormatter formatter;
 
     public Specification<T> getSearchSpecification(SearchRequestDTO searchRequestDTO){
         return (root, query, criteriaBuilder) -> {
@@ -68,12 +72,10 @@ public class SpecificationService<T> {
 
                         //Convert them to LocalDate and insert them into a list
                         List<LocalDate> datesList = new ArrayList<>();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
                         List<Predicate> predicateList = new ArrayList<>();
                         for (String stringDate: stringDates) {
                                 LocalDate localDate = LocalDate.parse(stringDate, formatter);
                                 datesList.add(localDate);
-                                System.out.println("Adding date " + localDate);
                                 predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
 
                         }
