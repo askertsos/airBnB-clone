@@ -76,7 +76,7 @@ public class SpecificationService<T> {
 
                         //Convert them to LocalDate and insert them into a list
                         List<LocalDate> datesList = new ArrayList<>();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                         List<Predicate> predicateList = new ArrayList<>();
                         for (String stringDate: stringDates) {
                                 LocalDate localDate = LocalDate.parse(stringDate, formatter);

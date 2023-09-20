@@ -8,18 +8,18 @@ public class UserDTO {
     private String email;
     private String phoneNumber;
 
-    //private Photo profilePicture;
+    private String profilePicture;
 
-    public UserDTO() {
-    }
+    public UserDTO() {}
 
-    public UserDTO(String username, String password, String first_name, String last_name, String email, String phoneNumber) {
+    public UserDTO(String username, String password, String first_name, String last_name, String email, String phoneNumber, String profilePicture) {
         this.username = username;
         this.password = password;
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.profilePicture = profilePicture;
     }
 
     public String getUsername() {
@@ -29,6 +29,10 @@ public class UserDTO {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getProfilePicture() { return profilePicture; }
+
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
 
     public String getPassword() {
         return password;

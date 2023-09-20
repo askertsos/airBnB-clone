@@ -1,10 +1,18 @@
 // Home.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import MulitDatePicker, { getAllDatesInRange }  from "react-multi-date-picker";
 
 import "../../css/home.css"
 
 function Home() {
+
+	const [country, setCountry] = useState(null);
+	const [city, setCity] = useState(null);
+	const [neighbourhood, setNeighbourhood] = useState(null);
+	const [peopleCount, setPeopleCount] = useState(null);
+	const [dates, setDates] = useState(null);
+
 	const loggedIn = localStorage.getItem("jwt");
 
 	const [isBoth, setIsBoth] = useState(false);
@@ -35,7 +43,57 @@ function Home() {
 			.catch((message) => console.log(message));
 		}
 		else setLoading(false);
-	}, [isBoth, navigate]);
+	}, [isBoth, loggedIn]);
+
+	const Search = () => {
+
+		if (dates === null){
+			alert("Select dates to procceed!");
+			return;
+		}
+
+		let reformated_dates = ""
+		dates.map((date) => {
+			reformated_dates = reformated_dates + date + ",";
+		})
+		reformated_dates = reformated_dates.slice(0,-1);
+
+		localStorage.setItem("search_dates", reformated_dates);
+		localStorage.setItem("search_country", country);
+		localStorage.setItem("search_city", city);
+		localStorage.setItem("search_neighbourhood", neighbourhood);
+
+		navigate("/search/results");
+		return;
+
+		// const reqBody = {
+		// 	specificationList: [
+		// 		{
+		// 			value: reformated_dates,
+		// 			operation : "DATES"
+		// 		}
+		// 	],
+		// 	globalOperator : "AND",
+		// 	pageRequestDTO : {
+		// 		pageNo : 0,
+		// 		pageSize : 10,
+		// 		sort : "ASC",
+		// 		sortByColumn : "id"
+		// 	}
+		// };
+		// const fetchOptions = {
+		// 	headers: {
+		// 		"Content-Type": "application/json",
+		// 	},
+		// 	method: "post",
+		// 	body: JSON.stringify(reqBody),
+		// };
+		// fetch("https://localhost:8080/search/", fetchOptions)
+		// .then((response) => response.json())
+		// .then(response => {
+		// 	console.log(response);
+		// })
+	};
 
 	if (loading === true){
 		return (<h1>Loading...</h1>);
@@ -44,6 +102,8 @@ function Home() {
 	return (
 		<>
 			<div className="home-bg">
+
+				{/* Navigation bar */}
 				{loggedIn === "null" &&
 					<div className="main-bar">
 						<a href = 'https://localhost:3000/auth/login'>
@@ -69,9 +129,77 @@ function Home() {
 						}
 					</div>
 				}
-				<h1>
-					Welcome to rBBnBB!
-				</h1>
+
+				{/* Search bar */}
+				<div className="search-bar">
+					<div className="search-header-background main-background">
+						<h2 className="search-h2 search-main-header"> Where are you going </h2>
+					</div>
+					<h2 className="search-h2 country-header"> Country: </h2>
+					<input
+						className="search-input country-input"
+						id="country"
+						name="country"
+						type="text"
+						placeholder="country"
+						onChange={(event) => setCountry(event.target.value)}
+						value={country}
+					/>
+					<h2 className="search-h2 city-header"> City: </h2>
+					<input
+						className="search-input city-input"
+						id="city"
+						name="city"
+						type="text"
+						placeholder="city"
+						onChange={(event) => setCity(event.target.value)}
+						value={city}
+					/>
+					<h2 className="search-h2 neighbourhood-header"> Neighbourhood: </h2>
+					<input
+						className="search-input neighbourhood-input"
+						id="neighbourhood"
+						name="neighbourhood"
+						type="text"
+						placeholder="neighbourhood"
+						onChange={(event) => setNeighbourhood(event.target.value)}
+						value={neighbourhood}
+					/>
+					<h2 className="search-h2 peopleCount-header"> How many visitors: </h2>
+					<input
+						className="search-input peopleCount-input"
+						id="peopleCount"
+						name="peopleCount"
+						type="number"
+						placeholder="peopleCount"
+						onChange={(event) => setPeopleCount(event.target.value)}
+						value={peopleCount}
+					/>
+					<div className="search-header-background dates-background" />
+					<h2 className="search-h2 dates-header"> When are you going: </h2>
+					<div className="dates-input">
+						<MulitDatePicker
+							onChange={dates => {
+								const tempDates = [];
+								getAllDatesInRange(dates).forEach((date) => {
+									let month = date.month;	
+									let day = date.day;
+									if (parseInt(date.day) < 10) day = "0" + date.day;
+									if (parseInt(date.month) < 10) month = "0" + date.month;
+									tempDates.push(date.year + "-" + month + "-" + day);
+								})
+								setDates(tempDates);
+							}}
+							range
+							rangeHover
+							minDate={new Date()}
+						/>
+					</div>
+					<button className="bar-button search-button small-button" id="submit" type="button" onClick={() => Search()}>
+							Explore!
+					</button>
+				</div>
+				
 			</div>
 		</>
 	);

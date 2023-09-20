@@ -18,7 +18,7 @@
 }
 
 .bar-button{
-    font-size: 30px;
+    font-size: 25px;
     background-color: #f5f5f8;
     padding: 5px;
     height:43px;
@@ -32,10 +32,126 @@
     color: rgb(8, 7, 7);
 }
 
+.search-button {
+    position: relative;
+    top : -230px;
+    left : 190px;
+}
+
 .home-bg {
     background-image : url("./images/home_background.jpg");
     position:absolute;
-    height : 939px;
+    height : 1039px;
     width: 1879px;
     background-size : cover; 
+}
+
+.search-bar {
+    background-color: #0b1bad;
+    padding: 12px 28px;
+    width: 600px;
+    height: 600px;
+    position:absolute;
+    top : 150px;
+    left : 630px;
+    border: 5px solid rgb(4, 5, 4);
+}
+
+.search-input {
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #f8f7f7;
+    box-sizing: border-box;
+}
+
+.search-h2 {
+    font-size: 25px;
+    color: rgb(241, 237, 237);
+}
+
+.search-main-header {
+    position: relative;
+    left: 180px;
+    bottom : -5px;
+    color: #030a03;
+}
+
+.search-header-background {
+    width: 657px;
+    height: 50px;
+    background-color: yellow;
+}
+
+.main-background {
+    position: relative;
+    left : -28px;
+    top : -32px;
+}
+
+.country-header{
+    position: relative;
+    top: -20px;
+    left : -20px;
+}
+
+.city-header{
+    position: relative;
+    top: -80px;
+    left : -20px;
+}
+
+.neighbourhood-header{
+    position: relative;
+    top: -140px;
+    left : -20px;
+}
+
+.peopleCount-header{
+    position: relative;
+    top: -200px;
+    left : -20px;
+}
+
+.dates-header {
+    position: relative;
+    bottom: 300px;
+    left: 140px;
+    color: #030a03;
+}
+
+.dates-background {
+    position: relative;
+    left : -28px;
+    top : -235px;
+}
+
+.country-input {
+    position: relative;
+    left: 220px;
+    top : -75px;
+}
+
+.city-input {
+    position: relative;
+    left: 220px;
+    top : -140px;
+}
+
+.neighbourhood-input {
+    position: relative;
+    left: 220px;
+    top : -205px;
+}
+
+.peopleCount-input {
+    position: relative;
+    left: 220px;
+    top : -270px;
+}
+
+.dates-input {
+    position: relative;
+    left: 175px;
+    top : -280px;
 }

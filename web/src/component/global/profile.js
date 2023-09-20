@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "../../css/profile.css"
+
 function Profile() {
 
 	const [passwordConfirm, setPasswordConfirm] = useState(null);
@@ -11,6 +13,7 @@ function Profile() {
 	const [lastname, setLastname] = useState(null);
 	const [email, setEmail] = useState(null);
 	const [phoneNumber, setPhoneNumber] = useState(null);
+	const [profilePic, setprofilePic] = useState(null);
 
 	const [isTenant, setIsTenant] = useState(false);
 	const [isHost, setIsHost] = useState(false);
@@ -58,7 +61,8 @@ function Profile() {
 			last_name : lastname,
 			email : email,
 			phoneNumber : phoneNumber,
-			password : password
+			password : password,
+			profilePic : profilePic
 		};
         console.log(reqBody);
 		const fetchOptions = {
@@ -94,136 +98,143 @@ function Profile() {
 
 	return (
 		<>
-			<h1>View/Change Profile info : </h1>
-			<p>Username : {user.username} </p>
-			<p>
-				<label>
-					Change username :
-					<input
-						id="new username"
-						name="new username"
-						type="text"
-						placeholder="new username"
-						onChange={(event) => {
-							if(event.target.value === "") setUsername(null);
-							else setUsername(event.target.value);
-						}}
-						value={username}
-					/>
-				</label>
-			</p>
-			<p>First name : {user.first_name} </p>
-			<p>
-				<label>
-					Change first name :
-					<input
-						id="new firstname"
-						name="new firstname"
-						type="text"
-						placeholder="new firstname"
-						onChange={(event) => {
-							if(event.target.value === "") setFirstname(null);
-							else setFirstname(event.target.value);
-						}}
-						value={firstname}
-					/>
-				</label>
-			</p>
-			<p>Last name : {user.last_name} </p>
-			<p>
-				<label>
-					Change last name :
-					<input
-						id="new lastname"
-						name="new lastname"
-						type="text"
-						placeholder="new lastname"
-						onChange={(event) => {
-							if(event.target.value === "") setLastname(null);
-							else setLastname(event.target.value);
-						}}
-						value={lastname}
-					/>
-				</label>
-			</p>
-			<p>E-mail : {user.email} </p>
-			<p>
-				<label>
-					Change e-mail :
-					<input
-						id="new email"
-						name="new email"
-						type="text"
-						placeholder="new email"
-						onChange={(event) => {
-							if(event.target.value === "") setEmail(null);
-							else setEmail(event.target.value);
-						}}
-						value={email}
-					/>
-				</label>
-			</p>
-			<p>Phone number : {user.phoneNumber} </p>
-			<p>
-				<label>
-					Change phone number :
-					<input
-						id="new phone number"
-						name="new phone number"
-						type="text"
-						placeholder="new phone number"
-						onChange={(event) => {
-							if(event.target.value === "") setPhoneNumber(null);
-							else setPhoneNumber(event.target.value);
-						}}
-						value={phoneNumber}
-					/>
-				</label>
-			</p>
-			<p>
-				<h2>Reset password : </h2>
-				<p>
-					<label>
-						New password :
-						<input
-							id="new password"
-							name="new password"
-							type="password"
-							placeholder="new password"
-							onChange={(event) => {
-								if(event.target.value === "") setPassword(null);
-								else setPassword(event.target.value);
-							}}
-							value={password}
-						/>
-					</label>
-				</p>
-				<p>
-					<label>
-						Confirm new password :
-						<input
-							id="confirm new password"
-							name="confirm new password"
-							type="password"
-							placeholder="confirm new password"
-							onChange={(event) => {
-								if(event.target.value === "") setPasswordConfirm(null);
-								else setPasswordConfirm(event.target.value);
-							}}
-							value={passwordConfirm}
-						/>
-					</label>
-				</p>
-			</p>
-			<div>
-				<button id="submit" type="button" onClick={() => updateUser()}>
-					Submit changes
-				</button>
-			</div>
-			<div>
-				{ isBoth === true && <a href="https://localhost:3000/host/bothHome">Home page</a> }
-				{ isHost === true && isBoth === false && <a href="https://localhost:3000/host/hostHome">Home page</a> }
-				{ isTenant === true && isBoth === false && <a href="https://localhost:3000/home">Home page</a> }
+			<div className="bg">
+				<div className="update_form">
+					<h1 className="header header1">View/Change Profile info </h1>
+					<p className="field usernameField">Username : {user.username} </p>
+					<p className="field usernameInput">
+						<label>
+							Change username :
+							<input
+								id="new username"
+								name="new username"
+								type="text"
+								placeholder="new username"
+								onChange={(event) => {
+									if(event.target.value === "") setUsername(null);
+									else setUsername(event.target.value);
+								}}
+								value={username}
+							/>
+						</label>
+					</p>
+					<p className="field firstNameField">First name : {user.first_name} </p>
+					<p className="field firstNameInput">
+						<label>
+							Change first name :
+							<input
+								id="new firstname"
+								name="new firstname"
+								type="text"
+								placeholder="new firstname"
+								onChange={(event) => {
+									if(event.target.value === "") setFirstname(null);
+									else setFirstname(event.target.value);
+								}}
+								value={firstname}
+							/>
+						</label>
+					</p>
+					<p className="field lastNameField">Last name : {user.last_name} </p>
+					<p className="field lastNameInput">
+						<label>
+							Change last name :
+							<input
+								id="new lastname"
+								name="new lastname"
+								type="text"
+								placeholder="new lastname"
+								onChange={(event) => {
+									if(event.target.value === "") setLastname(null);
+									else setLastname(event.target.value);
+								}}
+								value={lastname}
+							/>
+						</label>
+					</p>
+					<p className="field emailField">E-mail : {user.email} </p>
+					<p className="field emailInput">
+						<label>
+							Change e-mail :
+							<input
+								id="new email"
+								name="new email"
+								type="text"
+								placeholder="new email"
+								onChange={(event) => {
+									if(event.target.value === "") setEmail(null);
+									else setEmail(event.target.value);
+								}}
+								value={email}
+							/>
+						</label>
+					</p>
+					<p className="field phoneNumberField">Phone number : {user.phoneNumber} </p>
+					<p className="field phoneNumberInput">
+						<label>
+							Change phone number :
+							<input
+								id="new phone number"
+								name="new phone number"
+								type="text"
+								placeholder="new phone number"
+								onChange={(event) => {
+									if(event.target.value === "") setPhoneNumber(null);
+									else setPhoneNumber(event.target.value);
+								}}
+								value={phoneNumber}
+							/>
+						</label>
+					</p>
+					<p>
+						<h1 className="header header2">Reset password </h1>
+						<p>
+							<label className="field passwordInput">
+								New password :
+								<input
+									id="new password"
+									name="new password"
+									type="password"
+									placeholder="new password"
+									onChange={(event) => {
+										if(event.target.value === "") setPassword(null);
+										else setPassword(event.target.value);
+									}}
+									value={password}
+								/>
+							</label>
+						</p>
+						<p className="field passwordConfirmInput">
+							<label>
+								Confirm new password :
+								<input
+									id="confirm new password"
+									name="confirm new password"
+									type="password"
+									placeholder="confirm new password"
+									onChange={(event) => {
+										if(event.target.value === "") setPasswordConfirm(null);
+										else setPasswordConfirm(event.target.value);
+									}}
+									value={passwordConfirm}
+								/>
+							</label>
+						</p>
+					</p>
+					<h1 className="header header3">Profile picture</h1>
+					<button className="button changeProfilePic" >Change profile pic</button>
+					<img className="profilePic" src={require("../profile_photos/default.jpg")}/>
+					<div>
+						<button className="button submit" id="submit" type="button" onClick={() => updateUser()}>
+							Submit changes
+						</button>
+					</div>
+				</div>
+				<div>
+					{ isBoth === true && <a href="https://localhost:3000/host/bothHome"> <button className="button home">Home page </button></a> }
+					{ isHost === true && isBoth === false && <a href="https://localhost:3000/host/hostHome"><button className="button home">Home page </button></a> }
+					{ isTenant === true && isBoth === false && <a href="https://localhost:3000/home"><button className="button home">Home page </button></a> }
+				</div>
 			</div>
 		</>
 	);
