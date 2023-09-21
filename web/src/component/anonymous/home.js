@@ -20,6 +20,13 @@ function Home() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+
+		localStorage.setItem("search_dates", null);
+		localStorage.setItem("search_country", null);
+		localStorage.setItem("search_city", null);
+		localStorage.setItem("search_neighbourhood", null);
+		localStorage.setItem("search_peopleCount", null);
+
 		if( loggedIn !== "null"){
 			const fetchOptions = {
 				headers: {
@@ -62,6 +69,7 @@ function Home() {
 		localStorage.setItem("search_country", country);
 		localStorage.setItem("search_city", city);
 		localStorage.setItem("search_neighbourhood", neighbourhood);
+		localStorage.setItem("search_peopleCount", peopleCount);
 
 		navigate("/search/results");
 		return;

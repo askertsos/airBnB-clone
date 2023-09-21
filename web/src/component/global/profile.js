@@ -13,7 +13,7 @@ function Profile() {
 	const [lastname, setLastname] = useState(null);
 	const [email, setEmail] = useState(null);
 	const [phoneNumber, setPhoneNumber] = useState(null);
-	const [profilePic, setprofilePic] = useState(null);
+	const [profilePic, setProfilePic] = useState(null);
 
 	const [isTenant, setIsTenant] = useState(false);
 	const [isHost, setIsHost] = useState(false);
@@ -50,6 +50,10 @@ function Profile() {
 
 	const updateUser = () => {
 
+		console.log(profilePic);
+
+		if (profilePic === "default") setProfilePic(null);
+
 		if (password !== null && password !== passwordConfirm) {
 			alert("New password and Confirm new password must match.");
 			return;
@@ -61,8 +65,7 @@ function Profile() {
 			last_name : lastname,
 			email : email,
 			phoneNumber : phoneNumber,
-			password : password,
-			profilePic : profilePic
+			password : password
 		};
         console.log(reqBody);
 		const fetchOptions = {
@@ -222,18 +225,32 @@ function Profile() {
 						</p>
 					</p>
 					<h1 className="header header3">Profile picture</h1>
-					<button className="button changeProfilePic" >Change profile pic</button>
-					<img className="profilePic" src={require("../profile_photos/default.jpg")}/>
+					<img className="profilePic" src={require("../profile_photos/" + user.profilePic + ".jpg")} alt="profilePic"/>
+					<p className="field profilePicInput">
+						<label>
+							Change profile picture :
+							<input
+								id="new profile picture"
+								name="new profile picture"
+								type="file"
+								placeholder="new profile picture"
+								onChange={(event) => {
+									if(event.target.value === "") setProfilePic(null);
+									else setProfilePic(event.target.value);
+								}}
+							/>
+						</label>
+					</p>
 					<div>
 						<button className="button submit" id="submit" type="button" onClick={() => updateUser()}>
 							Submit changes
 						</button>
 					</div>
-				</div>
-				<div>
-					{ isBoth === true && <a href="https://localhost:3000/host/bothHome"> <button className="button home">Home page </button></a> }
-					{ isHost === true && isBoth === false && <a href="https://localhost:3000/host/hostHome"><button className="button home">Home page </button></a> }
-					{ isTenant === true && isBoth === false && <a href="https://localhost:3000/home"><button className="button home">Home page </button></a> }
+					<div>
+						{ isBoth === true && <a href="https://localhost:3000/host/bothHome"> <button className="button home">Home page </button></a> }
+						{ isHost === true && isBoth === false && <a href="https://localhost:3000/host/hostHome"><button className="button home">Home page </button></a> }
+						{ isTenant === true && isBoth === false && <a href="https://localhost:3000/home"><button className="button home">Home page </button></a> }
+					</div>
 				</div>
 			</div>
 		</>
