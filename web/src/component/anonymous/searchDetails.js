@@ -104,9 +104,12 @@ function SearchDetails() {
                     </div>
                         
                 </div>
+                <button className="button bookRental">
+                        Book rental
+                </button>
                 <a href="https://localhost:3000/search/results">
                     <button className="button backToList">
-                        Rental list
+                        Back to rental list
                     </button>
                 </a>
             </div>

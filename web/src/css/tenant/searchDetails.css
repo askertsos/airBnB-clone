@@ -62,5 +62,11 @@
 .backToList {
     position: relative;
     bottom: 885px;
+    left: 1496px;
+}
+
+.bookRental {
+    position: relative;
+    bottom: 885px;
     left: 25px;
 }
