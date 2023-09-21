@@ -59,6 +59,11 @@ function Home() {
 			return;
 		}
 
+		if (peopleCount === null){
+			alert("Select visitors amount to procceed!");
+			return;
+		}
+
 		let reformated_dates = ""
 		dates.map((date) => {
 			reformated_dates = reformated_dates + date + ",";
@@ -73,34 +78,6 @@ function Home() {
 
 		navigate("/search/results");
 		return;
-
-		// const reqBody = {
-		// 	specificationList: [
-		// 		{
-		// 			value: reformated_dates,
-		// 			operation : "DATES"
-		// 		}
-		// 	],
-		// 	globalOperator : "AND",
-		// 	pageRequestDTO : {
-		// 		pageNo : 0,
-		// 		pageSize : 10,
-		// 		sort : "ASC",
-		// 		sortByColumn : "id"
-		// 	}
-		// };
-		// const fetchOptions = {
-		// 	headers: {
-		// 		"Content-Type": "application/json",
-		// 	},
-		// 	method: "post",
-		// 	body: JSON.stringify(reqBody),
-		// };
-		// fetch("https://localhost:8080/search/", fetchOptions)
-		// .then((response) => response.json())
-		// .then(response => {
-		// 	console.log(response);
-		// })
 	};
 
 	if (loading === true){

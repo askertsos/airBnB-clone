@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Calendar from "react-multi-date-picker";
 
+import "../../css/tenant/searchDetails.css"
+
 function SearchDetails() {
 
     const routeParams = useParams();
@@ -33,11 +35,10 @@ function SearchDetails() {
 
     return (
         <>
-            <h1>Rental Details :</h1>
-            <div>
-                <ul>
-                <li key={rental.id}>
-                    <h2>Basic : </h2>
+            <div className="search-details-bg">
+                <div className="details-box">
+                    <div className="details-section ">
+                        <h2>Basic : </h2>
                         <p>Title : {rental.title}</p>
                         <p>Base price : {rental.basePrice}</p>
                         <p>Charge per person : {rental.chargePerPerson}</p>
@@ -47,14 +48,17 @@ function SearchDetails() {
                                 value={rental.availableDates}
                             />
                         </p>
+                    </div>
 
-                    <h2>Space :</h2>
-                        <p>Beds : {rental.beds}</p>
-                        <p>Bedrooms : {rental.bedrooms}</p>
-                        <p>Bathrooms : {rental.bathrooms}</p>
-                        <p>Type : {rental.type === "publicRoom" && <>Public room</>} {rental.type === "privateRoom" && <>Private room</>} {rental.type === "house" && <>House</>}</p>
-                        <p>Has Living Room : {rental.hasLivingRoom === true && <>True</>} {rental.hasLivingRoom === false && <>False</>}</p>
-                        <p>Surface area : {rental.surfaceArea}</p>
+                    <div className="details-section ">
+                        <h2>Space :</h2>
+                            <p>Beds : {rental.beds}</p>
+                            <p>Bedrooms : {rental.bedrooms}</p>
+                            <p>Bathrooms : {rental.bathrooms}</p>
+                            <p>Type : {rental.type === "publicRoom" && <>Public room</>} {rental.type === "privateRoom" && <>Private room</>} {rental.type === "house" && <>House</>}</p>
+                            <p>Has Living Room : {rental.hasLivingRoom === true && <>True</>} {rental.hasLivingRoom === false && <>False</>}</p>
+                            <p>Surface area : {rental.surfaceArea}</p>
+                    </div>
 
                     <h2>Description : </h2>
                     <p>{rental.description}</p>
@@ -86,11 +90,9 @@ function SearchDetails() {
                         <p>Has TV : {rental.hasTV === true && <>True</>} {rental.hasTV === false && <>False</>}</p>
                         <p>Has parking : {rental.hasParking === true && <>True</>} {rental.hasParking === false && <>False</>}</p>
                         <p>Has elevator : {rental.hasElevator === true && <>True</>} {rental.hasElevator === false && <>False</>}</p>
-
-                </li>
-                </ul>
+                </div>
+                <a href="https://localhost:3000/search/results">Other results</a>
             </div>
-            <a href="https://localhost:3000/search/results">Other results</a>
         </>
     )
 

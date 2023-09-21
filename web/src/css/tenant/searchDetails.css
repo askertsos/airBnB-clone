@@ -1,0 +1,24 @@
+.search-details-bg {
+    background-color: rgb(120, 120, 190);
+    position:absolute;
+    height : 1000px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.details-box {
+    background-color: burlywood;
+    width: 1800px;
+    height: 880px;
+    position: relative;
+    left : 50px;
+    top : 40px;
+    cursor: pointer;
+    border: 3px solid rgb(8, 7, 7);
+}
+
+.details-section {
+    background-color: beige;
+    width: 440px;
+    height: 210px;;
+}
