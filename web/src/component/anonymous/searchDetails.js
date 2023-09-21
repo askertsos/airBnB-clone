@@ -37,20 +37,20 @@ function SearchDetails() {
         <>
             <div className="search-details-bg">
                 <div className="details-box">
-                    <div className="details-section ">
+                    <div className="details-section1">
                         <h2>Basic : </h2>
                         <p>Title : {rental.title}</p>
                         <p>Base price : {rental.basePrice}</p>
                         <p>Charge per person : {rental.chargePerPerson}</p>
                         <p>Max guests : {rental.maxGuests}</p>
-                        <p>View Available dates : 
+                        <p>View Available dates 
                             <Calendar
                                 value={rental.availableDates}
                             />
                         </p>
                     </div>
 
-                    <div className="details-section ">
+                    <div className="details-section1">
                         <h2>Space :</h2>
                             <p>Beds : {rental.beds}</p>
                             <p>Bedrooms : {rental.bedrooms}</p>
@@ -60,38 +60,55 @@ function SearchDetails() {
                             <p>Surface area : {rental.surfaceArea}</p>
                     </div>
 
-                    <h2>Description : </h2>
-                    <p>{rental.description}</p>
+                    <div className="details-section2">
+                        <h2>Description : </h2>
+                        <p>{rental.description}</p>
+                    </div>
 
-                    <h2>Rules :</h2>
-                        <p>Allow smoking : {rental.allowSmoking === true && <>True</>} {rental.allowSmoking === false && <>False</>}</p>
-                        <p>Allow pets : {rental.allowPets === true && <>True</>} {rental.allowPets === false && <>False</>}</p>
-                        <p>Allow events : {rental.allowEvents === true && <>True</>} {rental.allowEvents === false && <>False</>}</p>
-                        <p>Min days : {rental.minDays}</p>
+                    <div className="details-section2">
+                        <h2>Rules :</h2>
+                            <p>Allow smoking : {rental.allowSmoking === true && <>True</>} {rental.allowSmoking === false && <>False</>}</p>
+                            <p>Allow pets : {rental.allowPets === true && <>True</>} {rental.allowPets === false && <>False</>}</p>
+                            <p>Allow events : {rental.allowEvents === true && <>True</>} {rental.allowEvents === false && <>False</>}</p>
+                            <p>Min days : {rental.minDays}</p>
+                    </div>
 
-                    <h2>Location :</h2>
-                        <p>City : {rental.address.city}</p>
-                        <p>Neighbourhood : {rental.address.neighbourhood}</p>
-                        <p>Street : {rental.address.street}</p>
-                        <p>Street Number : {rental.address.number}</p>
-                        <p>Floor No : {rental.address.floorNo}</p>
+                    <div className="details-section3">
+                        <h2>Location :</h2>
+                            <p>City : {rental.address.city}</p>
+                            <p>Neighbourhood : {rental.address.neighbourhood}</p>
+                            <p>Street : {rental.address.street}</p>
+                            <p>Street Number : {rental.address.number}</p>
+                            <p>Floor No : {rental.address.floorNo}</p>
+                    </div>
                     
-                    <h2>Map :</h2>
-                        <p>Public transport : {rental.publicTransport.map((item) => (<> {item} </>))}</p>
+                    <div className="details-section3">
+                        <h2>Map :</h2>
+                            <p>Public transport : {rental.publicTransport.map((item) => (<> {item} </>))}</p>
+                    </div>
 
-                    <h2>Photos :</h2>
-                        <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                    <div className="details-section4">
+                        <h2>Photos :</h2>
+                            <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                    </div>
 
-                    <h2>Amenities :</h2>
-                        <p>Has WiFi : {rental.hasWiFi === true && <>True</>} {rental.hasWiFi === false && <>False</>}</p>
-                        <p>Has AC : {rental.hasAC === true && <>True</>} {rental.hasAC === false && <>False</>}</p>
-                        <p>Has heating : {rental.hasHeating === true && <>True</>} {rental.hasHeating === false && <>False</>}</p>
-                        <p>Has kitchen : {rental.hasKitchen === true && <>True</>} {rental.hasKitchen === false && <>False</>}</p>
-                        <p>Has TV : {rental.hasTV === true && <>True</>} {rental.hasTV === false && <>False</>}</p>
-                        <p>Has parking : {rental.hasParking === true && <>True</>} {rental.hasParking === false && <>False</>}</p>
-                        <p>Has elevator : {rental.hasElevator === true && <>True</>} {rental.hasElevator === false && <>False</>}</p>
+                    <div className="details-section4">
+                        <h2>Amenities :</h2>
+                            <p>Has WiFi : {rental.hasWiFi === true && <>True</>} {rental.hasWiFi === false && <>False</>}</p>
+                            <p>Has AC : {rental.hasAC === true && <>True</>} {rental.hasAC === false && <>False</>}</p>
+                            <p>Has heating : {rental.hasHeating === true && <>True</>} {rental.hasHeating === false && <>False</>}</p>
+                            <p>Has kitchen : {rental.hasKitchen === true && <>True</>} {rental.hasKitchen === false && <>False</>}</p>
+                            <p>Has TV : {rental.hasTV === true && <>True</>} {rental.hasTV === false && <>False</>}</p>
+                            <p>Has parking : {rental.hasParking === true && <>True</>} {rental.hasParking === false && <>False</>}</p>
+                            <p>Has elevator : {rental.hasElevator === true && <>True</>} {rental.hasElevator === false && <>False</>}</p>
+                    </div>
+                        
                 </div>
-                <a href="https://localhost:3000/search/results">Other results</a>
+                <a href="https://localhost:3000/search/results">
+                    <button className="button backToList">
+                        Rental list
+                    </button>
+                </a>
             </div>
         </>
     )

@@ -8,17 +8,59 @@
 
 .details-box {
     background-color: burlywood;
-    width: 1800px;
+    width: 1810px;
     height: 880px;
     position: relative;
-    left : 50px;
-    top : 40px;
-    cursor: pointer;
+    left : 25px;
+    top : 45px;
     border: 3px solid rgb(8, 7, 7);
 }
 
-.details-section {
+.details-section1 {
+    font-size: 20px;
     background-color: beige;
     width: 440px;
-    height: 210px;;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left : 10px;
+}
+
+.details-section2 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left: 460px;
+    bottom : 870px;
+}
+
+.details-section3 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left: 910px;
+    bottom : 1740px;
+}
+
+.details-section4 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left: 1360px;
+    bottom : 2610px;
+}
+
+.backToList {
+    position: relative;
+    bottom: 885px;
+    left: 25px;
 }
