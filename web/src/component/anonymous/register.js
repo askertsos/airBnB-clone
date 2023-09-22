@@ -21,6 +21,7 @@ function Register() {
 	const onSubmit = (e) => {
 
         //Validate required fields have values
+		let pPic = profilePicture;
         if ( username === "" ){
             alert("'Username' is required to continue!");
             return;
@@ -53,6 +54,9 @@ function Register() {
             alert("'Roles on site' is required to continue!");
             return;
         }
+		if ( pPic === "" ){
+            pPic = "default";
+        }
 
         //Validate password and confirm password are the same
         if(password !== confirmPassword){
@@ -68,7 +72,7 @@ function Register() {
             email : email,
             phoneNumber : phoneNumber,
             roles : roles,
-            profilePicture : profilePicture
+            profilePicture : pPic
 		};
 		const fetchOptions = {
 			headers: {

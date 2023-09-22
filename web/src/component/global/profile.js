@@ -225,7 +225,8 @@ function Profile() {
 						</p>
 					</p>
 					<h1 className="header header3">Profile picture</h1>
-					<img className="profilePic" src={require("../profile_photos/" + user.profilePic + ".jpg")} alt="profilePic"/>
+					{user.profilePic !== null && <img className="profilePic" src={require("../profile_photos/" + user.profilePic + ".jpg")} alt="profilePic"/>}
+					{user.profilePic === null && <img className="profilePic" src={require("../profile_photos/default.jpg")} alt="profilePic"/>}
 					<p className="field profilePicInput">
 						<label>
 							Change profile picture :

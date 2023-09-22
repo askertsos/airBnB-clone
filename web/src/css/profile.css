@@ -1,5 +1,5 @@
 .bg {
-    background-color: rgb(120, 120, 190);
+    background-image : url("./images/profile_bg.jpg");
     position:absolute;
     height : 1135px;
     width: 1879px;
@@ -12,7 +12,7 @@
     border: 3px solid black;
     background-color: rgb(126, 126, 139);
     position: relative;
-    left : 600px;
+    left : 500px;
     top : 50px;
 }
 
@@ -60,7 +60,7 @@
 
 .header {
     font-size: 30px;
-    color: rgb(34, 32, 32);
+    color: rgb(15, 15, 15);
 }
 
 .header1 {
@@ -81,7 +81,7 @@
 }
 
 .field {
-    color: rgb(34, 32, 32);
+    color: rgb(0, 0, 0);
     font-size: 20px;
 }
 

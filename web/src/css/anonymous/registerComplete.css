@@ -42,3 +42,9 @@
     position: relative;
     top : 130px;
 }
+
+.register-unauthorized-header {
+    position: relative;
+    left : 120px;
+    top : 100px;
+}
