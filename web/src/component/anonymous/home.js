@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MulitDatePicker, { getAllDatesInRange }  from "react-multi-date-picker";
 
-import "../../css/home.css"
+import "../../css//anonymous/home.css"
 
 function Home() {
 

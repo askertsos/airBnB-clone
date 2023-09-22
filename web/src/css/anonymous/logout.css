@@ -1,0 +1,12 @@
+.logout-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 930px;
+    width: 1879px;
+    background-size : cover; 
+}
+
+.logout-home-button {
+    position: relative;
+    left : 80px;
+}

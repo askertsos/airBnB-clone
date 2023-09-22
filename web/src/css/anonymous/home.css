@@ -1,5 +1,5 @@
 .main-bar{
-    background-color: #0b1bad;
+    background-color: rgb(160, 190, 204);
     font-size: 30px;
     padding: 12px 28px;
     border: 2px solid #030a03;
@@ -39,7 +39,7 @@
 }
 
 .home-bg {
-    background-image : url("./images/home_background.jpg");
+    background-image : url("../images/home_background.jpg");
     position:absolute;
     height : 1039px;
     width: 1879px;
@@ -47,7 +47,7 @@
 }
 
 .search-bar {
-    background-color: #0b1bad;
+    background-color: #0c0d0eee;
     padding: 12px 28px;
     width: 600px;
     height: 600px;
@@ -80,7 +80,7 @@
 .search-header-background {
     width: 657px;
     height: 50px;
-    background-color: yellow;
+    background-color: rgb(160, 190, 204);
 }
 
 .main-background {
