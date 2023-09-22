@@ -1,8 +1,10 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Booking;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.Review;
 import com.rbbnbb.TediTry1.domain.User;
+import com.rbbnbb.TediTry1.repository.BookingRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import com.rbbnbb.TediTry1.repository.ReviewRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,10 +27,13 @@ public class RecommendationService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private BookingRepository bookingRepository;
+
     private static final Double alpha = 0.0002;
     private static final Double beta = 0.02;
     private static final Double epsilon = 0.001;
-    private static final Integer steps = 5000;
+    private static final Integer steps = 1000;
 
     private RentalInfo[][] P;
     private RentalInfo[][] Q;
@@ -73,6 +79,12 @@ public class RecommendationService {
         List<User> allReviewers = new ArrayList<>(userRepository.findAll());
         List<Rental> allRentals = new ArrayList<>(rentalRepository.findAll());
 
+//        for (Review r: allReviews) {
+//            LocalDateTime time = r.getIssuedAt();
+//            if (Objects.isNull(time)) r.setIssuedAt(LocalDateTime.now());
+//            reviewRepository.save(r);
+//        }
+
         //From all users, retain only all those who have reviewed a rental
         allReviewers.retainAll(allReviews.
                                 stream().
@@ -80,7 +92,7 @@ public class RecommendationService {
                                 collect(Collectors.toList()));
 
 
-        final int K = 10;
+        final int K = 2;
 //        Array[][] P, Q;
 //        Array[][] R = allReviews.stream()
 //                .map(l -> l.getStars().stream().mapToInt(Integer::intValue).toArray())
@@ -102,21 +114,40 @@ public class RecommendationService {
         }
 
         Random rClass = new Random();
+        System.out.println("There are " + allReviewers.size() + " reviewers, " + allRentals.size() + " rentals and " + allReviews.size() + " reviews");
 
+        //for all rows in R
         for (int i = 0; i < allReviewers.size(); i++) {
-           if (allReviewers.get(i).equals(tenant)) userIndex = i;
+           User reviewer = allReviewers.get(i);
+
+           //Row #i corresponds to user of interest
+           if (reviewer.equals(tenant)) userIndex = i;
+
+           //for all columns in R
            for (int j=0; j < allRentals.size(); j++){
                Rental rental = allRentals.get(j);
 
+               //Fill the two matrices with random values
                for (int k=0; k<K; k++) {
                    P[i][k] = new RentalInfo(rental, rClass.nextDouble());
                    Q[k][j] = new RentalInfo(rental, rClass.nextDouble());
                }
 
-               //Get all reviews made by this user on this rental
-               List<Review> reviewList = reviewRepository.findByReviewerAndRental(allReviewers.get(i),rental);
+               //Get all reviews made on this rental
+               List<Review> reviewList = new ArrayList<>(rental.getReviews());
+
+               //Remove all reviews that were not made by current reviewer
+               reviewList.removeIf(t -> !t.getReviewer().equals(reviewer));
+
                if (reviewList.isEmpty()){
-                   R[i][j] = new RentalInfo(rental,0d); //Average of 1,2,3,4,5]
+//                   List<Booking> bookingList = bookingRepository.findByBookerAndRental(tenant,rental);
+//                   double expRating = 0d;
+//                   if (!bookingList.isEmpty()){
+//                       double size = bookingList.size();
+//                       expRating = 3 + size / 3 * 2; //expRating gains 0.66 for every time this tenant booked this
+//                       if (expRating > 5) expRating = 5d;
+//                   }
+                   R[i][j] = new RentalInfo(rental,3d); //Average of 1,2,3,4,5]
                    continue;
                }
                //reviewList is not empty. Sort it by time of review descending, and get the (chronologically) last review.
@@ -132,8 +163,9 @@ public class RecommendationService {
            }
         }
 
-
+        System.out.println("before matrix factorization");
         matrixFactorization(R,P,Q,K);
+        System.out.println("after matrix factorization");
 
         RentalInfo[][] dR = dotProduct(this.P,this.Q);
 
@@ -144,6 +176,8 @@ public class RecommendationService {
             }
         }
 
+        System.out.println("before sorting");
+
         rentalsOfInterest.sort(new Comparator<RentalInfo>() {
             @Override
             public int compare(RentalInfo r1, RentalInfo r2) {
@@ -152,8 +186,10 @@ public class RecommendationService {
             }
         });
 
+        System.out.println("after sorting");
+
         //Get first 5 or all rentals of interest, whichever is lower
-        int last = (rentalsOfInterest.size() > 4) ? 4 : (rentalsOfInterest.size()-1);
+        int last = Math.min(rentalsOfInterest.size(), 5);
 
         List<Rental> recommendedRentals = new ArrayList<>();
         rentalsOfInterest = rentalsOfInterest.subList(0,last);
@@ -171,34 +207,38 @@ public class RecommendationService {
             for(int i=0; i<R.length; i++){
                 for(int j=0; j<R[i].length; j++) {
                     double expRatingR = R[i][j].getExpRating();
-                    if (expRatingR > 0d){
-                        double eij = expRatingR - dotProduct(P[i],getColumn(Q,j));
+                    double eij = expRatingR - dotProduct(P[i],getColumn(Q,j));
 
-                        for(int k=0; k<K; k++){
-                            RentalInfo p = P[i][k];
-                            RentalInfo q = Q[k][j];
-                            double expRatingP = p.getExpRating();
-                            double expRatingQ = q.getExpRating();
-                            p.setExpRating(expRatingP + alpha * (2 * eij * expRatingP));
-                            q.setExpRating(expRatingQ + alpha * (2 + eij * expRatingQ));
+                    for(int k=0; k<K; k++){
+                        RentalInfo p = P[i][k];
+                        RentalInfo q = Q[k][j];
+                        double expRatingP = p.getExpRating();
+                        double expRatingQ = q.getExpRating();
+                        p.setExpRating(expRatingP + alpha * (2 * eij * expRatingQ - beta * expRatingP)); //P[i][k] = P[i][k] + alpha * (2 * eij * Q[k][j] - beta * P[i][k])
+                        q.setExpRating(expRatingQ + alpha * (2 + eij * expRatingP - beta * expRatingQ)); //Q[k][j] = Q[k][j] + alpha * (2 * eij * P[i][k] - beta * Q[k][j])
 //                            P[i][k] = P[i][k] + alpha * (2 * eij * Q[k][j] - beta * P[i][k]);
 //                            Q[k][j] = Q[k][j] + alpha * (2 * eij * P[i][k] - beta * Q[k][j]);
-                        }
                     }
+
                 }
             }
-            RentalInfo[][] eR = dotProduct(P,Q);
+//            RentalInfo[][] eR = dotProduct(P,Q);
             double e = 0d;
+
 
             for(int i=0; i<R.length; i++){
                 for(int j=0; j<R[i].length; j++){
-                    e = e + Math.pow(R[i][j].getExpRating() - dotProduct(P[i],getColumn(Q,j)),2);
+                    double calculatedValue = dotProduct(P[i],getColumn(Q,j)); //==R'
+                    double difference = R[i][j].getExpRating() - calculatedValue; //== R - R'
+                            e += Math.pow(difference,2);
                     for(int k=0; k<K; k++){
-                        e = e + (beta / 2) * (Math.pow(P[i][k].getExpRating(),2) + Math.pow(Q[k][j].getExpRating(),2));
+                        double pikSquared = Math.pow(P[i][k].getExpRating(),2); //P[i][k]^2
+                        double qkjSquared = Math.pow(Q[k][j].getExpRating(),2); //Q[k][j]^2
+                        e += (beta / 2) * pikSquared + qkjSquared;
                     }
                 }
             }
-            if (e < 0.001){
+            if (e < epsilon){
                 break;
             }
         }

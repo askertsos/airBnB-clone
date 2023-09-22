@@ -120,7 +120,7 @@ public class SpecificationService<T> {
             if (searchRequestDTO.getGlobalOperator().equals(SearchRequestDTO.GlobalOperator.OR))
                 return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
 
-            else return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }

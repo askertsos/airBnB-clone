@@ -121,8 +121,9 @@ public class RentalController {
         Rental rental = optionalRental.get();
 
         //Assert that this user has booked this rental before
-        List<Booking> bookingList = bookingRepository.findByBookerAndRental(reviewer,rental);
-        if (bookingList.isEmpty()) return ResponseEntity.badRequest().build();
+        //Comment this out for the time being while inserting the CSVs into the database
+//        List<Booking> bookingList = bookingRepository.findByBookerAndRental(reviewer,rental);
+//        if (bookingList.isEmpty()) return ResponseEntity.badRequest().build();
 
         Review review = new Review(body,reviewer,rental);
         reviewRepository.save(review);

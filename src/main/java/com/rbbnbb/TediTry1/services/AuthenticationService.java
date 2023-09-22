@@ -72,7 +72,7 @@ public class AuthenticationService {
         Role tenantRole = roleRepository.findByAuthority("TENANT").get();
         Role hostRole = roleRepository.findByAuthority("HOST").get();
         Set<Role> authorities = new HashSet<>();
-        System.out.println(body.getRoles());
+
         if (body.getRoles().equals("both")){
             authorities.add(tenantRole);
             authorities.add(hostRole);

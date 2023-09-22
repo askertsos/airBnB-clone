@@ -46,6 +46,12 @@ public class Review {
         this.stars = dto.getStars();
     }
 
+    public Review(User reviewer, Rental rental, Integer stars){
+        this.reviewer = reviewer;
+        this.rental = rental;
+        this.stars = stars;
+    }
+
 
 
     public Long getId() {

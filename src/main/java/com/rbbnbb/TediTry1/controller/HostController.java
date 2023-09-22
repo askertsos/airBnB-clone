@@ -69,12 +69,14 @@ public class HostController {
         //Generate the full path of each photo based on the rental's id and then store them inside the rental entity
         Set<Photo> rentalPhotos = new HashSet<>();
 
-        //Add the appropriate prefix to all saved photos
-        for (String filePath:body.getPhotoPaths()){
-            String fullPath = "src/main/resources/RentalPhotos/" + newRental.getId().toString() + "/" + filePath;
-            Photo newPhoto = new Photo(fullPath);
-            photoRepository.save(newPhoto);
-            rentalPhotos.add(newPhoto);
+        if (Objects.nonNull(body.getPhotoPaths())) {
+            //Add the appropriate prefix to all saved photos
+            for (String filePath : body.getPhotoPaths()) {
+                String fullPath = "src/main/resources/RentalPhotos/" + newRental.getId().toString() + "/" + filePath;
+                Photo newPhoto = new Photo(fullPath);
+                photoRepository.save(newPhoto);
+                rentalPhotos.add(newPhoto);
+            }
         }
 
         //Update the new rental entity and save it again
