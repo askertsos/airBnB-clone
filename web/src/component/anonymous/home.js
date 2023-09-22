@@ -127,7 +127,7 @@ function Home() {
 						name="country"
 						type="text"
 						placeholder="country"
-						onChange={(event) => setCountry(event.target.value)}
+						onChange={(event) => {if(event.target.value !== "") setCountry(event.target.value); else setCountry(null)}}
 						value={country}
 					/>
 					<h2 className="search-h2 city-header"> City: </h2>
@@ -137,7 +137,7 @@ function Home() {
 						name="city"
 						type="text"
 						placeholder="city"
-						onChange={(event) => setCity(event.target.value)}
+						onChange={(event) => {if(event.target.value !== "") setCity(event.target.value); else setCity(null)}}
 						value={city}
 					/>
 					<h2 className="search-h2 neighbourhood-header"> Neighbourhood: </h2>
@@ -147,7 +147,7 @@ function Home() {
 						name="neighbourhood"
 						type="text"
 						placeholder="neighbourhood"
-						onChange={(event) => setNeighbourhood(event.target.value)}
+						onChange={(event) => {if(event.target.value !== "") setNeighbourhood(event.target.value); else setNeighbourhood(null)}}
 						value={neighbourhood}
 					/>
 					<h2 className="search-h2 peopleCount-header"> How many visitors: </h2>
@@ -157,7 +157,7 @@ function Home() {
 						name="peopleCount"
 						type="number"
 						placeholder="peopleCount"
-						onChange={(event) => setPeopleCount(event.target.value)}
+						onChange={(event) => {if(event.target.value !== "") setPeopleCount(event.target.value); else setPeopleCount(null)}}
 						value={peopleCount}
 					/>
 					<div className="search-header-background dates-background" />

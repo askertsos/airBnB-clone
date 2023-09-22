@@ -29,15 +29,10 @@ function SearchResults() {
     const peopleCount = localStorage.getItem("search_peopleCount");
 
 	useEffect(() => {
-        let specList = [];
-        specList.push(
-            {
-                value: dates,
-                operation : "DATES"
-            }
-        );
 
-        if (country !== null)
+        let specList = [];
+
+        if (country !== null && country !== "null")
             specList.push(
                 {
                     value: country,
@@ -47,7 +42,7 @@ function SearchResults() {
                 }
             );
 
-        if (city !== null)
+        if (city !== null && city !== "null")
             specList.push(
                 {
                     value: city,
@@ -57,7 +52,7 @@ function SearchResults() {
                 }
             );
 
-        if (neighbourhood !== null)
+        if (neighbourhood !== null && neighbourhood !== "null")
             specList.push(
                 {
                     value: neighbourhood,
@@ -130,6 +125,13 @@ function SearchResults() {
                 }
             );
 
+        specList.push(
+            {
+                value: dates,
+                operation : "DATES"
+            }
+        );
+
         const reqBody = {
             specificationList: specList,
             globalOperator : "AND",
@@ -140,6 +142,7 @@ function SearchResults() {
                 sortByColumn : "id"
             }
         };
+        console.log(reqBody);
         const fetchOptions = {
             headers: {
                 "Content-Type": "application/json",
