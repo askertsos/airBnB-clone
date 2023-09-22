@@ -1,0 +1,44 @@
+.register-complete-bg {
+    background-image : url("../images/login.jpg");
+    position:absolute;
+    height : 939px;
+    width: 1879px;
+    background-size : cover; 
+}
+
+.register-complete-box {
+    background-color: rgb(126, 126, 139);
+    padding: 12px 28px;
+    width: 480px;
+    height: 400px;
+    position: relative;
+    left: 667px;
+    top : 162px;
+    border: 5px solid black;
+}
+
+.register-complete-h2 {
+    top: 5px;
+    left: 60px;
+    font-size: 30px;
+    color: rgb(14, 13, 13);
+}
+
+.register-complete-header {
+    position: relative;
+    left : 80px;
+    top : 100px;
+}
+
+.reg-com-btn {
+    position: relative;
+    top : 130px;
+    left : 125px;
+}
+
+.host-text {
+    color: black;
+    font-size: 20px;
+    position: relative;
+    top : 130px;
+}

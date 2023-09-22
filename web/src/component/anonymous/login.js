@@ -84,7 +84,7 @@ const LoginPost = () => {
 						</button>
 				</div>
 				<a href = "https://localhost:3000/home">
-					<button className="login-btn btn2" id="submit" type="button" onClick={() => onSubmit()}>
+					<button className="login-btn btn2">
 						Homepage
 					</button>
 				</a>

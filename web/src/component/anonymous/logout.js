@@ -13,10 +13,12 @@ function Logout() {
 	return (
 		<>
 			<div className="logout-bg">
-				<h1>Succesfully logged out!</h1>
-				<a href = 'https://localhost:3000/home'>
-					<button className="button logout-home-button">Homepage</button>
-				</a>
+				<div className="logout-box">
+					<div className="logout-h2 logout-header">Succesfully logged out!</div>
+					<a href = 'https://localhost:3000/home'>
+						<button className="button logout-home-button logout-home-btn">Homepage</button>
+					</a>
+				</div>
 			</div>
 		</>
 	);
