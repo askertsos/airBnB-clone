@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "../../css/host/bothHome.css"
+
 function BothHome() {
 
 	const [loading, setLoading] = useState(true);
@@ -31,11 +33,29 @@ function BothHome() {
 
 	return (
 		<>
-			<h1> Welcome! </h1>
-            <div> <a href = 'https://localhost:3000/home'>Tenant interface</a> </div>
-            <div> <a href = 'https://localhost:3000/host/hostHome'>Host interface</a> </div>
-			<div> <a href = 'https://localhost:3000/user/profile'>View your profile</a> </div>
-			<div> <a href = 'https://localhost:3000/auth/logout'>Logout</a> </div>
+			<div className="home-bg">
+
+				{/* Navigation bar */}
+				<div className="main-bar">
+					<a href = 'https://localhost:3000/user/profile'>
+						<button className="bar-button small-button">Profile</button>
+					</a>
+					<a href = 'https://localhost:3000/auth/logout'>
+						<button className="bar-button small-button">Logout</button>
+					</a>
+				</div>
+
+				<a href = 'https://localhost:3000/home'>
+					<button className="huge-button tenant-home-btn">
+						Tenant interface
+					</button>
+				</a>
+				<a href = 'https://localhost:3000/host/hostHome'>
+					<button className="huge-button tenant-home-btn">
+						Host interface
+					</button>
+				</a>
+			</div>
 		</>
 	);
 }

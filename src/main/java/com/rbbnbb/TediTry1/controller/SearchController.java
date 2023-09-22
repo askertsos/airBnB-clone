@@ -40,7 +40,7 @@ public class SearchController {
     @Autowired
     private RentalRepository rentalRepository;
 
-    @GetMapping("/")
+    @PostMapping("/")
     public ResponseEntity<?> searchRentals(@RequestBody SearchRequestDTO dto){
 
         Specification<Rental> searchSpecification = rentalSpecificationService.getSearchSpecification(dto);
@@ -53,4 +53,11 @@ public class SearchController {
         return ResponseEntity.ok().body(rentalPage);
 
     }
+
+    @GetMapping("/{rentalId}/details")
+    public ResponseEntity<?> rentalInfo(@PathVariable("rentalId") Long rentalId){
+        Rental rental = rentalRepository.findById(rentalId).get();
+        return ResponseEntity.ok().body(rental);
+    }
+
 }

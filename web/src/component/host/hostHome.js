@@ -37,13 +37,35 @@ function HostHome() {
 
 	return (
 		<>
-			<h1> Welcome to the host interface! </h1>
-			<div> <a href = 'https://localhost:3000/host/newRental'>Add new rental</a> </div>
-			<div> <a href = 'https://localhost:3000/host/rental/list'>List of your rentals</a> </div>
-			<div> <a href = 'https://localhost:3000/user/profile'>View your profile</a> </div>
-			{isBoth === true && <div> <a href = 'https://localhost:3000/home'>Tenant interface</a> </div>}
-			<div> <a href = 'https://localhost:3000/auth/logout'>Logout</a> </div>
+			<div className="home-bg">
+				{/* Navigation bar */}
+				<div className="main-bar">
+					<a href = 'https://localhost:3000/user/profile'>
+						<button className="bar-button small-button">Profile</button>
+					</a>
+					<a href = 'https://localhost:3000/auth/logout'>
+						<button className="bar-button small-button">Logout</button>
+					</a>
+					{isBoth === true &&
+						<a href = 'https://localhost:3000/home'>
+							<button className="bar-button big-button">
+								Tenant interface
+							</button>
+						</a>
+					}
+				</div>
 
+				<a href = 'https://localhost:3000/host/newRental'>
+					<button className="huge-button tenant-home-btn">
+						Add new rental
+					</button>
+				</a>
+				<a href = 'https://localhost:3000/host/rental/list'>
+					<button className="huge-button tenant-home-btn">
+						List of your rentals
+					</button>
+				</a>
+			</div>
 		</>
 	);
 }

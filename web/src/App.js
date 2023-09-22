@@ -10,6 +10,8 @@ import RegistrationHostComplete from "./component/anonymous/registrationHostComp
 import RegistrationBothComplete from "./component/anonymous/registrationBothComplete";
 import UnauthenticatedHostLogin from "./component/anonymous/unauthenticatedHostLogin";
 import RedirectToLogin from "./component/anonymous/redirectToLogin";
+import SearchResults from "./component/anonymous/searchResults";
+import SearchDetails from "./component/anonymous/searchDetails";
 
 import AdminHome from "./component/admin/adminHome";
 import UserList from "./component/admin/userList";
@@ -43,6 +45,8 @@ function App() {
 
 				<Route exact path="/" element={<RedirectToLogin />}></Route>
 				<Route exact path="/home" element={<Home />}></Route>
+				<Route exact path="/search/results" element={<SearchResults />}></Route>
+				<Route exact path="/search/:id/details" element={<SearchDetails />}></Route>
 				<Route exact path="/unauthorized/user" element={<UserNotLogged />}></Route>
 				<Route exact path="/user/profile" element={<Profile />}></Route>
 				<Route exact path="/user/profile/update/complete" element={<ProfileUpdateComplete />}></Route>

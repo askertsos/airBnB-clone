@@ -1,0 +1,20 @@
+.huge-button{
+    font-size: 25px;
+    background-color: #0e0ee9;
+    width: 400px;
+    height: 500px;
+    transition-duration: 0.4s;
+    color: #f5f5f8;
+    cursor: pointer;
+}
+
+.huge-button:hover{
+    background-color: #c3c0ca;
+    color: rgb(8, 7, 7);
+}
+
+.tenant-home-btn {
+    position: relative;
+    top : 100px;
+    left : 500px;
+}

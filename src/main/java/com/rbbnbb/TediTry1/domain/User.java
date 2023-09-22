@@ -25,7 +25,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    //private Photo picture
+    private String profilePic;
 
 
     private boolean isAuthenticatedHost;
@@ -74,6 +74,10 @@ public class User implements UserDetails {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getProfilePic() { return profilePic; }
+
+    public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
 
     public String getUsername() {
         return username;
