@@ -69,16 +69,26 @@ public class SpecificationService<T> {
                     case DATES:
                         //Split the dates
                         String[] stringDates = specDTO.getValue().split(",");
-
-                        //Convert them to LocalDate and insert them into a list
-                        List<LocalDate> datesList = new ArrayList<>();
-                        List<Predicate> predicateList = new ArrayList<>();
-                        for (String stringDate: stringDates) {
-                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
-                                datesList.add(localDate);
-                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
-
+                        if (stringDates.length != 2){
+                            throw new IllegalArgumentException("Dates call must consist of start date and end date");
                         }
+                        LocalDate startDate = LocalDate.parse(stringDates[0],formatter);
+                        LocalDate endDate = LocalDate.parse(stringDates[1],formatter);
+                        List<LocalDate> dateList = startDate.datesUntil(endDate.plusDays(1L)).toList();
+
+                        for (LocalDate date: dateList) {
+                            predicates.add(criteriaBuilder.isMember(date,root.get("availableDates")));
+                        }
+//
+//                        //Convert them to LocalDate and insert them into a list
+//                        List<LocalDate> datesList = new ArrayList<>();
+//                        List<Predicate> predicateList = new ArrayList<>();
+//                        for (String stringDate: stringDates) {
+//                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
+//                                datesList.add(localDate);
+//                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
+//
+//                        }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
                         //Every element of the list must be in the "availableDates" field
