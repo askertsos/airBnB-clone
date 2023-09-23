@@ -17,4 +17,6 @@ public interface ReviewRepository extends JpaRepository<Review,Long> {
 
     Collection<Review> findByReviewer(User reviewer);
     List<Review> findByReviewerAndRental(User reviewer, Rental rental);
+
+    Long countByRental(Rental rental);
 }

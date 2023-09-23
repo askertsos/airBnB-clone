@@ -22,18 +22,18 @@ public class Search {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    private Integer nGuests;
+    private Integer guests;
 
     public Search() {}
 
-    public Search(Long id, String country, String city, String neighbourhood, LocalDate startDate, LocalDate endDate, Integer nGuests) {
+    public Search(Long id, String country, String city, String neighbourhood, LocalDate startDate, LocalDate endDate, Integer guests) {
         this.id = id;
         this.country = country;
         this.city = city;
         this.neighbourhood = neighbourhood;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.nGuests = nGuests;
+        this.guests = guests;
     }
 
     public Long getId() {
@@ -84,11 +84,11 @@ public class Search {
         this.endDate = endDate;
     }
 
-    public Integer getnGuests() {
-        return nGuests;
+    public Integer getGuests() {
+        return guests;
     }
 
-    public void setnGuests(Integer nGuests) {
-        this.nGuests = nGuests;
+    public void setGuests(Integer guests) {
+        this.guests = guests;
     }
 }
