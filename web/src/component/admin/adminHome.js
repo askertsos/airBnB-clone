@@ -35,7 +35,7 @@ function AdminHome() {
 		<>
 			<div className="admin-bg">
 				<a href = "https://localhost:3000/admin/user/list" >
-					<button className="huge-button list-users-btn">
+					<button className="list-users-btn-admin">
 						List of users
 					</button>
 				</a>

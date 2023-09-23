@@ -32,7 +32,7 @@ function SearchResults() {
 
         console.log(hasElevator);
 
-        if (dates === null) navigate("/home");
+        if (dates === null || peopleCount === null) navigate("/home");
 
         let specList = [];
 
