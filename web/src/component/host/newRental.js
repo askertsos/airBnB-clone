@@ -214,6 +214,11 @@ function NewRental() {
             <button className = "button submit-new-rental"  id="submit" type="button" onClick={() => onSubmit()}>
                 Submit new rental
             </button>
+            <a href="https://localhost:3000/host/hostHome">
+                <button className = "button submit-new-rental">
+                    Homepage
+                </button>
+            </a>
             <div className="host-details-box">
                 <div className="details-section1">
                     <h2>Basic : </h2>
