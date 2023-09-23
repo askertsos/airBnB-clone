@@ -1,10 +1,16 @@
 package com.rbbnbb.TediTry1.controller;
 
 import com.rbbnbb.TediTry1.domain.Rental;
+import com.rbbnbb.TediTry1.domain.Search;
+import com.rbbnbb.TediTry1.domain.SearchHistory;
+import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.PageRequestDTO;
 import com.rbbnbb.TediTry1.dto.SearchRequestDTO;
+import com.rbbnbb.TediTry1.dto.SpecificationDTO;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
+import com.rbbnbb.TediTry1.services.SearchService;
 import com.rbbnbb.TediTry1.services.SpecificationService;
+import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -21,6 +27,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -40,8 +47,21 @@ public class SearchController {
     @Autowired
     private RentalRepository rentalRepository;
 
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private SearchService searchService;
+
     @GetMapping("/")
-    public ResponseEntity<?> searchRentals(@RequestBody SearchRequestDTO dto){
+    public ResponseEntity<?> searchRentals(@RequestHeader("Authorization") String jwt, @RequestBody SearchRequestDTO dto){
+
+        try{
+            User user = userService.getUserByJwt(jwt).get();
+            searchService.addSearch(user,dto);
+        }
+        catch (IllegalArgumentException i){
+            return ResponseEntity.badRequest().build();
+        }
 
         Specification<Rental> searchSpecification = rentalSpecificationService.getSearchSpecification(dto);
 

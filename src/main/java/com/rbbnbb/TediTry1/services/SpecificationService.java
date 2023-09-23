@@ -67,7 +67,7 @@ public class SpecificationService<T> {
                         break;
 
                     case DATES:
-                        //Split the dates
+                        //Get the start date and end date
                         String[] stringDates = specDTO.getValue().split(",");
                         if (stringDates.length != 2){
                             throw new IllegalArgumentException("Dates call must consist of start date and end date");
