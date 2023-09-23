@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.Search;
 import com.rbbnbb.TediTry1.domain.SearchHistory;
 import com.rbbnbb.TediTry1.domain.User;
@@ -37,7 +38,7 @@ public class SearchService {
         String neighbourhood = null;
         LocalDate startDate = null;
         LocalDate endDate = null;
-        Integer nGuests = null;
+        Integer guests = null;
 
         List<SpecificationDTO> specificationDTOS = dto.getSpecificationList();
 
@@ -65,7 +66,7 @@ public class SearchService {
             }
             if (specDto.getOperation().equals(SpecificationDTO.Operation.LESS_THAN)){
                 if (column.equals("maxGuests")) {
-                    nGuests = Integer.parseInt(value) - 1;
+                    guests = Integer.parseInt(value) - 1;
                 }
             }
         }
@@ -75,21 +76,31 @@ public class SearchService {
         newSearch.setNeighbourhood(neighbourhood);
         newSearch.setStartDate(startDate);
         newSearch.setEndDate(endDate);
-        newSearch.setnGuests(nGuests);
+        newSearch.setGuests(guests);
 
         searchRepository.save(newSearch);
 
         Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
-        if (optionalSearchHistory.isPresent()){
-            SearchHistory searchHistory = optionalSearchHistory.get();
-            searchHistory.addSearch(newSearch);
-            searchHistoryRepository.save(searchHistory);
+        if (optionalSearchHistory.isEmpty()){
+            searchHistoryRepository.save(new SearchHistory(user,newSearch));
             return;
         }
 
-        SearchHistory searchHistory = new SearchHistory(user,newSearch);
+        SearchHistory searchHistory = optionalSearchHistory.get();
+        searchHistory.addSearch(newSearch);
         searchHistoryRepository.save(searchHistory);
-
-
     }
+
+    public void addRental(User user, Rental rental){
+        Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
+
+        if(optionalSearchHistory.isEmpty()){
+            searchHistoryRepository.save(new SearchHistory(user,rental));
+            return;
+        }
+        SearchHistory searchHistory = optionalSearchHistory.get();
+        searchHistory.addRental(rental);
+        searchHistoryRepository.save(searchHistory);
+    }
+
 }
