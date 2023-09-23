@@ -13,7 +13,7 @@ function NewRental() {
     const [beds,setBeds] = useState(null);
     const [bedrooms,setBedrooms] = useState(null);
     const [bathrooms,setBathrooms] = useState(null);
-    const [type,seTtype] = useState(null);
+    const [type,setType] = useState(null);
     const [hasLivingRoom,setHasLivingRoom] = useState(false);
     const [surfaceArea,setSurfaceArea] = useState(null);
     const [description,setDescription] = useState("");
@@ -208,480 +208,510 @@ function NewRental() {
 	}
 
 	return (
-		<>
-            <h2>Basics :</h2>
-			<div>
-				<label>
-					Title:
-					<input
-						id="title"
-						name="title"
-						type="text"
-						placeholder="title"
-						onChange={(event) => {
-							if(event.target.value === "") setTitle(null);
-							else setTitle(event.target.value);
-						}}
-						value={title}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Base price:
-					<input
-						id="basePrice"
-						name="basePrice"
-						type="number"
-						placeholder="basePrice"
-						onChange={(event) => {
-							if(event.target.value === "") setBasePrice(null);
-							else setBasePrice(event.target.value);
-						}}
-						value={basePrice}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Charge per person:
-					<input
-						id="chargePerPerson"
-						name="chargePerPerson"
-						type="number"
-						placeholder="chargePerPerson"
-						onChange={(event) => {
-							if(event.target.value === "") setChargePerPerson(null);
-							else setChargePerPerson(event.target.value);
-						}}
-						value={chargePerPerson}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Max guests:
-					<input
-						id="maxGuests"
-						name="maxGuests"
-						type="number"
-						placeholder="maxGuests"
-						onChange={(event) => {
-							if(event.target.value === "") setMaxGuests(null);
-							else setMaxGuests(event.target.value);
-						}}
-						value={maxGuests}
-					/>
-				</label>
-			</div>
-            <div>
-				Available Dates :
-				<MultipleDatePicker
-					onChange={dates => {
-						const tempDates = [];
-						dates.forEach((date) => {
-							let month = date.month;
-							let day = date.day;
-							if (parseInt(date.day) < 10) day = "0" + date.day;
-							if (parseInt(date.month) < 10) month = "0" + date.month;
-							tempDates.push(date.year + "-" + month + "-" + day);
-						})
-						setAvailableDates(tempDates);
-					}}
-					multiple
-					minDate={new Date()} />
-			</div>
-            <h2>Space :</h2>
-            <div>
-				<label>
-					Beds:
-					<input
-						id="beds"
-						name="beds"
-						type="number"
-						placeholder="beds"
-						onChange={(event) => {
-							if(event.target.value === "") setBeds(null);
-							else setBeds(event.target.value);
-						}}
-						value={beds}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Bedrooms:
-					<input
-						id="bedrooms"
-						name="bedrooms"
-						type="number"
-						placeholder="bedrooms"
-						onChange={(event) => {
-							if(event.target.value === "") setBedrooms(null);
-							else setBedrooms(event.target.value);
-						}}
-						value={bedrooms}
-					/>
-				</label>
-			</div>
-			<div>
-				<label>
-					Bathrooms:
-					<input
-						id="bathrooms"
-						name="bathrooms"
-						type="number"
-						placeholder="bathrooms"
-						onChange={(event) => {
-							if(event.target.value === "") setBathrooms(null);
-							else setBathrooms(event.target.value);
-						}}
-						value={bathrooms}
-					/>
-				</label>
-			</div>
-            <div>
-                <label for="type" >
-                    Type 
-                    </label>
-                    <select name="type" id="type" value={type} onChange={(event) => seTtype(event.target.value)}>
-                        <option value = "null"></option>
-                        <option value="privateRoom">privateRoom</option>
-                        <option value="publicRoom">Public Room</option>
-                        <option value="house">House</option>
-                    </select>
-			</div>
-            <div>
-				<label>
-					Living Room:
-					<input
-						id="hasLivingRoom"
-						name="hasLivingRoom"
-						type="checkbox"
-						placeholder="hasLivingRoom"
-						onChange={(event) => handleCheckbox(hasLivingRoom, setHasLivingRoom)}
-						value={hasLivingRoom}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Surface area:
-					<input
-						id="surfaceArea"
-						name="surfaceArea"
-						type="number"
-						placeholder="surfaceArea"
-						onChange={(event) => {
-							if(event.target.value === "") setSurfaceArea(null);
-							else setSurfaceArea(event.target.value);
-						}}
-						value={surfaceArea}
-					/>
-				</label>
-			</div>
-            <h2>Description :</h2>
-            <div>
-				<label>
-					Description:
-					<input
-						id="description"
-						name="description"
-						type="text"
-						placeholder="description"
-						onChange={(event) => {
-							setDescription(event.target.value);
-						}}
-						value={description}
-					/>
-				</label>
-			</div>
-            <h2>Rules :</h2>
-            <div>
-				<label>
-					Allow Smoking:
-					<input
-						id="allowSmoking"
-						name="allowSmoking"
-						type="checkbox"
-						placeholder="allowSmoking"
-						onChange={(event) => handleCheckbox(allowSmoking, setAllowSmoking)}
-						value={allowSmoking}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Allow pets:
-					<input
-						id="allowPets"
-						name="allowPets"
-						type="checkbox"
-						placeholder="allowPets"
-						onChange={(event) => handleCheckbox(allowPets, setAllowPets)}
-						value={allowPets}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Allow events:
-					<input
-						id="allowEvents"
-						name="allowEvents"
-						type="checkbox"
-						placeholder="allowEvents"
-						onChange={(event) => handleCheckbox(allowEvents, setAllowEvents)}
-						value={allowEvents}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Minimum days per booking:
-					<input
-						id="minDays"
-						name="minDays"
-						type="number"
-						placeholder="minDays"
-						onChange={(event) => {
-							if(event.target.value === "") setMinDays(null);
-							else setMinDays(event.target.value);
-						}}
-						value={minDays}
-					/>
-				</label>
-			</div>
-            <h2>Location :</h2>
-            <div>
-				<label>
-					Floor No:
-					<input
-						id="floorNo"
-						name="floorNo"
-						type="number"
-						placeholder="floorNo"
-						onChange={(event) => {
-							if(event.target.value === "") setFloorNo(null);
-							else setFloorNo(event.target.value);
-						}}
-						value={floorNo}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Street Number:
-					<input
-						id="streetNumber"
-						name="streetNumber"
-						type="number"
-						placeholder="streetNumber"
-						onChange={(event) => {
-							if(event.target.value === "") setStreetNumber(null);
-							else setStreetNumber(event.target.value);
-						}}
-						value={streetNumber}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Street:
-					<input
-						id="street"
-						name="street"
-						type="text"
-						placeholder="street"
-						onChange={(event) => {
-							if(event.target.value === "") setStreet(null);
-							else setStreet(event.target.value);
-						}}
-						value={street}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Neighbourhood:
-					<input
-						id="neighbourhood"
-						name="neighbourhood"
-						type="text"
-						placeholder="neighbourhood"
-						onChange={(event) => {
-							if(event.target.value === "") setNeighbourhood(null);
-							else setNeighbourhood(event.target.value);
-						}}
-						value={neighbourhood}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					City:
-					<input
-						id="city"
-						name="city"
-						type="text"
-						placeholder="city"
-						onChange={(event) => {
-							if(event.target.value === "") setCity(null);
-							else setCity(event.target.value);
-						}}
-						value={city}
-					/>
-				</label>
-			</div>
-            <h2>Public transport :</h2>
-            <div>
-				<label>
-					Bus:
-					<input
-						id="bus"
-						name="bus"
-						type="checkbox"
-						placeholder="bus"
-						onChange={(event) => handleCheckbox(bus, setBus)}
-						value={bus}
-					/>
-				</label>
-			</div>
-			<div>
-				<label>
-					Train:
-					<input
-						id="train"
-						name="train"
-						type="checkbox"
-						placeholder="train"
-						onChange={(event) => handleCheckbox(train, setTrain)}
-						value={train}
-					/>
-				</label>
-			</div>
-			<div>
-				<label>
-					Tram:
-					<input
-						id="tram"
-						name="tram"
-						type="checkbox"
-						placeholder="tram"
-						onChange={(event) => handleCheckbox(tram, setTram)}
-						value={tram}
-					/>
-				</label>
-			</div>
-			<div>
-				<label>
-					Subway:
-					<input
-						id="subway"
-						name="subway"
-						type="checkbox"
-						placeholder="subway"
-						onChange={(event) => handleCheckbox(subway, setSubway)}
-						value={subway}
-					/>
-				</label>
-			</div>
-            <h2>Amenities :</h2>
-            <div>
-				<label>
-					WiFi:
-					<input
-						id="hasWiFi"
-						name="hasWiFi"
-						type="checkbox"
-						placeholder="hasWiFi"
-						onChange={(event) => handleCheckbox(hasWiFi, setHasWiFi)}
-						value={hasWiFi}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					AC:
-					<input
-						id="hasAC"
-						name="hasAC"
-						type="checkbox"
-						placeholder="hasAC"
-						onChange={(event) => handleCheckbox(hasAC, setHasAC)}
-						value={hasAC}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Heating:
-					<input
-						id="hasHeating"
-						name="hasHeating"
-						type="checkbox"
-						placeholder="hasHeating"
-						onChange={(event) => handleCheckbox(hasHeating, setHasHeating)}
-						value={hasHeating}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Kitchen:
-					<input
-						id="hasKitchen"
-						name="hasKitchen"
-						type="checkbox"
-						placeholder="hasKitchen"
-						onChange={(event) => handleCheckbox(hasKitchen, setHasKitchen)}
-						value={hasKitchen}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Television:
-					<input
-						id="hasTV"
-						name="hasTV"
-						type="checkbox"
-						placeholder="hasTV"
-						onChange={(event) => handleCheckbox(hasTV, setHasTV)}
-						value={hasTV}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Parking:
-					<input
-						id="hasParking"
-						name="hasParking"
-						type="checkbox"
-						placeholder="hasParking"
-						onChange={(event) => handleCheckbox(hasParking, setHasParking)}
-						value={hasParking}
-					/>
-				</label>
-			</div>
-            <div>
-				<label>
-					Elevator:
-					<input
-						id="hasElevator"
-						name="hasElevator"
-						type="checkbox"
-						placeholder="hasElevator"
-						onChange={(event) => handleCheckbox(hasElevator, setHasElevator)}
-						value={hasElevator}
-					/>
-				</label>
-			</div>
-			<button id="submit" type="button" onClick={() => onSubmit()}>
-				Add rental
-			</button>
-			<div> <a href = 'https://localhost:3000/host/hostHome'>Homepage</a> </div>
+        <>
+         <div className="host-new-rental-bg">
+            <div className="new-rental-header">Add new rental</div>
+            <button className = "button submit-new-rental"  id="submit" type="button" onClick={() => onSubmit()}>
+                Submit new rental
+            </button>
+            <div className="host-details-box">
+                <div className="details-section1">
+                    <h2>Basic : </h2>
+                    <p>
+                        <label>
+                            Title 
+                            <input
+                                id="new title"
+                                name="new title"
+                                type="text"
+                                placeholder="new title"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setTitle(null);
+                                    else setTitle(event.target.value);
+                                }}
+                                value={title}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Base price 
+                            <input
+                                id="newBasePrice"
+                                name="newBasePrice"
+                                type="number"
+                                placeholder="newBasePrice"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBasePrice(null);
+                                    else setBasePrice(event.target.value);
+                                }}
+                                value={basePrice}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Charge per person 
+                            <input
+                                id="NewChargePerPerson"
+                                name="NewChargePerPerson"
+                                type="number"
+                                placeholder="NewChargePerPerson"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setChargePerPerson(null);
+                                    else setChargePerPerson(event.target.value);
+                                }}
+                                value={chargePerPerson}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Max guests 
+                            <input
+                                id="NewMaxGuests"
+                                name="NewMaxGuests"
+                                type="number"
+                                placeholder="NewMaxGuests"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setMaxGuests(null);
+                                    else setMaxGuests(event.target.value);
+                                }}
+                                value={maxGuests}
+                            />
+                        </label>
+                    </p>
+                    <p>Available dates 
+                        <MultipleDatePicker
+                            value={availableDates}
+                            onChange={dates => {
+                                const tempDates = [];
+                                dates.forEach((date) => {
+                                    let month = date.month;
+                                    let day = date.day;
+                                    if (parseInt(date.day) < 10) day = "0" + date.day;
+                                    if (parseInt(date.month) < 10) month = "0" + date.month;
+                                    tempDates.push(date.year + "-" + month + "-" + day);
+                                })
+                                setAvailableDates(tempDates);
+                            }}
+                            multiple
+                            minDate={new Date()}
+                        />
+                    </p>
+                </div>
+
+                <div className="details-section1">
+                    <h2>Space :</h2>
+                    <p>
+                        <label>
+                            Beds 
+                            <input
+                                id="NewBeds"
+                                name="NewBeds"
+                                type="number"
+                                placeholder="NewBeds"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBeds(null);
+                                    else setBeds(event.target.value);
+                                }}
+                                value={beds}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Bedrooms:
+                            <input
+                                id="Bedrooms"
+                                name="Bedrooms"
+                                type="number"
+                                placeholder="Bedrooms"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBedrooms(null);
+                                    else setBedrooms(event.target.value);
+                                }}
+                                value={bedrooms}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Bathrooms:
+                            <input
+                                id="Bathrooms"
+                                name="Bathrooms"
+                                type="number"
+                                placeholder="Bathrooms"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBathrooms(null);
+                                    else setBathrooms(event.target.value);
+                                }}
+                                value={bathrooms}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label for="type" >
+                        Type 
+                        </label>
+                        <select name="type" id="type" value={type} onChange={(event) => setType(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value="privateRoom">privateRoom</option>
+                            <option value="publicRoom">Public Room</option>
+                            <option value="house">House</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasLivingRoom" >
+                        Has Living Room  
+                        </label>
+						<input
+                                id="hasLivingRoom"
+                                name="hasLivingRoom"
+                                type="checkbox"
+                                placeholder="hasLivingRoom"
+                                onChange={(event) => {handleCheckbox(hasLivingRoom, setHasLivingRoom)}}
+                                value={surfaceArea}
+                            />
+                    </p>
+                    <p>
+                        <label>
+                            Surface area:
+                            <input
+                                id="SurfaceArea"
+                                name="SurfaceArea"
+                                type="number"
+                                placeholder="SurfaceArea"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setSurfaceArea(null);
+                                    else setSurfaceArea(event.target.value);
+                                }}
+                                value={surfaceArea}
+                            />
+                        </label>
+                    </p>
+                </div>
+
+                <div className="details-section2">
+                    <h2>Description : </h2>
+                    <p>
+                        <label>
+                            Description:
+                            <input
+                                id="Description"
+                                name="Description"
+                                type="text"
+                                placeholder="Description"
+                                onChange={(event) => {
+                                    setDescription(event.target.value);
+                                }}
+                                value={description}
+                            />
+                        </label>
+                    </p>
+                </div>
+
+                <div className="details-section2">
+                    <h2>Rules :</h2>
+                    <p>
+                        <label for="allowSmoking" >
+                        Allow smoking 
+                        </label>
+						<input
+                                id="AllowSmoking"
+                                name="AllowSmoking"
+                                type="checkbox"
+                                placeholder="AllowSmoking"
+                                onChange={(event) => {handleCheckbox(allowSmoking, setAllowSmoking)}}
+                                value={surfaceArea}
+                            />
+                    </p>
+                    <p>
+                        <label for="allowPets" >
+                        Allow pets 
+                        </label>
+						<input
+                                id="AllowPets"
+                                name="AllowPets"
+                                type="checkbox"
+                                placeholder="AllowPets"
+                                onChange={(event) => {handleCheckbox(allowPets, setAllowPets)}}
+                                value={surfaceArea}
+                            />
+                    </p>
+                    <p>
+                        <label for="allowEvents" >
+                        Allow events 
+                        </label>
+						<input
+                                id="AllowEvents"
+                                name="AllowEvents"
+                                type="checkbox"
+                                placeholder="AllowEvents"
+                                onChange={(event) => {handleCheckbox(allowEvents, setAllowEvents)}}
+                                value={surfaceArea}
+                            />
+                    </p>
+                    <p>
+                        <label>
+                            Minimum days per booking 
+                            <input
+                                id="MinDays"
+                                name="MinDays"
+                                type="number"
+                                placeholder="MinDays"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setMinDays(null);
+                                    else setMinDays(event.target.value);
+                                }}
+                                value={minDays}
+                            />
+                        </label>
+                    </p>
+                </div>
+
+                <div className="details-section3">
+                    <h2>Location :</h2>
+                        <p>
+                            <label>
+                                City:
+                                <input
+                                    id="city"
+                                    name="city"
+                                    type="text"
+                                    placeholder="city"
+                                    onChange={(event) => {
+                                        if(event.target.value === "") setCity(null);
+                                        else setCity(event.target.value);
+                                    }}
+                                    value={city}
+                                />
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                               Neighbourhood:
+                                <input
+                                    id="neighbourhood"
+                                    name="neighbourhood"
+                                    type="text"
+                                    placeholder="neighbourhood"
+                                    onChange={(event) => {
+                                        if(event.target.value === "") setNeighbourhood(null);
+                                        else setNeighbourhood(event.target.value);
+                                    }}
+                                    value={neighbourhood}
+                                />
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                Street:
+                                <input
+                                    id="street"
+                                    name="street"
+                                    type="text"
+                                    placeholder="street"
+                                    onChange={(event) => {
+                                        if(event.target.value === "") setStreet(null);
+                                        else setStreet(event.target.value);
+                                    }}
+                                    value={street}
+                                />
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                Street Number:
+                                <input
+                                    id="StreetNumber"
+                                    name="StreetNumber"
+                                    type="number"
+                                    placeholder="StreetNumber"
+                                    onChange={(event) => {
+                                        if(event.target.value === "") setStreetNumber(null);
+                                        else setStreetNumber(event.target.value);
+                                    }}
+                                    value={streetNumber}
+                                />
+                            </label>
+                        </p>
+                        <p>
+                            <label>
+                                Floor No:
+                                <input
+                                    id="FloorNo"
+                                    name="FloorNo"
+                                    type="number"
+                                    placeholder="FloorNo"
+                                    onChange={(event) => {
+                                        if(event.target.value === "") setFloorNo(null);
+                                        else setFloorNo(event.target.value);
+                                    }}
+                                    value={floorNo}
+                                />
+                            </label>
+                        </p>
+                </div>
+                
+                <div className="details-section3">
+                    <h2>Map :</h2>
+                    <p>
+						<label>
+							Bus stop nearby
+						</label>
+						<input
+							id="bus"
+							name="bus"
+							type="checkbox"
+							placeholder="bus"
+							onChange={(event) => {handleCheckbox(bus, setBus)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Train stop nearby
+						</label>
+						<input
+							id="train"
+							name="train"
+							type="checkbox"
+							placeholder="train"
+							onChange={(event) => {handleCheckbox(train, setTrain)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Tram stop nearby
+						</label>
+						<input
+							id="tram"
+							name="tram"
+							type="checkbox"
+							placeholder="tram"
+							onChange={(event) => {handleCheckbox(tram, setTram)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Subway stop nearby
+						</label>
+						<input
+							id="subway"
+							name="subway"
+							type="checkbox"
+							placeholder="subway"
+							onChange={(event) => {handleCheckbox(subway, setSubway)}}
+							value={surfaceArea}
+						/>
+					</p>
+                </div>
+
+                <div className="details-section4">
+                    <h2>Photos </h2>
+                </div>
+
+                <div className="details-section4">
+                    <h2>Amenities :</h2>
+					<p>
+						<label>
+							Has WiFi
+						</label>
+						<input
+							id=" hasWiFi"
+							name=" hasWiFi"
+							type="checkbox"
+							placeholder=" hasWiFi"
+							onChange={(event) => {handleCheckbox( hasWiFi, setHasWiFi)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Has AC
+						</label>
+						<input
+							id=" hasAC"
+							name=" hasAC"
+							type="checkbox"
+							placeholder=" hasAC"
+							onChange={(event) => {handleCheckbox( hasAC, setHasAC)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Has Heating
+						</label>
+						<input
+							id=" hasHeating"
+							name=" hasHeating"
+							type="checkbox"
+							placeholder=" hasHeating"
+							onChange={(event) => {handleCheckbox( hasHeating, setHasHeating)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Has Kitchen
+						</label>
+						<input
+							id=" hasKitchen"
+							name=" hasKitchen"
+							type="checkbox"
+							placeholder=" hasKitchen"
+							onChange={(event) => {handleCheckbox( hasKitchen, setHasKitchen)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Has TV
+						</label>
+						<input
+							id=" hasTV"
+							name=" hasTV"
+							type="checkbox"
+							placeholder=" hasTV"
+							onChange={(event) => {handleCheckbox( hasTV, setHasTV)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Has Parking
+						</label>
+						<input
+							id=" hasParking"
+							name=" hasParking"
+							type="checkbox"
+							placeholder=" hasParking"
+							onChange={(event) => {handleCheckbox( hasParking, setHasParking)}}
+							value={surfaceArea}
+						/>
+					</p>
+					<p>
+						<label>
+							Has Elevator
+						</label>
+						<input
+							id=" hasElevator"
+							name=" hasElevator"
+							type="checkbox"
+							placeholder=" hasElevator"
+							onChange={(event) => {handleCheckbox( hasElevator, setHasElevator)}}
+							value={surfaceArea}
+						/>
+					</p>
+                </div>
+                    
+            </div>
+        </div>
 		</>
 	);
 }

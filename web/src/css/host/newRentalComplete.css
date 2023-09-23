@@ -1,0 +1,36 @@
+.new-rental-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 930px;
+    width: 1879px;
+    background-size : cover; 
+}
+
+.new-rental-box {
+    background-color: rgba(160, 190, 204, 0.774);
+    width: 500px;
+    height : 300px;
+    position: relative;
+    left : 600px;
+    top : 200px;
+}
+
+.new-rental-h2 {
+    position: relative;
+    top: 5px;
+    left: 60px;
+    font-size: 30px;
+    color: black(241, 237, 237);
+}
+
+.new-rental-complete-header {
+    position: relative;
+    top : 50px;
+    left : 45px;
+}
+
+.new-rental-complete-button{
+    position: relative;
+    top : 80px;
+    left: 160px;
+}
