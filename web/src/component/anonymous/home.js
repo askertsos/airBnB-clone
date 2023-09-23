@@ -55,12 +55,12 @@ function Home() {
 	const Search = () => {
 
 		if (dates === null){
-			alert("Select dates to procceed!");
+			alert("Select dates to proceed!");
 			return;
 		}
 
 		if (peopleCount === null){
-			alert("Select visitors amount to procceed!");
+			alert("Select visitors amount to proceed!");
 			return;
 		}
 

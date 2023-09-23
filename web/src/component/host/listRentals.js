@@ -100,7 +100,7 @@ function ListRentals() {
                             <option value={10}> 10 </option>
                         </select>
                     </button>
-                    <a href = 'https://localhost:3000/home'>
+                    <a href = 'https://localhost:3000/host/hostHome'>
                         <button className="button" id="submit" type="button">
                                 HomePage
                         </button>

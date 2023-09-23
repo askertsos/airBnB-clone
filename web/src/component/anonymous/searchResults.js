@@ -30,6 +30,8 @@ function SearchResults() {
 
 	useEffect(() => {
 
+        if (dates === null) navigate("/home");
+
         let specList = [];
 
         if (country !== null && country !== "null")
@@ -153,7 +155,6 @@ function SearchResults() {
         fetch("https://localhost:8080/search/", fetchOptions)
         .then((response) => response.json())
         .then(response => {
-            console.log(city);
             let tempList = [];
             response.content.map((rental) => {
                 let passesMaxCostCheck = true;
