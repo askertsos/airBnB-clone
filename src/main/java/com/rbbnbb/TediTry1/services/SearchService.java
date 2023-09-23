@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +34,6 @@ public class SearchService {
 
     public void addSearch(User user, SearchRequestDTO dto) throws IllegalArgumentException{
         Search newSearch = new Search();
-        String country = null;
-        String city = null;
-        String neighbourhood = null;
         LocalDate startDate = null;
         LocalDate endDate = null;
         Integer guests = null;
@@ -46,37 +44,51 @@ public class SearchService {
             String column = specDto.getColumn();
             String value = specDto.getValue();
             if(specDto.getOperation().equals(SpecificationDTO.Operation.JOIN)){ //This is a join operation so there may be information about the location (address)
-                if (column.equals("country")){
-                    country = value;
-                }
-                else if (column.equals("city")){
-                    city = value;
-                }
-                else if (column.equals("neighbourhood")){
-                    neighbourhood = value;
+                switch (column) {
+                    case "country" -> newSearch.setCountry(value);
+                    case "city" -> newSearch.setCity(value);
+                    case "neighbourhood" -> newSearch.setNeighbourhood(value);
                 }
                 continue;
             }
             if (specDto.getOperation().equals(SpecificationDTO.Operation.DATES)){
                 String[] dates = value.split(",");
                 if (dates.length != 2) throw new IllegalArgumentException();
-                startDate = LocalDate.parse(dates[0],dateTimeFormatter);
-                endDate = LocalDate.parse(dates[1],dateTimeFormatter);
+                try {
+                    startDate = LocalDate.parse(dates[0], dateTimeFormatter);
+                    endDate = LocalDate.parse(dates[1], dateTimeFormatter);
+                }
+                catch (DateTimeParseException d){
+                    throw new IllegalArgumentException();
+                }
+                newSearch.setStartDate(startDate);
+                newSearch.setEndDate(endDate);
                 continue;
             }
-            if (specDto.getOperation().equals(SpecificationDTO.Operation.LESS_THAN)){
+            if (specDto.getOperation().equals(SpecificationDTO.Operation.GREATER_OR_EQUAL)){
                 if (column.equals("maxGuests")) {
-                    guests = Integer.parseInt(value) - 1;
+                    try { guests = Integer.parseInt(value);}
+                    catch (NumberFormatException n){ throw new IllegalArgumentException();}
+                    newSearch.setGuests(guests);
                 }
+                continue;
+            }
+            if (specDto.getOperation().equals(SpecificationDTO.Operation.AMENITIES)){
+                boolean boolValue = Boolean.parseBoolean(specDto.getValue());
+                switch (specDto.getColumn()) {
+                    case "hasWiFi" -> newSearch.setHasWiFi(boolValue);
+                    case "hasAC" -> newSearch.setHasAC(boolValue);
+                    case "hasHeating" -> newSearch.setHasHeating(boolValue);
+                    case "hasKitchen" -> newSearch.setHasKitchen(boolValue);
+                    case "hasTV" -> newSearch.setHasTV(boolValue);
+                    case "hasParking" -> newSearch.setHasParking(boolValue);
+                    case "hasElevator" -> newSearch.setHasElevator(boolValue);
+                    default -> {} //do nothing
+                }
+
+
             }
         }
-
-        newSearch.setCountry(country);
-        newSearch.setCity(city);
-        newSearch.setNeighbourhood(neighbourhood);
-        newSearch.setStartDate(startDate);
-        newSearch.setEndDate(endDate);
-        newSearch.setGuests(guests);
 
         searchRepository.save(newSearch);
 

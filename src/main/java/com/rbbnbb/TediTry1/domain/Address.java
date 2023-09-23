@@ -7,6 +7,9 @@ public class Address {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
+
+    private String country;
+
     private String city;
     private String neighbourhood;
     private String street;
@@ -18,13 +21,15 @@ public class Address {
 
     public Address(Address address){
         this.id = address.getId();
+        this.country = address.getCountry();
         this.city = address.getCity();
         this.neighbourhood = address.getNeighbourhood();
         this.street = address.getStreet();
         this.number = address.getNumber();
         this.floorNo = address.getFloorNo();
     }
-    public Address(String city, String neighbourhood, String street, Integer number, Integer floorNo) {
+    public Address(String country, String city, String neighbourhood, String street, Integer number, Integer floorNo) {
+        this.country = country;
         this.city = city;
         this.neighbourhood = neighbourhood;
         this.street = street;
@@ -39,6 +44,14 @@ public class Address {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public String getCity() {

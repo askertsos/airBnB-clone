@@ -56,6 +56,11 @@ public class SpecificationService<T> {
                         predicates.add(greaterThan);
                         break;
 
+                    case GREATER_OR_EQUAL:
+                        Predicate greaterThanOrEqualTo = criteriaBuilder.greaterThanOrEqualTo(root.get(specDTO.getColumn()),specDTO.getValue());
+                        predicates.add(greaterThanOrEqualTo);
+                        break;
+
                     case LESS_THAN:
                         Predicate lessThan = criteriaBuilder.lessThan(root.get(specDTO.getColumn()),specDTO.getValue());
                         predicates.add(lessThan);
@@ -119,6 +124,12 @@ public class SpecificationService<T> {
 //                            inClause.value(date);
 //                        }
 //                        query.select(root).where(inClause);
+                    case AMENITIES:
+                    case BOOLEAN:
+                        boolean boolValue = Boolean.parseBoolean(specDTO.getValue());
+                        Predicate bool = criteriaBuilder.equal(root.get(specDTO.getColumn()),boolValue);
+                        predicates.add(bool);
+                        break;
 
                     default: throw new IllegalStateException("Invalid operator");
                 }

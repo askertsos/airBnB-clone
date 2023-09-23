@@ -24,9 +24,18 @@ public class Search {
 
     private Integer guests;
 
+    //Amenities
+    private Boolean hasWiFi;
+    private Boolean hasAC;
+    private Boolean hasHeating;
+    private Boolean hasKitchen;
+    private Boolean hasTV;
+    private Boolean hasParking;
+    private Boolean hasElevator;
+
     public Search() {}
 
-    public Search(Long id, String country, String city, String neighbourhood, LocalDate startDate, LocalDate endDate, Integer guests) {
+    public Search(Long id, String country, String city, String neighbourhood, LocalDate startDate, LocalDate endDate, Integer guests, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.id = id;
         this.country = country;
         this.city = city;
@@ -34,6 +43,13 @@ public class Search {
         this.startDate = startDate;
         this.endDate = endDate;
         this.guests = guests;
+        this.hasWiFi = hasWiFi;
+        this.hasAC = hasAC;
+        this.hasHeating = hasHeating;
+        this.hasKitchen = hasKitchen;
+        this.hasTV = hasTV;
+        this.hasParking = hasParking;
+        this.hasElevator = hasElevator;
     }
 
     public Long getId() {
@@ -90,5 +106,61 @@ public class Search {
 
     public void setGuests(Integer guests) {
         this.guests = guests;
+    }
+
+    public Boolean getHasWiFi() {
+        return hasWiFi;
+    }
+
+    public void setHasWiFi(Boolean hasWiFi) {
+        this.hasWiFi = hasWiFi;
+    }
+
+    public Boolean getHasAC() {
+        return hasAC;
+    }
+
+    public void setHasAC(Boolean hasAC) {
+        this.hasAC = hasAC;
+    }
+
+    public Boolean getHasHeating() {
+        return hasHeating;
+    }
+
+    public void setHasHeating(Boolean hasHeating) {
+        this.hasHeating = hasHeating;
+    }
+
+    public Boolean getHasKitchen() {
+        return hasKitchen;
+    }
+
+    public void setHasKitchen(Boolean hasKitchen) {
+        this.hasKitchen = hasKitchen;
+    }
+
+    public Boolean getHasTV() {
+        return hasTV;
+    }
+
+    public void setHasTV(Boolean hasTV) {
+        this.hasTV = hasTV;
+    }
+
+    public Boolean getHasParking() {
+        return hasParking;
+    }
+
+    public void setHasParking(Boolean hasParking) {
+        this.hasParking = hasParking;
+    }
+
+    public Boolean getHasElevator() {
+        return hasElevator;
+    }
+
+    public void setHasElevator(Boolean hasElevator) {
+        this.hasElevator = hasElevator;
     }
 }
