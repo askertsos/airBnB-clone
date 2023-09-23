@@ -8,6 +8,7 @@ import com.rbbnbb.TediTry1.dto.PageRequestDTO;
 import com.rbbnbb.TediTry1.dto.SearchRequestDTO;
 import com.rbbnbb.TediTry1.dto.SpecificationDTO;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
+import com.rbbnbb.TediTry1.repository.UserRepository;
 import com.rbbnbb.TediTry1.services.SearchService;
 import com.rbbnbb.TediTry1.services.SpecificationService;
 import com.rbbnbb.TediTry1.services.UserService;
@@ -36,11 +37,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/search")
 @CrossOrigin("*")
 public class SearchController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private SpecificationService<Rental> rentalSpecificationService;
@@ -55,12 +61,15 @@ public class SearchController {
     @GetMapping("/")
     public ResponseEntity<?> searchRentals(@RequestHeader("Authorization") String jwt, @RequestBody SearchRequestDTO dto){
 
-        try{
-            User user = userService.getUserByJwt(jwt).get();
-            searchService.addSearch(user,dto);
-        }
-        catch (IllegalArgumentException i){
-            return ResponseEntity.badRequest().build();
+        Optional<User> optionalUser = userService.getUserByJwt(jwt);
+        if (optionalUser.isPresent()){
+            try{
+                User user = optionalUser.get();
+                searchService.addSearch(user,dto);
+            }
+            catch (IllegalArgumentException i){
+                return ResponseEntity.badRequest().build();
+            }
         }
 
         Specification<Rental> searchSpecification = rentalSpecificationService.getSearchSpecification(dto);
@@ -72,5 +81,20 @@ public class SearchController {
 
         return ResponseEntity.ok().body(rentalPage);
 
+    }
+
+    @GetMapping("/{rentalId}/details")
+    public ResponseEntity<?> rentalInfo(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt){
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
+
+        Optional<User> optionalUser = userService.getUserByJwt(jwt);
+        if (optionalUser.isPresent()){
+
+
+        }
+
+        return ResponseEntity.ok().body(rental);
     }
 }
