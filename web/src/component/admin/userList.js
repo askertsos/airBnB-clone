@@ -67,59 +67,59 @@ function UserList() {
 
 	return (
 		<>
-			<h1> User list : </h1>
-            <div>
-                <ul>
-                    {users.map((data) => (
-                    <li key={data.id}>
-                        <p><a href={"https://localhost:3000/admin/user/" + data.id + "/details"}>{data.username}</a></p>
-                    </li>
-                ))}
-                </ul>
-            </div>
-            <div>
-                Current page : {pageNum + 1}
-            </div>
-            <div>
-                <button id="submit" type="button" onClick={() => nextPage()}>
+            <div className="searchList-admin-bg ">
+                <h2>Current page : {pageNum + 1}</h2>
+                <button className="button" id="submit" type="button" onClick={() => nextPage()}>
                         Next Page
                 </button>
-            </div>
-            <div>
-                <button id="submit" type="button" onClick={() => previousPage()}>
+                <button className="button" id="submit" type="button" onClick={() => previousPage()}>
                         Previous Page
                 </button>
-            </div>
-            <div>
                 {pageNum > 0 && 
                     <>
-                        <button id="submit" type="button" onClick={() => firstPage()}>
+                        <button className="button" id="submit" type="button" onClick={() => firstPage()}>
                                 First Page
                         </button>
                     </>
                 }
-            </div>
-            <div>
                 {pageNum < maxPage - 1 && 
                     <>
-                        <button id="submit" type="button" onClick={() => lastPage()}>
+                        <button className="button" id="submit" type="button" onClick={() => lastPage()}>
                                 Last Page
                         </button>
                     </>
                 }
+                <button className="button">
+                    <label for="numPages" >
+                        Users per page : 
+                    </label>
+                    <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
+                        <option value= {1}> 1 </option>
+                        <option value={2}> 2 </option>
+                        <option value={5}> 5 </option>
+                        <option value={10}> 10 </option>
+                    </select>
+                </button>
+                <a href = 'https://localhost:3000/admin/home'>
+                    <button className="button">
+                        Homepage
+                    </button>
+                </a>
+                <div>
+                    <ul>
+                        {users.map((data) => (
+                            <p>
+                                <a href={"https://localhost:3000/admin/user/" + data.id + "/details"}>
+                                    <button className="user-list">
+                                        <img className="admin-photo-field" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
+                                        <div className="admin-uname-field"> Username : {data.username} </div>
+                                    </button>
+                                </a>
+                            </p>
+                    ))}
+                    </ul>
+                </div>
             </div>
-            <div>
-                <label for="numPages" >
-					Users per page : 
-                </label>
-                <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
-                    <option value= {1}> 1 </option>
-                    <option value={2}> 2 </option>
-                    <option value={5}> 5 </option>
-                    <option value={10}> 10 </option>
-                </select>
-            </div>
-            <div> <a href = 'https://localhost:3000/admin/home'>Go back</a> </div>
 		</>
 	);
 }

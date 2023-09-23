@@ -30,6 +30,8 @@ function SearchResults() {
 
 	useEffect(() => {
 
+        console.log(hasElevator);
+
         if (dates === null) navigate("/home");
 
         let specList = [];
@@ -63,6 +65,13 @@ function SearchResults() {
                     column : "neighbourhood"
                 }
             );
+
+        specList.push(
+            {
+                value: dates,
+                operation : "DATES"
+            }
+        );
 
         if (hasWiFi !== null)
             specList.push(
@@ -127,13 +136,6 @@ function SearchResults() {
                 }
             );
 
-        specList.push(
-            {
-                value: dates,
-                operation : "DATES"
-            }
-        );
-
         const reqBody = {
             specificationList: specList,
             globalOperator : "AND",
@@ -192,8 +194,7 @@ function SearchResults() {
 
     const handleCheckbox = (boolVar, setBoolVar) => {
         if (boolVar === null) setBoolVar(true);
-		if (boolVar === true) setBoolVar(false);
-		else setBoolVar(true);
+		else setBoolVar(null);
 	}
 
 	if (loading === true){

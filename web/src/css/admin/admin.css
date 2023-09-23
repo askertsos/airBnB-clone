@@ -1,0 +1,60 @@
+.admin-bg {
+    background-image : url("../images/admin_background.jpg");
+    position:absolute;
+    height : 938px;
+    width: 1879px;
+    background-size : cover; 
+}
+
+.searchList-admin-bg {
+    background-image : url("../images/admin_background.jpg");
+    position:absolute;
+    height : 2200px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.list-users-btn {
+    position: relative;
+    top : 200px;
+    left : 650px;
+    background-color: rgb(112, 64, 156);
+}
+
+.admin-bar {
+    position: relative;
+    bottom : 500px;
+    background-color: rgb(106, 68, 116);
+}
+
+.user-list {
+    background-color: rgb(133, 24, 56);
+    width: 500px;
+    height: 200px;
+    position: relative;
+    left : 410px;
+    top : 20px;
+    cursor: pointer;
+    border: 3px solid rgb(8, 7, 7);
+    text-align: center;
+}
+
+.user-list:hover {
+    background-color: rgb(122, 48, 70);
+    color: rgb(8, 7, 7);
+}
+
+.admin-photo-field {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    right :140px;
+    top: 20px;
+}
+
+.admin-uname-field {
+    font-size: 30px;
+    position: relative;
+    bottom: 80px;
+    left: 90px;
+}
