@@ -36,8 +36,6 @@ public class User implements UserDetails {
 //    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    private Boolean isAuthenticatedHost;
-
     @JacksonXmlElementWrapper(localName = "authorities")
     @JacksonXmlProperty(localName = "authority")
     @ManyToMany(fetch = FetchType.EAGER)

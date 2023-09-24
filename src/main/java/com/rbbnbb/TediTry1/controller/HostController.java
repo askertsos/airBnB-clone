@@ -84,16 +84,10 @@ public class HostController {
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
         User host = userService.getUserByJwt(jwt).get();
 
-
         //Create new rental entity
         Rental newRental = new Rental(host,body);
 
         //Save first time to generate the id, which is used for the path of the photos
-
-        User host = userService.getUserByJwt(jwt).get();
-
-        Rental newRental = new Rental(body,host);
-
         rentalRepository.save(newRental);
 
         //Generate the full path of each photo based on the rental's id and then store them inside the rental entity

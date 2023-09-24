@@ -72,14 +72,10 @@ public class SpecificationService<T> {
                         break;
 
                     case DATES:
+                        String[] stringDates = specDTO.getValue().split(",");
                         //Convert them to LocalDate and insert them into a list
-                        List<LocalDate> datesList = new ArrayList<>();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        List<Predicate> predicateList = new ArrayList<>();
                         for (String stringDate: stringDates) {
                                 LocalDate localDate = LocalDate.parse(stringDate, formatter);
-                                datesList.add(localDate);
-                                System.out.println("Adding date " + localDate);
                                 predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
                         }
 //

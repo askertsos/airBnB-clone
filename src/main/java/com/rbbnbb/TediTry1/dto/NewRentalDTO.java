@@ -3,6 +3,7 @@ package com.rbbnbb.TediTry1.dto;
 import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Photo;
 import com.rbbnbb.TediTry1.domain.Rental;
+import jakarta.persistence.ElementCollection;
 
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,7 @@ public class NewRentalDTO {
     //Location
     private Address address;
     //map
+
     private List<String> publicTransport;
 
     //Amenities
@@ -50,7 +52,7 @@ public class NewRentalDTO {
 
     public NewRentalDTO() {}
 
-    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, List<String> photoPaths, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, String publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, List<String> photoPaths, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, List<String> publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;

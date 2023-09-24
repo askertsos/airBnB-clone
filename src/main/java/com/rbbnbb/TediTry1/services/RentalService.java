@@ -134,8 +134,9 @@ public class RentalService {
             rental.setAvailableDates(dates);
         }
 
-        for (String filePath:dto.getPhotoPaths()){
+        for (String filePath:dto.getPhotoPaths()) {
             photoRepository.save(new Photo(filePath));
+        }
           
         if (Objects.nonNull(dto.getAddress())){
             Address address = dto.getAddress();
@@ -172,6 +173,5 @@ public class RentalService {
         //Host and reviews cannot be altered
         rentalRepository.save(rental);
     }
-
 
 }
