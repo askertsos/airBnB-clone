@@ -21,7 +21,12 @@ function HostHome() {
 		.then((response) => {
 			let host = false;
 			let tenant = false;
-			response.map( (auth) => {
+			console.log(response);
+			if (response.isAuthenticatedHost === false) {
+				navigate("/auth/login/unauthenticatedHostLogin");
+				return;
+			}
+			response.Roles.map( (auth) => {
 				if (auth.authority === "HOST") host = true;
 				if (auth.authority === "TENANT") tenant = true;
 			})

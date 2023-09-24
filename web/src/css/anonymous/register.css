@@ -17,6 +17,12 @@
     border: 5px solid black;
 }
 
+.home-unauthorised-host{
+    position: relative;
+    top : 150px;
+    left : 140px;
+}
+
 .register-btn {
     width: 170px;
     height: 60px;

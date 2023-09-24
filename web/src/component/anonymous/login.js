@@ -24,16 +24,12 @@ const LoginPost = () => {
 		fetch("https://localhost:8080/auth/login", fetchOptions)
 		.then((response) => response.json())
 		.then(response => {
-			if( response.isHost === "true" && response.isAuthenticatedHost === "false"){
-				navigate("/auth/login/unauthenticatedHostLogin");
-				return;
-			}
-			else if( response.isAdmin === "true" ){
+			if( response.isAdmin === "true" ){
 				localStorage.setItem("jwt", response.jwt);
 				navigate("/admin/home");
 				return;
 			}
-			else if( response.isHost === "true" && response.isTenant === "true" && response.isAuthenticatedHost === "true" ){
+			else if( response.isHost === "true" && response.isTenant === "true"){
 				localStorage.setItem("jwt", response.jwt);
 				navigate("/host/bothHome");
 				return;

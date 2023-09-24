@@ -134,8 +134,10 @@ public class RentalService {
             rental.setAvailableDates(dates);
         }
 
-        for (String filePath:dto.getPhotoPaths()) {
-            photoRepository.save(new Photo(filePath));
+        if (Objects.nonNull(dto.getPhotoPaths())) {
+            for (String filePath : dto.getPhotoPaths()) {
+                photoRepository.save(new Photo(filePath));
+            }
         }
           
         if (Objects.nonNull(dto.getAddress())){
