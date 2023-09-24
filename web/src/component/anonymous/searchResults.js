@@ -21,6 +21,7 @@ function SearchResults() {
     const [hasTV,setHasTV] = useState(null);
     const [hasParking,setHasParking] = useState(null);
     const [hasElevator,setHasElevator] = useState(null);
+    const [newSearch,setNewSearch] = useState(true);
 
     const dates = localStorage.getItem("search_dates");
     const country = localStorage.getItem("search_country");
@@ -29,154 +30,154 @@ function SearchResults() {
     const peopleCount = localStorage.getItem("search_peopleCount");
 
 	useEffect(() => {
+        if (newSearch === true){
+            if (dates === null || peopleCount === null) navigate("/home");
 
-        if (dates === null || peopleCount === null) navigate("/home");
+            let specList = [];
 
-        let specList = [];
+            if (country !== null && country !== "null")
+                specList.push(
+                    {
+                        value: country,
+                        operation: "JOIN",
+                        joinTable : "address",
+                        column : "country"
+                    }
+                );
 
-        if (country !== null && country !== "null")
+            if (city !== null && city !== "null")
+                specList.push(
+                    {
+                        value: city,
+                        operation: "JOIN",
+                        joinTable : "address",
+                        column : "city"
+                    }
+                );
+
+            if (neighbourhood !== null && neighbourhood !== "null")
+                specList.push(
+                    {
+                        value: neighbourhood,
+                        operation: "JOIN",
+                        joinTable : "address",
+                        column : "neighbourhood"
+                    }
+                );
+
+            if (hasWiFi !== null)
+                specList.push(
+                    {
+                        value: hasWiFi,
+                        operation: "AMENITIES",
+                        column : "hasWiFi"
+                    }
+                );
+
+            if (hasAC !== null)
+                specList.push(
+                    {
+                        value: hasAC,
+                        operation: "AMENITIES",
+                        column : "hasAC"
+                    }
+                );
+
+            if (hasElevator !== null)
+                specList.push(
+                    {
+                        value: hasElevator,
+                        operation: "AMENITIES",
+                        column : "hasElevator"
+                    }
+                );
+
+            if (hasHeating !== null)
+                specList.push(
+                    {
+                        value: hasHeating,
+                        operation: "AMENITIES",
+                        column : "hasHeating"
+                    }
+                );
+
+            if (hasTV !== null)
+                specList.push(
+                    {
+                        value: hasTV,
+                        operation: "AMENITIES",
+                        column : "hasTV"
+                    }
+                );
+
+            if (hasParking !== null)
+                specList.push(
+                    {
+                        value: hasParking,
+                        operation: "AMENITIES",
+                        column : "hasParking"
+                    }
+                );
+
+            if (hasKitchen !== null)
+                specList.push(
+                    {
+                        value: hasKitchen,
+                        operation: "AMENITIES",
+                        column : "hasKitchen"
+                    }
+                );
+
             specList.push(
                 {
-                    value: country,
-                    operation: "JOIN",
-                    joinTable : "address",
-                    column : "country"
+                    value: dates,
+                    operation : "DATES"
                 }
             );
 
-        if (city !== null && city !== "null")
-            specList.push(
-                {
-                    value: city,
-                    operation: "JOIN",
-                    joinTable : "address",
-                    column : "city"
+            const reqBody = {
+                specificationList: specList,
+                globalOperator : "AND",
+                pageRequestDTO : {
+                    pageNo : pageNum,
+                    pageSize : 10,
+                    sort : "ASC",
+                    sortByColumn : "id"
                 }
-            );
+            };
 
-        if (neighbourhood !== null && neighbourhood !== "null")
-            specList.push(
-                {
-                    value: neighbourhood,
-                    operation: "JOIN",
-                    joinTable : "address",
-                    column : "neighbourhood"
-                }
-            );
+            const fetchOptions = {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                method: "post",
+                body: JSON.stringify(reqBody),
+            };
+            console.log(fetchOptions);
+            fetch("https://localhost:8080/search/", fetchOptions)
+            .then((response) => response.json())
+            .then(response => {
+                console.log(response);
+                let tempList = [];
+                response.content.map((rental) => {
+                    let passesMaxCostCheck = true;
+                    let passesTypeCheck = true;
+                    if ( maxCost !== null && (rental.chargePerPerson * parseInt(peopleCount, 10)) > maxCost) passesMaxCostCheck = false;
+                    if ( type !== null && rental.type !== type) passesTypeCheck = false;
+                    if ( passesMaxCostCheck && passesTypeCheck) tempList.push(rental);
+                });
 
-        if (hasWiFi !== null)
-            specList.push(
-                {
-                    value: hasWiFi,
-                    operation: "AMENITIES",
-                    column : "hasWiFi"
-                }
-            );
-
-        if (hasAC !== null)
-            specList.push(
-                {
-                    value: hasAC,
-                    operation: "AMENITIES",
-                    column : "hasAC"
-                }
-            );
-
-        if (hasElevator !== null)
-            specList.push(
-                {
-                    value: hasElevator,
-                    operation: "AMENITIES",
-                    column : "hasElevator"
-                }
-            );
-
-        if (hasHeating !== null)
-            specList.push(
-                {
-                    value: hasHeating,
-                    operation: "AMENITIES",
-                    column : "hasHeating"
-                }
-            );
-
-        if (hasTV !== null)
-            specList.push(
-                {
-                    value: hasTV,
-                    operation: "AMENITIES",
-                    column : "hasTV"
-                }
-            );
-
-        if (hasParking !== null)
-            specList.push(
-                {
-                    value: hasParking,
-                    operation: "AMENITIES",
-                    column : "hasParking"
-                }
-            );
-
-        if (hasKitchen !== null)
-            specList.push(
-                {
-                    value: hasKitchen,
-                    operation: "AMENITIES",
-                    column : "hasKitchen"
-                }
-            );
-
-        specList.push(
-            {
-                value: dates,
-                operation : "DATES"
-            }
-        );
-
-        const reqBody = {
-            specificationList: specList,
-            globalOperator : "AND",
-            pageRequestDTO : {
-                pageNo : pageNum,
-                pageSize : 10,
-                sort : "ASC",
-                sortByColumn : "id"
-            }
-        };
-        console.log(reqBody);
-        const fetchOptions = {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            method: "post",
-            body: JSON.stringify(reqBody),
-        };
-        fetch("https://localhost:8080/search/", fetchOptions)
-        .then((response) => response.json())
-        .then(response => {
-            let tempList = [];
-            response.content.map((rental) => {
-                let passesMaxCostCheck = true;
-                let passesTypeCheck = true;
-                if ( maxCost !== null && (rental.chargePerPerson * parseInt(peopleCount, 10)) > maxCost) passesMaxCostCheck = false;
-                if ( type !== null && rental.type !== type) passesTypeCheck = false;
-                if ( passesMaxCostCheck && passesTypeCheck) tempList.push(rental);
-            });
-
-            setMaxPage(response.totalPages);
-            setRentals(tempList);
-            setLoading(false);
-        })
-        .catch((message) => {
-            console.log(message);
-            navigate("/");
-        })
-	}, [pageNum, hasAC, hasWiFi, hasElevator, hasHeating, hasKitchen, hasParking, hasTV, type, maxCost]);
-
-    const newSearch = () => {
-        return;
-    }
+                setMaxPage(response.totalPages);
+                setRentals(tempList);
+                setLoading(false);
+                setNewSearch(false);
+            })
+            .catch((message) => {
+                console.log(message);
+                navigate("/");
+            })
+        }
+	}, [pageNum, hasAC, hasWiFi, hasElevator, hasHeating, hasKitchen, hasParking, hasTV, type, maxCost, newSearch]);
 
     const nextPage = () => {
         if (pageNum + 1 < maxPage) setPageNum(pageNum + 1);
@@ -351,6 +352,7 @@ function SearchResults() {
                             />
                         </label>
                     </div>
+                    <button className="button" onClick={() => setNewSearch(true)}>Submit filters</button>
                 </div>
 
                 <div>
