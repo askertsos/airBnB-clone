@@ -133,6 +133,22 @@ public class RentalController {
         return ResponseEntity.ok().body(review);
     }
 
+    @GetMapping("/{rentalId}/message_history")
+    public ResponseEntity<?> viewMessageHistory(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt){
+        User tenant = userService.getUserByJwt(jwt).get();
+
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
+        if (optionalMessageHistory.isEmpty()){
+            return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
+        }
+        MessageHistory messageHistory = optionalMessageHistory.get();
+        return ResponseEntity.ok().body(messageHistory);
+    }
+
     @PostMapping("/{rentalId}/message_host")
     @Transactional
     public ResponseEntity<?> messageHost(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody String text){

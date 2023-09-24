@@ -41,6 +41,11 @@ public class MessageHistory {
         this.messageSet.add(message);
     }
 
+    public MessageHistory(User tenant, Rental rental){
+        this.tenant = tenant;
+        this.rental = rental;
+    }
+
     public Long getId() {
         return id;
     }
