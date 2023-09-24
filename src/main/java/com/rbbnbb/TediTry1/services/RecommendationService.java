@@ -388,12 +388,48 @@ public class RecommendationService {
         //rental => 5% appearances
         //avgGuests => -2 OR 2
 
-        final double rentalWeight = 100d;
+        final double rentalWeight = 50d;
         final double countryWeight = 1d;
-        final double cityWeight = 5d;
+        final double cityWeight = 3d;
         final double neighbourhoodWeight = 25d;
-        double avgGuestsWeight = 5d;
-        final double booleanWeight = 2d;
+        double avgGuestsWeight = 1.5;
+        double booleanWeight = 0.7;
+        double wifiWeight, acWeight, heatingWeight, kitchenWeight, tvWeight, parkingWeight, elevatorWeight;
+
+        double avgGuests = 0d;
+
+        //Represents how many times the tenant "ticked" each respective box relative to the number of total searches
+        //higher frequency -> stronger correlation -> attribute is more important
+        double wifiFreq = 0d;
+        double acFreq = 0d;
+        double heatingFreq = 0d;
+        double kitchenFreq = 0d;
+        double tvFreq = 0d;
+        double parkingFreq = 0d;
+        double elevatorFreq = 0d;
+
+        for (Search s: searchList) {
+            Integer guests = s.getGuests();
+
+            Boolean hasWiFi = s.getHasWiFi();
+            Boolean hasAC = s.getHasAC();
+            Boolean hasHeating = s.getHasHeating();
+            Boolean hasKitchen = s.getHasKitchen();
+            Boolean hasTV = s.getHasTV();
+            Boolean hasParking = s.getHasParking();
+            Boolean hasElevator = s.getHasElevator();
+
+            avgGuests += guests / (double) searchList.size();
+
+            if (Objects.nonNull(hasWiFi) && hasWiFi) wifiFreq += 1 / (double) searchList.size();
+            if (Objects.nonNull(hasAC) && hasAC) acFreq += 1 / (double) searchList.size();
+            if (Objects.nonNull(hasHeating) && hasHeating) heatingFreq += 1 / (double) searchList.size();
+            if (Objects.nonNull(hasKitchen) && hasKitchen) kitchenFreq += 1 / (double) searchList.size();
+            if (Objects.nonNull(hasTV) && hasTV) tvFreq += 1 / (double) searchList.size();
+            if (Objects.nonNull(hasParking) && hasParking) parkingFreq += 1 / (double) searchList.size();
+            if (Objects.nonNull(hasElevator) && hasWiFi) elevatorFreq += 1 / (double) searchList.size();
+        }
+
 
         for (int j=0; j<allRentals.size(); j++) {
             Rental rental = allRentals.get(j);
@@ -407,66 +443,51 @@ public class RecommendationService {
             double countryFreq = 0d;
             double cityFreq = 0d;
             double neighbourhoodFreq = 0d;
-            double avgGuests = 0d;
-            double wifiFreq = 0d;
-            double acFreq = 0d;
-            double heatingFreq = 0d;
-            double kitchenFreq = 0d;
-            double tvFreq = 0d;
-            double parkingFreq = 0d;
-            double elevatorFreq = 0d;
-            double rentalFreq = Collections.frequency(rentalsVisited, rental) / (double) rentalsVisited.size();
+
+
+            int totalVisits = 0;
+            int rentalVisits = 0;
+            Map<Rental,Integer> rentalMap = searchHistory.getRentalMap();
+            for(Map.Entry<Rental,Integer> entry : rentalMap.entrySet()){
+                totalVisits += entry.getValue();
+                if (entry.getKey().equals(rental)) rentalVisits = entry.getValue();
+            }
+            double rentalFreq = rentalVisits / (double) totalVisits;
 
 
             //Count the frequency(percentage of searches where a value appears) for each value.
-            //A for loop is used instead of Collections.frequency to only iterate through the list once and reduce the complexity
+            //A for loop is used instead of Collections.frequency to improve time complexity by only iterating through the list once
             for (Search s: searchList) {
                 String country = s.getCountry();
                 String city = s.getCity();
                 String neighbourhood = s.getNeighbourhood();
-
-                Integer guests = s.getGuests();
-
-                Boolean hasWiFi = s.getHasWiFi();
-                Boolean hasAC = s.getHasAC();
-                Boolean hasHeating = s.getHasHeating();
-                Boolean hasKitchen = s.getHasKitchen();
-                Boolean hasTV = s.getHasTV();
-                Boolean hasParking = s.getHasParking();
-                Boolean hasElevator = s.getHasElevator();
 
                 Address address = rental.getAddress();
                 if (Objects.nonNull(country) && country.equals(address.getCountry())) countryFreq += 1/(double)searchList.size();
                 if (Objects.nonNull(city) && city.equals(address.getCity())) cityFreq += 1/(double)searchList.size();
                 if (Objects.nonNull(neighbourhood) && neighbourhood.equals(address.getNeighbourhood())) neighbourhoodFreq += 1/(double)searchList.size();
 
-                avgGuests += guests / (double) searchList.size();
-
-                if (Objects.nonNull(hasWiFi) && hasWiFi) wifiFreq += 1 / (double) searchList.size();
-                if (Objects.nonNull(hasAC) && hasAC) acFreq += 1 / (double) searchList.size();
-                if (Objects.nonNull(hasHeating) && hasHeating) heatingFreq += 1 / (double) searchList.size();
-                if (Objects.nonNull(hasKitchen) && hasKitchen) kitchenFreq += 1 / (double) searchList.size();
-                if (Objects.nonNull(hasTV) && hasTV) tvFreq += 1 / (double) searchList.size();
-                if (Objects.nonNull(hasParking) && hasParking) parkingFreq += 1 / (double) searchList.size();
-                if (Objects.nonNull(hasElevator) && hasWiFi) elevatorFreq += 1 / (double) searchList.size();
             }
-//            double countryFreq = Collections.frequency(searchList.stream().map(Search::getCountry).toList(), rental.getAddress().getCountry()) / (double) searchList.size();
-//            double cityFreq = Collections.frequency(searchList.stream().map(Search::getCity).toList(), rental.getAddress().getCity()) / (double) searchList.size();
-//            double neighbourhoodFreq = Collections.frequency(searchList.stream().map(Search::getNeighbourhood).toList(), rental.getAddress().getNeighbourhood()) / (double) searchList.size();
-//
-//            //Average number of guests in searches
-//            double averageGuests = 0;
-//            OptionalDouble average = searchList.stream().mapToDouble(Search::getGuests).average();
-//            if (average.isPresent()) averageGuests = average.getAsDouble();
+
             if (rental.getMaxGuests() < avgGuests) avgGuestsWeight = -avgGuestsWeight;
+            if (rental.getHasWiFi()) wifiWeight = wifiFreq; else wifiWeight = 1 - wifiFreq;
+            if (rental.getHasAC()) acWeight =acFreq; else acWeight = 1 - acFreq;
+            if (rental.getHasHeating()) heatingWeight = heatingFreq; else heatingWeight = 1 - heatingFreq;
+            if (rental.getHasKitchen()) kitchenWeight = kitchenFreq; else kitchenWeight = 1 - kitchenFreq;
+            if (rental.getHasTV()) tvWeight = tvFreq; else tvWeight = 1 - tvFreq;
+            if (rental.getHasParking()) parkingWeight = parkingFreq; else parkingWeight = 1 - parkingFreq;
+            if (rental.getHasElevator()) elevatorWeight = elevatorFreq; else elevatorWeight = 1 - elevatorFreq;
+
+
             double similarityScore = rentalWeight*rentalFreq
                     + countryWeight*countryFreq
                     + cityWeight*cityFreq
                     + neighbourhoodWeight*neighbourhoodFreq
                     + avgGuestsWeight
-                    + booleanWeight * (wifiFreq + acFreq + heatingFreq + kitchenFreq + tvFreq + parkingFreq + elevatorFreq);
+                    + booleanWeight * (wifiWeight + acWeight + heatingWeight + kitchenWeight + tvWeight + parkingWeight + elevatorWeight);
 
-            double rating = sigmoidFunction(similarityScore);
+            double rating = ratingSigmoid(similarityScore);
+            System.out.println("rating is " + rating);
             R[userIndex][j] = new RentalInfo(rental,rating);
         }
 
@@ -550,14 +571,15 @@ public class RecommendationService {
         return rentalList.subList(0,last);
     }
 
+
     //x simulates similarity with past searches, return value simulates expected rating
     //high similarity -> high rating, capped in range [1,5] to simulate star rating in reviews
-    private Double sigmoidFunction(double x){
+    private Double ratingSigmoid(double x){
         final double lambda = 0.7; //True sigmoid when lambda = 1. Lambda --> inf => sign function, Lambda --> 0 => y=0.5
         final double offset = 5d; //Without it, sigmoid(0) would return 3. Now it returns 0.000... and sigmoid(offset) = 3
                                   //Offset essentially acts as protection against high scores with low x. higher offset -> higher x needed for good rating.
-        final double newX = x - offset;
-        double sigmoid = 1 / (1 + lambda * Math.exp(newX)); //ranges between 0 and 1
+        final double newX = lambda*(x - offset);
+        double sigmoid = 1 / (1 + Math.exp(newX)); //ranges between 0 and 1
         return 4 * sigmoid + 1; //finally ranges between 1 and 5
     }
 

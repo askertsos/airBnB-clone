@@ -120,6 +120,7 @@ public class AuthenticationService {
             body.put("isHost", userRepository.findByUsername(username).get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("HOST")) ? "true" : "false");
             body.put("isAdmin", userRepository.findByUsername(username).get().getAuthorities().stream().allMatch(a -> a.getAuthority().equals("ADMIN")) ? "true" : "false");
 
+//            recommendationService.recommendBasedOnSearchHistory((User)auth.getPrincipal());
 
             return ResponseEntity.ok()
                                  .body(body);

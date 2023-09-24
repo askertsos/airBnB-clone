@@ -67,9 +67,10 @@ public class SearchController {
 
     @PostMapping("/")
     public ResponseEntity<?> searchRentals(@Nullable @RequestHeader("Authorization") String jwt, @RequestBody SearchRequestDTO dto){
-
+        System.out.println("in SearchRentals");
         Optional<User> optionalUser = userService.getUserByJwt(jwt);
         if (optionalUser.isPresent()){
+            System.out.println("user is present");
             try{
                 User user = optionalUser.get();
                 searchService.addSearch(user,dto);
@@ -78,6 +79,7 @@ public class SearchController {
                 return ResponseEntity.badRequest().build();
             }
         }
+        System.out.println("outside of if");
 
         Specification<Rental> searchSpecification = rentalSpecificationService.getSearchSpecification(dto);
 
