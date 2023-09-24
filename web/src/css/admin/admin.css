@@ -9,7 +9,7 @@
 .searchList-admin-bg {
     background-image : url("../images/admin_background.jpg");
     position:absolute;
-    height : 2200px;
+    height : 2350px;
     width: 1864px;
     background-size : cover; 
 }
@@ -79,7 +79,7 @@
 .user-details-box {
     background-color: rgb(133, 24, 56);
     width: 900px;
-    height: 500px;
+    height: 580px;
     position: relative;
     left : 400px;
     top : 130px;
