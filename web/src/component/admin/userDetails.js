@@ -70,28 +70,40 @@ function UserDetails() {
 
     return (
         <>
-            <h1>User Details :</h1>
-            <div>
-                <ul>
-                <li key={user.id}>
-                    <p>Id : {user.id}</p>
-                    <p>First name : {user.first_name}</p>
-                    <p>Last name : {user.last_name}</p>
-                    <p>E-mail : {user.email}</p>
-                    <p>Phone Number : {user.phoneNumber}</p>
-                    {user.authorities.map( (roles) => <p>Role : {roles.authority}</p>)}
-                    { isHost === "true" &&
-                        <p>Authenticated host : {String(user.isAuthenticatedHost)}</p>
-                    }
-                </li>
-                </ul>
-            </div>
-            { isHost === "true" &&
-                <div>
-                    <button onClick={() => activateHost()}> Activate Host </button>
+            <div className="searchDetails-admin-bg">
+                <div className="user-details-box">
+                    <div className="user-details-fields">
+                        <p>
+                            <div key={user.id}>
+                                <p>Id : {user.id}</p>
+                                <p>First name : {user.first_name}</p>
+                                <p>Last name : {user.last_name}</p>
+                                <p>E-mail : {user.email}</p>
+                                <p>Phone Number : {user.phoneNumber}</p>
+                                {user.authorities.map( (roles) => <p>Role : {roles.authority}</p>)}
+                                { isHost === "true" &&
+                                    <p>Authenticated host : {String(user.isAuthenticatedHost)}</p>
+                                }
+                            </div>
+                        </p>
+                    </div>
                 </div>
-            }
-            <a href="https://localhost:3000/admin/user/list">User List</a>
+                { isHost === "true" &&
+                    <button className="button activate-user" onClick={() => activateHost()}> 
+                        Activate Host 
+                    </button>
+                }
+                <a href="https://localhost:3000/admin/user/list">
+                    <button className="button backList-admin">
+                        User list
+                    </button>
+                </a>
+                <a href="https://localhost:3000/admin/home">
+                    <button className="button homepage-admin-user">
+                        Homepage
+                    </button>
+                </a>
+            </div>
         </>
     )
 

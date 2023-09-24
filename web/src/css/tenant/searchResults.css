@@ -1,8 +1,7 @@
 .searchList-bg {
-    /* background-color: rgb(120, 120, 190); */
     background-image : url("../images/home_background.jpg");
     position:absolute;
-    height : 1800px;
+    height : 2350px;
     width: 1864px;
     background-size : cover; 
 }
@@ -68,4 +67,10 @@
     position: relative;
     left : 140px;
     top : 20px;
+}
+
+.host-rental-list {
+    position: relative;
+    top : 0px;
+    left : 410px;
 }

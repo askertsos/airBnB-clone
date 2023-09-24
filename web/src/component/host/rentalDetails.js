@@ -142,193 +142,264 @@ function RentalDetails() {
 
     return (
         <>
-            <h1>View/Change Rental Details :</h1>
-            <div>
-                <ul>
-                <li key={rental.id}>
+         <div className="host-details-bg">
+            <div className="details-header view-header">View rental info</div>
+            <a href="https://localhost:3000/host/rental/list">
+                <button className="button backToListHost">
+                    Back to rental list
+                </button>
+            </a>
+            <div className="host-details-box">
+                <div className="details-section1">
                     <h2>Basic : </h2>
-                        <p>Title : {rental.title}</p>
-                        <p>
-                            <label>
-                                Change title :
-                                <input
-                                    id="new title"
-                                    name="new title"
-                                    type="text"
-                                    placeholder="new title"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setTitle(null);
-                                        else setTitle(event.target.value);
-                                    }}
-                                    value={title}
-                                />
-                            </label>
-                        </p>
-                        <p>Base price : {rental.basePrice}</p>
-                        <p>
-                            <label>
-                                Change base price:
-                                <input
-                                    id="newBasePrice"
-                                    name="newBasePrice"
-                                    type="number"
-                                    placeholder="newBasePrice"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setBasePrice(null);
-                                        else setBasePrice(event.target.value);
-                                    }}
-                                    value={basePrice}
-                                />
-                            </label>
-                        </p>
-                        <p>Charge per person : {rental.chargePerPerson}</p>
-                        <p>
-                            <label>
-                                Change charge per person:
-                                <input
-                                    id="NewChargePerPerson"
-                                    name="NewChargePerPerson"
-                                    type="number"
-                                    placeholder="NewChargePerPerson"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setChargePerPerson(null);
-                                        else setChargePerPerson(event.target.value);
-                                    }}
-                                    value={chargePerPerson}
-                                />
-                            </label>
-                        </p>
-                        <p>Max guests : {rental.maxGuests}</p>
-                        <p>
-                            <label>
-                                Change max guests:
-                                <input
-                                    id="NewMaxGuests"
-                                    name="NewMaxGuests"
-                                    type="number"
-                                    placeholder="NewMaxGuests"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setMaxGuests(null);
-                                        else setMaxGuests(event.target.value);
-                                    }}
-                                    value={maxGuests}
-                                />
-                            </label>
-                        </p>
-                        <p>View/Change Available dates : 
-                            <MultipleDatePicker
-                                value={selectedDates}
-                                onChange={dates => {
-                                    const tempDates = [];
-                                    dates.forEach((date) => {
-                                        let month = date.month;
-                                        let day = date.day;
-                                        if (parseInt(date.day) < 10) day = "0" + date.day;
-                                        if (parseInt(date.month) < 10) month = "0" + date.month;
-                                        tempDates.push(date.year + "-" + month + "-" + day);
-                                    })
-                                    setAvailableDates(tempDates);
-                                }}
-                                multiple
-                                minDate={new Date()}
-                            />
-                        </p>
+                    <p>Title : {rental.title}</p>
+                    <p>Base price : {rental.basePrice}</p>
+                    <p>Charge per person : {rental.chargePerPerson}</p>
+                    <p>Max guests : {rental.maxGuests}</p>
+                    <p>View Available dates 
+                        <MultipleDatePicker
+                            value={rental.availableDates}
+                            minDate={new Date()}
+                        />
+                    </p>
+                </div>
 
+                <div className="details-section1">
                     <h2>Space :</h2>
                         <p>Beds : {rental.beds}</p>
-                        <p>
-                            <label>
-                                Change beds:
-                                <input
-                                    id="NewBeds"
-                                    name="NewBeds"
-                                    type="number"
-                                    placeholder="NewBeds"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setBeds(null);
-                                        else setBeds(event.target.value);
-                                    }}
-                                    value={beds}
-                                />
-                            </label>
-                        </p>
                         <p>Bedrooms : {rental.bedrooms}</p>
-                        <p>
-                            <label>
-                                Change bedrooms:
-                                <input
-                                    id="NewBedrooms"
-                                    name="NewBedrooms"
-                                    type="number"
-                                    placeholder="NewBedrooms"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setBedrooms(null);
-                                        else setBedrooms(event.target.value);
-                                    }}
-                                    value={bedrooms}
-                                />
-                            </label>
-                        </p>
                         <p>Bathrooms : {rental.bathrooms}</p>
-                        <p>
-                            <label>
-                                Change bathrooms:
-                                <input
-                                    id="NewBathrooms"
-                                    name="NewBathrooms"
-                                    type="number"
-                                    placeholder="NewBathrooms"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setBathrooms(null);
-                                        else setBathrooms(event.target.value);
-                                    }}
-                                    value={bathrooms}
-                                />
-                            </label>
-                        </p>
                         <p>Type : {rental.type === "publicRoom" && <>Public room</>} {rental.type === "privateRoom" && <>Private room</>} {rental.type === "house" && <>House</>}</p>
-                        <p>
-                            <label for="type" >
-                            Change type 
-                            </label>
-                            <select name="type" id="type" value={type} onChange={(event) => setType(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value="privateRoom">privateRoom</option>
-                                <option value="publicRoom">Public Room</option>
-                                <option value="house">House</option>
-                            </select>
-                        </p>
                         <p>Has Living Room : {rental.hasLivingRoom === true && <>True</>} {rental.hasLivingRoom === false && <>False</>}</p>
-                        <p>
-                            <label for="hasLivingRoom" >
-                            Change Has Living Room  
-                            </label>
-                            <select name="hasLivingRoom" id="hasLivingRoom" value={hasLivingRoom} onChange={(event) => setHasLivingRoom(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>Doesn't have</option>
-                                <option value={true}>Has</option>
-                            </select>
-                        </p>
                         <p>Surface area : {rental.surfaceArea}</p>
-                        <p>
-                            <label>
-                                Change surface area:
-                                <input
-                                    id="NewSurfaceArea"
-                                    name="NewSurfaceArea"
-                                    type="number"
-                                    placeholder="NewSurfaceArea"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setSurfaceArea(null);
-                                        else setSurfaceArea(event.target.value);
-                                    }}
-                                    value={surfaceArea}
-                                />
-                            </label>
-                        </p>
+                </div>
 
+                <div className="details-section2">
                     <h2>Description : </h2>
-                    <p>Description : {rental.description}</p>
+                    <p>{rental.description}</p>
+                </div>
+
+                <div className="details-section2">
+                    <h2>Rules :</h2>
+                        <p>Allow smoking : {rental.allowSmoking === true && <>True</>} {rental.allowSmoking === false && <>False</>}</p>
+                        <p>Allow pets : {rental.allowPets === true && <>True</>} {rental.allowPets === false && <>False</>}</p>
+                        <p>Allow events : {rental.allowEvents === true && <>True</>} {rental.allowEvents === false && <>False</>}</p>
+                        <p>Min days : {rental.minDays}</p>
+                </div>
+
+                <div className="details-section3">
+                    <h2>Location :</h2>
+                        <p>City : {rental.address.city}</p>
+                        <p>Neighbourhood : {rental.address.neighbourhood}</p>
+                        <p>Street : {rental.address.street}</p>
+                        <p>Street Number : {rental.address.number}</p>
+                        <p>Floor No : {rental.address.floorNo}</p>
+                </div>
+                
+                <div className="details-section3">
+                    <h2>Map :</h2>
+                        <p>Public transport : {rental.publicTransport.map((item) => (<> {item} </>))}</p>
+                </div>
+
+                <div className="details-section4">
+                    <h2>Photos :</h2>
+                        <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                </div>
+
+                <div className="details-section4">
+                    <h2>Amenities :</h2>
+                        <p>Has WiFi : {rental.hasWiFi === true && <>True</>} {rental.hasWiFi === false && <>False</>}</p>
+                        <p>Has AC : {rental.hasAC === true && <>True</>} {rental.hasAC === false && <>False</>}</p>
+                        <p>Has heating : {rental.hasHeating === true && <>True</>} {rental.hasHeating === false && <>False</>}</p>
+                        <p>Has kitchen : {rental.hasKitchen === true && <>True</>} {rental.hasKitchen === false && <>False</>}</p>
+                        <p>Has TV : {rental.hasTV === true && <>True</>} {rental.hasTV === false && <>False</>}</p>
+                        <p>Has parking : {rental.hasParking === true && <>True</>} {rental.hasParking === false && <>False</>}</p>
+                        <p>Has elevator : {rental.hasElevator === true && <>True</>} {rental.hasElevator === false && <>False</>}</p>
+                </div>
+                    
+            </div>
+            <div className="change-header">Change rental info</div>
+            <button className = "button submit-host-changes"  id="submit" type="button" onClick={() => updateRental()}>
+                Submit changes
+            </button>
+            <div className="host-details-box2">
+                <div className="details-section1">
+                    <h2>Basic : </h2>
+                    <p>
+                        <label>
+                            Change title 
+                            <input
+                                id="new title"
+                                name="new title"
+                                type="text"
+                                placeholder="new title"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setTitle(null);
+                                    else setTitle(event.target.value);
+                                }}
+                                value={title}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Change base price 
+                            <input
+                                id="newBasePrice"
+                                name="newBasePrice"
+                                type="number"
+                                placeholder="newBasePrice"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBasePrice(null);
+                                    else setBasePrice(event.target.value);
+                                }}
+                                value={basePrice}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Change charge per person 
+                            <input
+                                id="NewChargePerPerson"
+                                name="NewChargePerPerson"
+                                type="number"
+                                placeholder="NewChargePerPerson"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setChargePerPerson(null);
+                                    else setChargePerPerson(event.target.value);
+                                }}
+                                value={chargePerPerson}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Change max guests 
+                            <input
+                                id="NewMaxGuests"
+                                name="NewMaxGuests"
+                                type="number"
+                                placeholder="NewMaxGuests"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setMaxGuests(null);
+                                    else setMaxGuests(event.target.value);
+                                }}
+                                value={maxGuests}
+                            />
+                        </label>
+                    </p>
+                    <p>Change Available dates 
+                        <MultipleDatePicker
+                            value={selectedDates}
+                            onChange={dates => {
+                                const tempDates = [];
+                                dates.forEach((date) => {
+                                    let month = date.month;
+                                    let day = date.day;
+                                    if (parseInt(date.day) < 10) day = "0" + date.day;
+                                    if (parseInt(date.month) < 10) month = "0" + date.month;
+                                    tempDates.push(date.year + "-" + month + "-" + day);
+                                })
+                                setAvailableDates(tempDates);
+                            }}
+                            multiple
+                            minDate={new Date()}
+                        />
+                    </p>
+                </div>
+
+                <div className="details-section1">
+                    <h2>Space :</h2>
+                    <p>
+                        <label>
+                            Change beds 
+                            <input
+                                id="NewBeds"
+                                name="NewBeds"
+                                type="number"
+                                placeholder="NewBeds"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBeds(null);
+                                    else setBeds(event.target.value);
+                                }}
+                                value={beds}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Change bedrooms:
+                            <input
+                                id="NewBedrooms"
+                                name="NewBedrooms"
+                                type="number"
+                                placeholder="NewBedrooms"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBedrooms(null);
+                                    else setBedrooms(event.target.value);
+                                }}
+                                value={bedrooms}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label>
+                            Change bathrooms:
+                            <input
+                                id="NewBathrooms"
+                                name="NewBathrooms"
+                                type="number"
+                                placeholder="NewBathrooms"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setBathrooms(null);
+                                    else setBathrooms(event.target.value);
+                                }}
+                                value={bathrooms}
+                            />
+                        </label>
+                    </p>
+                    <p>
+                        <label for="type" >
+                        Change type 
+                        </label>
+                        <select name="type" id="type" value={type} onChange={(event) => setType(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value="privateRoom">privateRoom</option>
+                            <option value="publicRoom">Public Room</option>
+                            <option value="house">House</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasLivingRoom" >
+                        Change Has Living Room  
+                        </label>
+                        <select name="hasLivingRoom" id="hasLivingRoom" value={hasLivingRoom} onChange={(event) => setHasLivingRoom(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>Doesn't have</option>
+                            <option value={true}>Has</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label>
+                            Change surface area:
+                            <input
+                                id="NewSurfaceArea"
+                                name="NewSurfaceArea"
+                                type="number"
+                                placeholder="NewSurfaceArea"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setSurfaceArea(null);
+                                    else setSurfaceArea(event.target.value);
+                                }}
+                                value={surfaceArea}
+                            />
+                        </label>
+                    </p>
+                </div>
+
+                <div className="details-section2">
+                    <h2>Description : </h2>
                     <p>
                         <label>
                             Change description:
@@ -344,61 +415,60 @@ function RentalDetails() {
                             />
                         </label>
                     </p>
+                </div>
 
+                <div className="details-section2">
                     <h2>Rules :</h2>
-                        <p>Allow smoking : {rental.allowSmoking === true && <>True</>} {rental.allowSmoking === false && <>False</>}</p>
-                        <p>
-                            <label for="allowSmoking" >
-                            Change allow smoking 
-                            </label>
-                            <select name="allowSmoking" id="allowSmoking" value={allowSmoking} onChange={(event) => setAllowSmoking(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>Not Allowed</option>
-                                <option value={true}>Allowed</option>
-                            </select>
-                        </p>
-                        <p>Allow pets : {rental.allowPets === true && <>True</>} {rental.allowPets === false && <>False</>}</p>
-                        <p>
-                            <label for="allowPets" >
-                            Change allow pets 
-                            </label>
-                            <select name="allowPets" id="allowPets" value={allowPets} onChange={(event) => setAllowPets(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>Not Allowed</option>
-                                <option value={true}>Allowed</option>
-                            </select>
-                        </p>
-                        <p>Allow events : {rental.allowEvents === true && <>True</>} {rental.allowEvents === false && <>False</>}</p>
-                        <p>
-                            <label for="allowEvents" >
-                            Change allow events 
-                            </label>
-                            <select name="allowEvents" id="allowEvents" value={allowEvents} onChange={(event) => setAllowEvents(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>Not Allowed</option>
-                                <option value={true}>Allowed</option>
-                            </select>
-                        </p>
-                        <p>Min days : {rental.minDays}</p>
-                        <p>
-                            <label>
-                                Change minimum days per booking:
-                                <input
-                                    id="NewMinDays"
-                                    name="NewMinDays"
-                                    type="number"
-                                    placeholder="NewMinDays"
-                                    onChange={(event) => {
-                                        if(event.target.value === "") setMinDays(null);
-                                        else setMinDays(event.target.value);
-                                    }}
-                                    value={minDays}
-                                />
-                            </label>
-                        </p>
+                    <p>
+                        <label for="allowSmoking" >
+                        Change allow smoking 
+                        </label>
+                        <select name="allowSmoking" id="allowSmoking" value={allowSmoking} onChange={(event) => setAllowSmoking(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>Not Allowed</option>
+                            <option value={true}>Allowed</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="allowPets" >
+                        Change allow pets 
+                        </label>
+                        <select name="allowPets" id="allowPets" value={allowPets} onChange={(event) => setAllowPets(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>Not Allowed</option>
+                            <option value={true}>Allowed</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="allowEvents" >
+                        Change allow events 
+                        </label>
+                        <select name="allowEvents" id="allowEvents" value={allowEvents} onChange={(event) => setAllowEvents(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>Not Allowed</option>
+                            <option value={true}>Allowed</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label>
+                            Change minimum days per booking 
+                            <input
+                                id="NewMinDays"
+                                name="NewMinDays"
+                                type="number"
+                                placeholder="NewMinDays"
+                                onChange={(event) => {
+                                    if(event.target.value === "") setMinDays(null);
+                                    else setMinDays(event.target.value);
+                                }}
+                                value={minDays}
+                            />
+                        </label>
+                    </p>
+                </div>
 
+                <div className="details-section3">
                     <h2>Location :</h2>
-                        <p>City : {rental.address.city}</p>
                         <p>
                             <label>
                                 Change city:
@@ -415,7 +485,6 @@ function RentalDetails() {
                                 />
                             </label>
                         </p>
-                        <p>Neighbourhood : {rental.address.neighbourhood}</p>
                         <p>
                             <label>
                                 Change neighbourhood:
@@ -432,7 +501,6 @@ function RentalDetails() {
                                 />
                             </label>
                         </p>
-                        <p>Street : {rental.address.street}</p>
                         <p>
                             <label>
                                 Change street:
@@ -449,7 +517,6 @@ function RentalDetails() {
                                 />
                             </label>
                         </p>
-                        <p>Street Number : {rental.address.number}</p>
                         <p>
                             <label>
                                 Change street Number:
@@ -466,7 +533,6 @@ function RentalDetails() {
                                 />
                             </label>
                         </p>
-                        <p>Floor No : {rental.address.floorNo}</p>
                         <p>
                             <label>
                                 Change floor No:
@@ -483,12 +549,13 @@ function RentalDetails() {
                                 />
                             </label>
                         </p>
-                    
+                </div>
+                
+                <div className="details-section3">
                     <h2>Map :</h2>
-                        <p>Public transport : {rental.publicTransport.map((item) => (<> {item} </>))}</p>
-                        <p>
+                    <p>
                             <label for="bus" >
-                            Add/Remove bus from available public transport : 
+                            Add/Remove bus from available public transport 
                             </label>
                             <select name="bus" id="bus" onChange={(event) => setBus(event.target.value)}>
                                 <option value = {null}></option>
@@ -498,7 +565,7 @@ function RentalDetails() {
                         </p>
                         <p>
                             <label for="train" >
-                            Add/Remove train from available public transport : 
+                            Add/Remove train from available public transport 
                             </label>
                             <select name="train" id="train" value={train} onChange={(event) => setTrain(event.target.value)}>
                                 <option value = {null}></option>
@@ -508,7 +575,7 @@ function RentalDetails() {
                         </p>
                         <p>
                             <label for="tram" >
-                            Add/Remove tram from available public transport : 
+                            Add/Remove tram from available public transport 
                             </label>
                             <select name="tram" id="tram" value={tram} onChange={(event) => setTram(event.target.value)}>
                                 <option value = {null}></option>
@@ -518,7 +585,7 @@ function RentalDetails() {
                         </p>
                         <p>
                             <label for="subway" >
-                            Add/Remove subway from available public transport : 
+                            Add/Remove subway from available public transport 
                             </label>
                             <select name="subway" id="subway" value={subway} onChange={(event) => setSubway(event.target.value)}>
                                 <option value = {null}></option>
@@ -526,99 +593,89 @@ function RentalDetails() {
                                 <option value={true}>Add</option>
                             </select>
                         </p>
+                </div>
 
-                    <h2>Photos :</h2>
+                <div className="details-section4">
+                    <h2>Photos </h2>
                         <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                </div>
 
+                <div className="details-section4">
                     <h2>Amenities :</h2>
-                        <p>Has WiFi : {rental.hasWiFi === true && <>True</>} {rental.hasWiFi === false && <>False</>}</p>
-                        <p>
-                            <label for="hasWifi" >
-                            Change has WiFi
-                            </label>
-                            <select name="hasWiFi" id="hasWiFi" value={hasWiFi} onChange={(event) => setHasWiFi(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-                        <p>Has AC : {rental.hasAC === true && <>True</>} {rental.hasAC === false && <>False</>}</p>
-                        <p>
-                            <label for="hasAC" >
-                            Change has AC
-                            </label>
-                            <select name="hasAC" id="hasAC" value={hasAC} onChange={(event) => setHasAC(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-                        <p>Has heating : {rental.hasHeating === true && <>True</>} {rental.hasHeating === false && <>False</>}</p>
-                        <p>
-                            <label for="hasHeating" >
-                            Change has Heating
-                            </label>
-                            <select name="hasHeating" id="hasHeating" value={hasHeating} onChange={(event) => setHasHeating(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-                        <p>Has kitchen : {rental.hasKitchen === true && <>True</>} {rental.hasKitchen === false && <>False</>}</p>
-                        <p>
-                            <label for="hasKitchen" >
-                            Change has Kitchen
-                            </label>
-                            <select name="hasKitchen" id="hasKitchen" value={hasKitchen} onChange={(event) => setHasKitchen(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-                        <p>Has TV : {rental.hasTV === true && <>True</>} {rental.hasTV === false && <>False</>}</p>
-                        <p>
-                            <label for="hasTV" >
-                            Change has TV
-                            </label>
-                            <select name="hasTV" id="hasTV" value={hasTV} onChange={(event) => setHasTV(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-                        <p>Has parking : {rental.hasParking === true && <>True</>} {rental.hasParking === false && <>False</>}</p>
-                        <p>
-                            <label for="hasParking" >
-                            Change has Parking
-                            </label>
-                            <select name="hasParking" id="hasParking" value={hasParking} onChange={(event) => setHasParking(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-                        <p>Has elevator : {rental.hasElevator === true && <>True</>} {rental.hasElevator === false && <>False</>}</p>
-                        <p>
-                            <label for="hasElevator" >
-                            Change has Elevator
-                            </label>
-                            <select name="hasElevator" id="hasElevator" value={hasElevator} onChange={(event) => setHasElevator(event.target.value)}>
-                                <option value = {null}></option>
-                                <option value={false}>No</option>
-                                <option value={true}>Yes</option>
-                            </select>
-                        </p>
-
-                    <div>
-                        <button id="submit" type="button" onClick={() => updateRental()}>
-                            Submit changes
-                        </button>
-                    </div>
-
-                </li>
-                </ul>
+                    <p>
+                        <label for="hasWifi" >
+                        Change has WiFi
+                        </label>
+                        <select name="hasWiFi" id="hasWiFi" value={hasWiFi} onChange={(event) => setHasWiFi(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasAC" >
+                        Change has AC
+                        </label>
+                        <select name="hasAC" id="hasAC" value={hasAC} onChange={(event) => setHasAC(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasHeating" >
+                        Change has Heating
+                        </label>
+                        <select name="hasHeating" id="hasHeating" value={hasHeating} onChange={(event) => setHasHeating(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasKitchen" >
+                        Change has Kitchen
+                        </label>
+                        <select name="hasKitchen" id="hasKitchen" value={hasKitchen} onChange={(event) => setHasKitchen(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasTV" >
+                        Change has TV
+                        </label>
+                        <select name="hasTV" id="hasTV" value={hasTV} onChange={(event) => setHasTV(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasParking" >
+                        Change has Parking
+                        </label>
+                        <select name="hasParking" id="hasParking" value={hasParking} onChange={(event) => setHasParking(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                    <p>
+                        <label for="hasElevator" >
+                        Change has Elevator
+                        </label>
+                        <select name="hasElevator" id="hasElevator" value={hasElevator} onChange={(event) => setHasElevator(event.target.value)}>
+                            <option value = {null}></option>
+                            <option value={false}>No</option>
+                            <option value={true}>Yes</option>
+                        </select>
+                    </p>
+                </div>
+                    
             </div>
-            <a href="https://localhost:3000/host/rental/list">Rental List</a>
+        </div>
         </>
     )
 

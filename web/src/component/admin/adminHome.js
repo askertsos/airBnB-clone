@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "../../css/admin/admin.css"
+
 function AdminHome() {
 
 	const [loading, setLoading] = useState(true);
@@ -31,9 +33,20 @@ function AdminHome() {
 
 	return (
 		<>
-			<h1> Welcome to the admin site! </h1>
-			<div> See list of all users <a href = "https://localhost:3000/admin/user/list" >here</a> .</div>
-			<div> <a href = 'https://localhost:3000/auth/logout'>Logout</a> </div>
+			<div className="admin-bg">
+				<a href = "https://localhost:3000/admin/user/list" >
+					<button className="list-users-btn-admin">
+						List of users
+					</button>
+				</a>
+				<div className="main-bar admin-bar">
+					<a href = 'https://localhost:3000/auth/logout'>
+						<button className = "button">
+							Logout
+						</button>
+					</a>
+				</div>
+			</div>
 		</>
 	);
 }

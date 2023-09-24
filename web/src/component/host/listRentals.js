@@ -67,60 +67,65 @@ function ListRentals() {
 
 	return (
 		<>
-			<h1> Rental list : </h1>
-            <div>
-                <ul>
-                    {rentals.map((data) => (
-                    <li key={data.id}>
-                        <p><a href={"https://localhost:3000/host/rental/" + data.id + "/details"}>{data.title}</a></p>
-                    </li>
-                ))}
-                </ul>
-            </div>
-            <div>
-                Current page : {pageNum + 1}
-            </div>
-            <div>
-                <button id="submit" type="button" onClick={() => nextPage()}>
-                        Next Page
-                </button>
-            </div>
-            <div>
-                <button id="submit" type="button" onClick={() => previousPage()}>
-                        Previous Page
-                </button>
-            </div>
-            <div>
-                {pageNum > 0 && 
-                    <>
-                        <button id="submit" type="button" onClick={() => firstPage()}>
-                                First Page
+            <div className="searchList-bg">
+                <h2>Current page : {pageNum + 1}</h2>
+                    <button className="button" id="submit" type="button" onClick={() => nextPage()}>
+                            Next Page
+                    </button>
+                    <button className="button" id="submit" type="button" onClick={() => previousPage()}>
+                            Previous Page
+                    </button>
+                    {pageNum > 0 && 
+                        <>
+                            <button className="button" id="submit" type="button" onClick={() => firstPage()}>
+                                    First Page
+                            </button>
+                        </>
+                    }
+                    {pageNum < maxPage - 1 && 
+                        <>
+                            <button className="button" id="submit" type="button" onClick={() => lastPage()}>
+                                    Last Page
+                            </button>
+                        </>
+                    }
+                    <button className="button">
+                        <label for="numPages" >
+                            Rentals per page 
+                        </label>
+                        <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
+                            <option value= {1}> 1 </option>
+                            <option value={2}> 2 </option>
+                            <option value={5}> 5 </option>
+                            <option value={10}> 10 </option>
+                        </select>
+                    </button>
+                    <a href = 'https://localhost:3000/host/hostHome'>
+                        <button className="button" id="submit" type="button">
+                                HomePage
                         </button>
-                    </>
-                }
+                    </a>
+                    <div>
+                    <ul>
+                        {rentals.map((data) => (
+                            <p>
+                                <a href={"https://localhost:3000/host/rental/" + data.id + "/details"}>
+                                    <button className="rental host-rental-list">
+                                        <img className="rentalPic" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
+                                        <p className="rental-field1"> Title : {data.title} </p>
+                                        <p className="rental-field1"> Charge per person : {data.chargePerPerson} </p>
+                                        <p className="rental-field1"> Type : {data.type} </p>
+                                        <p className="rental-field2"> Number of beds : {data.beds} </p>
+                                        <p className="rental-field2"> Number of reviews : {data.reviews.length} </p>
+                                        <p className="rental-field2"> Rating : {data.rating} </p>
+                                    </button>
+                                </a>
+                            </p>
+                    ))}
+                    </ul>
+                </div>
             </div>
-            <div>
-                {pageNum < maxPage - 1 && 
-                    <>
-                        <button id="submit" type="button" onClick={() => lastPage()}>
-                                Last Page
-                        </button>
-                    </>
-                }
-            </div>
-            <div>
-                <label for="numPages" >
-					Rentals per page : 
-                </label>
-                <select name="numPages" id="pageSize" value={pageSize} onChange={(event) => changePageSize(event.target.value)}>
-                    <option value= {1}> 1 </option>
-                    <option value={2}> 2 </option>
-                    <option value={5}> 5 </option>
-                    <option value={10}> 10 </option>
-                </select>
-            </div>
-            <div> <a href = 'https://localhost:3000/host/hostHome'>Homepage</a> </div>
-		</>
+        </>
 	);
 }
 

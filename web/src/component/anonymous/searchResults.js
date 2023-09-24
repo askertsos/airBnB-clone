@@ -29,15 +29,14 @@ function SearchResults() {
     const peopleCount = localStorage.getItem("search_peopleCount");
 
 	useEffect(() => {
-        let specList = [];
-        specList.push(
-            {
-                value: dates,
-                operation : "DATES"
-            }
-        );
 
-        if (country !== null)
+        console.log(hasElevator);
+
+        if (dates === null || peopleCount === null) navigate("/home");
+
+        let specList = [];
+
+        if (country !== null && country !== "null")
             specList.push(
                 {
                     value: country,
@@ -47,7 +46,7 @@ function SearchResults() {
                 }
             );
 
-        if (city !== null)
+        if (city !== null && city !== "null")
             specList.push(
                 {
                     value: city,
@@ -57,7 +56,7 @@ function SearchResults() {
                 }
             );
 
-        if (neighbourhood !== null)
+        if (neighbourhood !== null && neighbourhood !== "null")
             specList.push(
                 {
                     value: neighbourhood,
@@ -66,6 +65,13 @@ function SearchResults() {
                     column : "neighbourhood"
                 }
             );
+
+        specList.push(
+            {
+                value: dates,
+                operation : "DATES"
+            }
+        );
 
         if (hasWiFi !== null)
             specList.push(
@@ -140,6 +146,7 @@ function SearchResults() {
                 sortByColumn : "id"
             }
         };
+        console.log(reqBody);
         const fetchOptions = {
             headers: {
                 "Content-Type": "application/json",
@@ -150,7 +157,6 @@ function SearchResults() {
         fetch("https://localhost:8080/search/", fetchOptions)
         .then((response) => response.json())
         .then(response => {
-            console.log(city);
             let tempList = [];
             response.content.map((rental) => {
                 let passesMaxCostCheck = true;
@@ -188,8 +194,7 @@ function SearchResults() {
 
     const handleCheckbox = (boolVar, setBoolVar) => {
         if (boolVar === null) setBoolVar(true);
-		if (boolVar === true) setBoolVar(false);
-		else setBoolVar(true);
+		else setBoolVar(null);
 	}
 
 	if (loading === true){
