@@ -30,8 +30,6 @@ function SearchResults() {
 
 	useEffect(() => {
 
-        console.log(hasElevator);
-
         if (dates === null || peopleCount === null) navigate("/home");
 
         let specList = [];
@@ -77,7 +75,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasWiFi,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasWiFi"
                 }
             );
@@ -86,7 +84,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasAC,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasAC"
                 }
             );
@@ -95,7 +93,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasElevator,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasElevator"
                 }
             );
@@ -104,7 +102,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasHeating,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasHeating"
                 }
             );
@@ -113,7 +111,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasTV,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasTV"
                 }
             );
@@ -122,7 +120,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasParking,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasParking"
                 }
             );
@@ -131,7 +129,7 @@ function SearchResults() {
             specList.push(
                 {
                     value: hasKitchen,
-                    operation: "EQUAL",
+                    operation: "AMENITIES",
                     column : "hasKitchen"
                 }
             );
