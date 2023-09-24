@@ -193,9 +193,10 @@ function NewRental() {
 					alert("Failed to add new rental.");
 				}
 			})
-			.catch((message) => {
-				alert(message);
-			});
+            .catch((message) => {
+                console.log(message);
+                navigate("/");
+            })
 	};
 
 	const handleCheckbox = (boolVar, setBoolVar) => {

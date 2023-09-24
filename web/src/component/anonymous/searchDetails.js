@@ -27,6 +27,10 @@ function SearchDetails() {
             setRental(response);
             setLoading(false);
         })
+        .catch((message) => {
+            console.log(message);
+            navigate("/");
+        })
 	}, [rentalId]);
 
     if(loading){

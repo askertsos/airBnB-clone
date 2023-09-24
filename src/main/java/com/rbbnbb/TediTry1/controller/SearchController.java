@@ -123,19 +123,19 @@ public class SearchController {
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
 
-        Optional<User> optionalUser = userService.getUserByJwt(jwt);
-        if (optionalUser.isPresent()){
-            User user = optionalUser.get();
-            Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
-            if (optionalSearchHistory.isEmpty()){
-                searchHistoryRepository.save(new SearchHistory(user,rental));
-            }
-            else{
-                SearchHistory searchHistory = optionalSearchHistory.get();
-                searchHistory.addRental(rental);
-                searchHistoryRepository.save(searchHistory);
-            }
-        }
+//        Optional<User> optionalUser = userService.getUserByJwt(jwt);
+//        if (optionalUser.isPresent()){
+//            User user = optionalUser.get();
+//            Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
+//            if (optionalSearchHistory.isEmpty()){
+//                searchHistoryRepository.save(new SearchHistory(user,rental));
+//            }
+//            else{
+//                SearchHistory searchHistory = optionalSearchHistory.get();
+//                searchHistory.addRental(rental);
+//                searchHistoryRepository.save(searchHistory);
+//            }
+//        }
 
         return ResponseEntity.ok().body(rental);
     }

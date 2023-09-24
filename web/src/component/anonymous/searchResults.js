@@ -64,13 +64,6 @@ function SearchResults() {
                 }
             );
 
-        specList.push(
-            {
-                value: dates,
-                operation : "DATES"
-            }
-        );
-
         if (hasWiFi !== null)
             specList.push(
                 {
@@ -134,6 +127,13 @@ function SearchResults() {
                 }
             );
 
+        specList.push(
+            {
+                value: dates,
+                operation : "DATES"
+            }
+        );
+
         const reqBody = {
             specificationList: specList,
             globalOperator : "AND",
@@ -167,6 +167,10 @@ function SearchResults() {
             setMaxPage(response.totalPages);
             setRentals(tempList);
             setLoading(false);
+        })
+        .catch((message) => {
+            console.log(message);
+            navigate("/");
         })
 	}, [pageNum, hasAC, hasWiFi, hasElevator, hasHeating, hasKitchen, hasParking, hasTV, type, maxCost]);
 
