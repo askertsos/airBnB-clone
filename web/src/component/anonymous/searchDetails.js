@@ -16,8 +16,7 @@ function SearchDetails() {
 	useEffect(() => {
 		const fetchOptions = {
 			headers: {
-				"Content-Type": "application/json",
-				"Authorization": "Bearer "  + localStorage.getItem("jwt"),
+				"Content-Type": "application/json"
 			},
 			method: "get"
 		};
@@ -108,12 +107,17 @@ function SearchDetails() {
                     </div>
                         
                 </div>
+                <a href="https://localhost:3000/search/results">
+                    <button className="button bookRental">
+                        Back to rental list
+                    </button>
+                </a>
                 <button className="button bookRental">
                         Book rental
                 </button>
-                <a href="https://localhost:3000/search/results">
-                    <button className="button backToList">
-                        Back to rental list
+                <a href = {"https://localhost:3000/tenant/" + rental.id + "/review"}>
+                    <button className="button bookRental">
+                            Add review
                     </button>
                 </a>
             </div>

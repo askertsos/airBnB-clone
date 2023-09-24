@@ -1,0 +1,42 @@
+.review-box {
+    background-color: burlywood;
+    border : 3px solid black;
+    width: 500px;
+    height: 500px;
+    position: relative;
+    top : 150px;
+    left : 600px;
+}
+
+.submit-review {
+    position: relative;
+    bottom: 48px;
+    right: 2px;
+}
+
+.review-header {
+    font-size: 30px;
+    position: relative;
+    left : 180px;
+    top : 100px;
+}
+
+.stars-header {
+    font-size: 30px;
+    position: relative;
+    left : 182px;
+    top : 10px;
+}
+
+.review-input {
+    width: 470px;
+    position: relative;
+    left : 10px;
+    top : 120px;
+}
+
+.stars-input {
+    position: relative;
+    left : 198px;
+    top : 20px;
+}
