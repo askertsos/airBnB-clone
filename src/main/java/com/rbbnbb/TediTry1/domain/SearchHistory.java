@@ -3,7 +3,9 @@ package com.rbbnbb.TediTry1.domain;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public class SearchHistory {
@@ -16,19 +18,19 @@ public class SearchHistory {
 
     @ElementCollection(targetClass = Search.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "history_searches", joinColumns = @JoinColumn(name = "search_id"))
-    private List<Search> searchList;
+    private List<Search> searchList = new ArrayList<>();
 
     @ElementCollection(targetClass = Rental.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "history_rentals", joinColumns = @JoinColumn(name = "rental_id"))
-    private List<Rental> rentalList; //Duplicate rental entries make correlation stronger
+    private Map<Rental,Integer> rentalMap = new HashMap<>(); //Duplicate rental entries make correlation stronger
 
     public SearchHistory() {}
 
-    public SearchHistory(Long id, User user, List<Search> searchList, List<Rental> rentalList) {
+    public SearchHistory(Long id, User user, List<Search> searchList, Map<Rental,Integer> rentalMap) {
         this.id = id;
         this.user = user;
         this.searchList = searchList;
-        this.rentalList = rentalList;
+        this.rentalMap = rentalMap;
     }
 
     public SearchHistory(User user, Search search){
@@ -39,8 +41,7 @@ public class SearchHistory {
 
     public SearchHistory(User user, Rental rental){
         this.user = user;
-        this.rentalList = new ArrayList<>();
-        this.rentalList.add(rental);
+        this.rentalMap.put(rental,1);
     }
 
     public void addSearch(Search search){
@@ -48,7 +49,9 @@ public class SearchHistory {
     }
 
     public void addRental(Rental rental){
-        this.rentalList.add(rental);
+        Integer appearances = this.rentalMap.get(rental);
+        if (appearances == null) appearances = 0;
+        this.rentalMap.put(rental,appearances+1);
     }
 
     public Long getId() {
@@ -75,11 +78,11 @@ public class SearchHistory {
         this.searchList = searchList;
     }
 
-    public List<Rental> getRentalList() {
-        return rentalList;
+    public Map<Rental,Integer> getRentalMap() {
+        return rentalMap;
     }
 
-    public void setRentalList(List<Rental> rentalList) {
-        this.rentalList = rentalList;
+    public void setRentalMap(Map<Rental,Integer> rentalMap) {
+        this.rentalMap = rentalMap;
     }
 }

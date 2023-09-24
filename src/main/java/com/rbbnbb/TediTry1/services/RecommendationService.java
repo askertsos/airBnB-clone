@@ -360,7 +360,7 @@ public class RecommendationService {
         }
         SearchHistory searchHistory = optionalSearchHistory.get();
         List<Search> searchList = searchHistory.getSearchList();
-        List<Rental> rentalsVisited = searchHistory.getRentalList();
+        List<Rental> rentalsVisited = new ArrayList<>(searchHistory.getRentalMap().keySet());
 
         List<Rental> allRentals = new ArrayList<>(rentalRepository.findAll());
 
@@ -392,7 +392,7 @@ public class RecommendationService {
         final double countryWeight = 1d;
         final double cityWeight = 5d;
         final double neighbourhoodWeight = 25d;
-        final double avgGuestsWeight = 5d;
+        double avgGuestsWeight = 5d;
         final double booleanWeight = 2d;
 
         for (int j=0; j<allRentals.size(); j++) {
@@ -415,6 +415,8 @@ public class RecommendationService {
             double tvFreq = 0d;
             double parkingFreq = 0d;
             double elevatorFreq = 0d;
+            double rentalFreq = Collections.frequency(rentalsVisited, rental) / (double) rentalsVisited.size();
+
 
             //Count the frequency(percentage of searches where a value appears) for each value.
             //A for loop is used instead of Collections.frequency to only iterate through the list once and reduce the complexity
@@ -448,148 +450,87 @@ public class RecommendationService {
                 if (Objects.nonNull(hasParking) && hasParking) parkingFreq += 1 / (double) searchList.size();
                 if (Objects.nonNull(hasElevator) && hasWiFi) elevatorFreq += 1 / (double) searchList.size();
             }
-//
-//            double rentalFreq = Collections.frequency(rentalsVisited, rental) / (double) rentalsVisited.size();
-//            double countryFreq = Collections.frequency(
-//                    searchList.
-//                            stream().
-//                            map(Search::getCountry).
-//                            toList(),
-//                    rental.
-//                            getAddress().
-//                            getCountry())
-//                    / (double) searchList.size();
-//
-//
-//            double cityFreq = Collections.frequency(
-//                    searchList.
-//                            stream().
-//                            map(Search::getCity).
-//                            toList(),
-//                    rental.
-//                            getAddress().
-//                            getCity())
-//                    / (double) searchList.size();
-//
-//            double neighbourhoodFreq = Collections.frequency(
-//                    searchList.
-//                            stream().
-//                            map(Search::getNeighbourhood).
-//                            toList(),
-//                    rental.
-//                            getAddress().
-//                            getNeighbourhood())
-//                    / (double) searchList.size();
+//            double countryFreq = Collections.frequency(searchList.stream().map(Search::getCountry).toList(), rental.getAddress().getCountry()) / (double) searchList.size();
+//            double cityFreq = Collections.frequency(searchList.stream().map(Search::getCity).toList(), rental.getAddress().getCity()) / (double) searchList.size();
+//            double neighbourhoodFreq = Collections.frequency(searchList.stream().map(Search::getNeighbourhood).toList(), rental.getAddress().getNeighbourhood()) / (double) searchList.size();
 //
 //            //Average number of guests in searches
 //            double averageGuests = 0;
 //            OptionalDouble average = searchList.stream().mapToDouble(Search::getGuests).average();
 //            if (average.isPresent()) averageGuests = average.getAsDouble();
-            double x = 0d;
+            if (rental.getMaxGuests() < avgGuests) avgGuestsWeight = -avgGuestsWeight;
+            double similarityScore = rentalWeight*rentalFreq
+                    + countryWeight*countryFreq
+                    + cityWeight*cityFreq
+                    + neighbourhoodWeight*neighbourhoodFreq
+                    + avgGuestsWeight
+                    + booleanWeight * (wifiFreq + acFreq + heatingFreq + kitchenFreq + tvFreq + parkingFreq + elevatorFreq);
 
+            double rating = sigmoidFunction(similarityScore);
+            R[userIndex][j] = new RentalInfo(rental,rating);
         }
 
-//
-//
-//            //Get all user reviews
-//            List<Review> userRentalReviews = new ArrayList<>(userReviews);
-//
-//            //Remove all that are not for this rental
-//            userRentalReviews.removeIf(r -> !r.getRental().equals(rental));
-//
-//            //if no reviews, base rating on past bookings
-//            if (userRentalReviews.isEmpty()){
-//
-//                //if no bookings, assign rating of 2
-//                if (!userBookedRentals.contains(rental)){
-//                    R[i][j] = new RentalInfo(rental,2d);
-//                    continue;
-//                }
-//
-//                //Base rating of booked rental
-//                final double base = 2.3;
-//                final double gainRate = 0.7;
-//                int nBookings = 0;
-//                for (Rental r: userBookedRentals) {
-//                    if (r.equals(rental)) nBookings++;
-//                }
-//                final double finalRating = Math.min(base + nBookings*gainRate,rentalsToRecommend);
-//                R[i][j] = new RentalInfo(rental,finalRating);
-//            }
-//            else{ //Base rating on latest review
-//                final double rating = getLastReviewRating(userRentalReviews);
-//                R[i][j] = new RentalInfo(rental,rating);
-//            }
-//        }
-//
-//        //for all rows in R
-//        for (int i = 1; i < allReviewers.size(); i++) {
-//            User reviewer = allReviewers.get(i);
-//
-//            //for all columns in R
-//            for (int j=0; j < allRentals.size(); j++){
-//                Rental rental = allRentals.get(j);
-//
-//                //Fill the two matrices with random values
-//                for (int k=0; k<K; k++) {
-//                    P[i][k] = new RentalInfo(rental, rClass.nextDouble());
-//                    Q[k][j] = new RentalInfo(rental, rClass.nextDouble());
-//                }
-//
-//                //Get all reviews made on this rental
-//                List<Review> reviewList = new ArrayList<>(rental.getReviews());
-//
-//                //Remove all reviews that were not made by current reviewer
-//                reviewList.removeIf(r -> !r.getReviewer().equals(reviewer));
-//
-//                if (reviewList.isEmpty()){
-//                    R[i][j] = new RentalInfo(rental,2d);
-//                    continue;
-//                }
-//                //rating = rating made in the last review
-//                final double rating = getLastReviewRating(reviewList);
-//                R[i][j] = new RentalInfo(rental,rating);
-//            }
-//        }
-//
-//        System.out.println("before matrix factorization");
-//        matrixFactorization(R,P,Q,K);
-//        System.out.println("after matrix factorization");
-//
-//        RentalInfo[][] dR = dotProduct(this.P,this.Q);
-//
-//        List<RentalInfo> rentalsOfInterest = new ArrayList<>();
-//        for (int j=0; j<dR[userIndex].length; j++) {
-//            if (!userBookedRentals.contains(dR[userIndex][j].getRental())){
-//                rentalsOfInterest.add(dR[userIndex][j]);
-//            }
-//        }
-//
-//        System.out.println("before sorting");
-//
-//        rentalsOfInterest.sort(new Comparator<RentalInfo>() {
-//            @Override
-//            public int compare(RentalInfo r1, RentalInfo r2) {
-//                //r2.compareTo(r1) because descending order is warranted
-//                return r2.getExpRating().compareTo(r1.getExpRating());
-//            }
-//        });
-//
-//        System.out.println("after sorting");
-//
-//        //Get first {rentalsToRecommend} or all rentals of interest, whichever is lower
-//        int last = Math.min(rentalsOfInterest.size(), rentalsToRecommend);
-//
-//        List<Rental> recommendedRentals = new ArrayList<>();
-//        rentalsOfInterest = rentalsOfInterest.subList(0,last);
-//        for (RentalInfo info: rentalsOfInterest) {
-//            recommendedRentals.add(info.getRental());
-//            System.out.println("Recommending rental: "+ info.getRental().getTitle());
-//        }
-//
-//        return recommendedRentals;
+        //for all rows in R
+        for (int i = 1; i < allReviewers.size(); i++) {
+            User reviewer = allReviewers.get(i);
 
-        return null;
+            //for all columns in R
+            for (int j=0; j < allRentals.size(); j++){
+                Rental rental = allRentals.get(j);
+
+                //Fill the two matrices with random values
+                for (int k=0; k<K; k++) {
+                    P[i][k] = new RentalInfo(rental, random.nextDouble());
+                    Q[k][j] = new RentalInfo(rental, random.nextDouble());
+                }
+
+                //Get all reviews made on this rental
+                List<Review> reviewList = new ArrayList<>(rental.getReviews());
+
+                //Remove all reviews that were not made by current reviewer
+                reviewList.removeIf(r -> !r.getReviewer().equals(reviewer));
+
+                if (reviewList.isEmpty()){
+                    R[i][j] = new RentalInfo(rental,2d);
+                    continue;
+                }
+                //rating = rating made in the last review
+                final double rating = getLastReviewRating(reviewList);
+                R[i][j] = new RentalInfo(rental,rating);
+            }
+        }
+
+        System.out.println("before matrix factorization");
+        matrixFactorization(R,P,Q,K);
+        System.out.println("after matrix factorization");
+
+        RentalInfo[][] dR = dotProduct(this.P,this.Q);
+
+        List<RentalInfo> rentalsOfInterest = new ArrayList<>(Arrays.asList(dR[userIndex]));
+
+        System.out.println("before sorting");
+
+        rentalsOfInterest.sort(new Comparator<RentalInfo>() {
+            @Override
+            public int compare(RentalInfo r1, RentalInfo r2) {
+                //r2.compareTo(r1) because descending order is warranted
+                return r2.getExpRating().compareTo(r1.getExpRating());
+            }
+        });
+
+        System.out.println("after sorting");
+
+        //Get first {rentalsToRecommend} or all rentals of interest, whichever is lower
+        int last = Math.min(rentalsOfInterest.size(), rentalsToRecommend);
+
+        List<Rental> recommendedRentals = new ArrayList<>();
+        rentalsOfInterest = rentalsOfInterest.subList(0,last);
+        for (RentalInfo info: rentalsOfInterest) {
+            recommendedRentals.add(info.getRental());
+            System.out.println("Recommending rental: "+ info.getRental().getTitle());
+        }
+
+        return recommendedRentals;
     }
 
     private List<Rental> recommendMostHighlyRated(){

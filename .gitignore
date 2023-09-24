@@ -63,3 +63,4 @@ build/
 
 ### VS Code ###
 .vscode/
+web/package-lock.json
