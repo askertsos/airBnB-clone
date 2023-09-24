@@ -8,9 +8,15 @@ import com.rbbnbb.TediTry1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 import com.rbbnbb.TediTry1.domain.Rental;
+
 
 
 import java.util.HashMap;
@@ -60,14 +66,12 @@ public class AdminController {
     @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getJson(){
         List<Rental> allRentals = rentalRepository.findAll();
-
         return ResponseEntity.ok(allRentals);
     }
 
     @GetMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<?> getXml(){
         List<Rental> allRentals = rentalRepository.findAll();
-
         return ResponseEntity.ok(allRentals);
     }
 

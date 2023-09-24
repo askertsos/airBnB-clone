@@ -44,12 +44,12 @@ public class UserController {
     private EntityManager entityManager;
 
 
-
     //--------------------------------------------------------------------------------------------
     //-----------------                    ALL USERS                    --------------------------
     //--------------------------------------------------------------------------------------------
 
     @GetMapping("/auth")
+
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
         User user = userService.getUserByJwt(jwt).get();
         return ResponseEntity.ok().body(user.getAuthorities());
@@ -58,6 +58,7 @@ public class UserController {
 
     @GetMapping("/profile")
     @Transactional
+
     public ResponseEntity<?> viewProfileUser(@RequestHeader("Authorization") String jwt){
         Optional<User> optionalUser = userService.getUserByJwt(jwt);
         User user = optionalUser.get();
@@ -78,8 +79,8 @@ public class UserController {
 
 
     @GetMapping("/hosts/{id}")
-    public ResponseEntity<?> getHostInfo(@PathVariable("id") Long id){
-        User host = userService.assertUserHasAuthority(id,"HOST");
+    public ResponseEntity<?> getHostInfo(@PathVariable("id") Long id) {
+        User host = userService.assertUserHasAuthority(id, "HOST");
         if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
 
         //Empty set is still a valid output
@@ -89,7 +90,5 @@ public class UserController {
         dto.setHostRentals(hostRentals);
 
         return ResponseEntity.ok().body(dto);
-
     }
-
 }

@@ -1,27 +1,38 @@
 package com.rbbnbb.TediTry1.dto;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class BookingDTO {
-    private List<String> dates;
+    private String startDate;
+    private String endDate;
     private Integer guests;
     private Double price;
 
     public BookingDTO() {}
 
-    public BookingDTO(List<String> dates, Integer guests, Double price) {
-        this.dates = dates;
+    public BookingDTO(String startDate, String endDate, Integer guests, Double price) {
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.guests = guests;
         this.price = price;
     }
 
-    public List<String> getDates() {
-        return dates;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setDates(List<String> dates) {
-        this.dates = dates;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public Integer getGuests() {
@@ -38,5 +49,9 @@ public class BookingDTO {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String toString() {
+        return "Booking: from " + this.startDate + " to " + this.endDate + " for " + this.guests + " guests.";
     }
 }

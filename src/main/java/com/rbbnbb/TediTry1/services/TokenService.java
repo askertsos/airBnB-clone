@@ -16,10 +16,7 @@ import java.util.stream.Collectors;
 public class TokenService {
 
     @Autowired
-    JwtDecoder jwtDecoder;
-
-    @Autowired
-    JwtEncoder jwtEncoder;
+    private JwtEncoder jwtEncoder;
 
     public String generateJWT(Authentication auth){
 

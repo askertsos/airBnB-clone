@@ -2,13 +2,18 @@ package com.rbbnbb.TediTry1.services;
 
 import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Booking;
+import com.rbbnbb.TediTry1.domain.Photo;
 import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.BookingDTO;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import com.rbbnbb.TediTry1.repository.BookingRepository;
+import com.rbbnbb.TediTry1.repository.PhotoRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.cglib.core.Local;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,18 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
 public class RentalService {
 
     @Bean
-    DateTimeFormatter dateTimeFormatter(){
-        return DateTimeFormatter.ofPattern("yyyy-MM-d");
+
+    public DateTimeFormatter dateTimeFormatter(){
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd");
     }
 
     @Autowired
@@ -43,49 +46,68 @@ public class RentalService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private PhotoRepository photoRepository;
+
+    public List<LocalDate> convertToLocalDate(List<String> stringList) throws DateTimeParseException{
+        List<LocalDate> bookingDates = new ArrayList<>();
+        for (String date : stringList) {
+            LocalDate localDate = LocalDate.parse(date, dateTimeFormatter());
+            bookingDates.add(localDate);
+        }
+        return bookingDates;
+    }
+
     //Constructs the new booking based on the user, rental and booking info.
-    //Returns the instance if all info is valid, null otherwise
-    public Booking constructBooking(String jwt, Long rentalId, BookingDTO bookingDTO){
+    //Returns new Booking instance if all info is valid, null otherwise
+    public Booking constructBooking(String jwt, Rental rental, BookingDTO bookingDTO, LocalDate startDate, LocalDate endDate){
 
-        //Find the rental
-        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if (optionalRental.isEmpty()) return null;
-        Rental rental = optionalRental.get();
-
-        //Find the user
-        User booker = userService.getUserByJwt(jwt).get();
+        User booker = userService.assertUserHasAuthority(jwt,"TENANT");
+        if (Objects.isNull(booker)) return null;
 
         //Assert that the guest number, as well as the booking dates are valid
         if (bookingDTO.getGuests() > rental.getMaxGuests()) return null;
-        if (bookingDTO.getDates().isEmpty()) return null;
-        if (bookingDTO.getDates().size() < rental.getMinDays()) return null;
+//        if (startDate.isBefore(LocalDate.now())) return null;
+        if (startDate.isAfter(endDate)) return null;
 
-        //Convert all dates from String to LocalDate and, if one is invalid, return null
-        List<LocalDate> bookingDates = new ArrayList<>();
-        try {
-            for (String date : bookingDTO.getDates()) {
-                LocalDate localDate = LocalDate.parse(date, dateTimeFormatter());
-                if (!rental.getAvailableDates().contains(localDate)) return null;
-                bookingDates.add(localDate);
-            }
-        }
-        catch (DateTimeParseException d){return null;}
+        List<LocalDate> bookingDates = startDate.datesUntil(endDate.plusDays(1L)).toList();
+        System.out.println(bookingDates);
+        if (bookingDates.size() < rental.getMinDays()) return null;
 
-        //All dates are both valid and available in the rental, go through with removing them and creating the new booking
-        rental.removeAvailableDates(bookingDates);
 
-        //Save changes
-        rentalRepository.save(rental);
+        Set<LocalDate> availableDateSet = new HashSet<LocalDate>(rental.getAvailableDates());
+        if (!availableDateSet.containsAll(bookingDates)) return null;
 
-        //Save the new booking instance
-        Booking newBooking;
-        try {
-            newBooking = new Booking(0L, booker, rental, bookingDTO);
-        }
-        catch (IllegalArgumentException e){
-            return null;
-        }
-        return newBooking;
+
+
+//        try { rental.removeAvailableDates(bookingDTO.getDates()); }
+//        catch(IllegalArgumentException e) { return null; }
+
+//        List<LocalDate> bookingDates;
+//        try{
+//            bookingDates = convertToLocalDate(bookingDTO.getDates());
+//        }
+//        catch(DateTimeParseException e){
+//            return null;
+//        }
+//
+////        //Convert all dates from String to LocalDate and, if one is invalid, return null
+////        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+////        List<LocalDate> bookingDates = new ArrayList<>();
+////        try {
+////            for (String date : bookingDTO.getDates()) {
+////                LocalDate localDate = LocalDate.parse(date, formatter);
+////                if (!rental.getAvailableDates().contains(localDate)) return null;
+////                bookingDates.add(localDate);
+////            }
+////        }
+////        catch (DateTimeParseException d){return null;}
+//        if (!rental.getAvailableDates().containsAll(bookingDates)) return null;
+//
+//        //All dates are both valid and available in the rental, go through with removing them and creating the new booking
+//        rental.removeAvailableDates(bookingDates);
+
+        return new Booking(booker, rental, startDate, endDate, bookingDTO.getGuests());
     }
 
     public void updateRental(Long id, NewRentalDTO dto) throws IllegalArgumentException{
@@ -112,6 +134,9 @@ public class RentalService {
             rental.setAvailableDates(dates);
         }
 
+        for (String filePath:dto.getPhotoPaths()){
+            photoRepository.save(new Photo(filePath));
+          
         if (Objects.nonNull(dto.getAddress())){
             Address address = dto.getAddress();
             if (Objects.nonNull(address.getCountry())) rental.getAddress().setCountry(address.getCountry());
@@ -134,12 +159,6 @@ public class RentalService {
         if (Objects.nonNull(dto.getAllowPets())) rental.setAllowPets(dto.getAllowPets());
         if (Objects.nonNull(dto.getAllowEvents())) rental.setAllowEvents(dto.getAllowEvents());
         if (Objects.nonNull(dto.getMinDays())) rental.setMinDays(dto.getMinDays());
-
-        if (Objects.nonNull(dto.getAddress().getCity())) rental.getAddress().setCity(dto.getAddress().getCity());
-        if (Objects.nonNull(dto.getAddress().getNeighbourhood())) rental.getAddress().setNeighbourhood(dto.getAddress().getNeighbourhood());
-        if (Objects.nonNull(dto.getAddress().getStreet())) rental.getAddress().setStreet(dto.getAddress().getStreet());
-        if (Objects.nonNull(dto.getAddress().getFloorNo())) rental.getAddress().setFloorNo(dto.getAddress().getFloorNo());
-        if (Objects.nonNull(dto.getAddress().getNumber())) rental.getAddress().setNumber(dto.getAddress().getNumber());
 
         if (Objects.nonNull(dto.getPublicTransport())) rental.setPublicTransport(dto.getPublicTransport());
         if (Objects.nonNull(dto.getHasWiFi())) rental.setHasWiFi(dto.getHasWiFi());

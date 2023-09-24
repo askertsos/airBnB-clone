@@ -22,7 +22,7 @@ public class User implements UserDetails {
 
     private String last_name;
 
-    @Column(nullable = false, unique = true)
+//    @Column(nullable = false, unique = true)
     private String email;
 
     private String profilePic;
@@ -30,8 +30,13 @@ public class User implements UserDetails {
 
     private boolean isAuthenticatedHost;
 
-    @Column(nullable = false, unique = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Photo profilePicture;
+
+//    @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    private Boolean isAuthenticatedHost;
 
     @JacksonXmlElementWrapper(localName = "authorities")
     @JacksonXmlProperty(localName = "authority")
@@ -52,10 +57,10 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
+        this.isAuthenticatedHost = false;
     }
 
-    public User(Long id, String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
-        this.id = id;
+    public User(String username, String password, String first_name, String last_name, String email, String phoneNumber, Set<Role> authorities) {
         this.username = username;
         this.password = password;
         this.first_name = first_name;
@@ -138,6 +143,22 @@ public class User implements UserDetails {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Photo getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Photo profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
+    public Boolean getAuthenticatedHost() {
+        return isAuthenticatedHost;
+    }
+
+    public void setAuthenticatedHost(Boolean authenticatedHost) {
+        isAuthenticatedHost = authenticatedHost;
     }
 
     @Override

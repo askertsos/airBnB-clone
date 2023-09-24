@@ -8,9 +8,11 @@ public class UserDTO {
     private String email;
     private String phoneNumber;
 
+
     private String profilePicture;
 
     public UserDTO() {}
+
 
     public UserDTO(String username, String password, String first_name, String last_name, String email, String phoneNumber, String profilePicture) {
         this.username = username;
@@ -19,6 +21,7 @@ public class UserDTO {
         this.last_name = last_name;
         this.email = email;
         this.phoneNumber = phoneNumber;
+
         this.profilePicture = profilePicture;
     }
 

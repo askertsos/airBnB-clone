@@ -4,9 +4,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
+import com.rbbnbb.TediTry1.services.RentalService;
 import jakarta.persistence.*;
 import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.Formula;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -19,7 +21,7 @@ import java.util.*;
 @JacksonXmlRootElement(localName = "rental")
 public class Rental {
 
-    public enum RentalType {privateRoom, publicRoom, house}
+    public enum RentalType {publicRoom, privateRoom, house}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -89,12 +91,6 @@ public class Rental {
 
     public void addPhoto(Photo photo) {this.photos.add(photo); }
 
-    public void removeAvailableDates(List<LocalDate> bookingDates){
-        for (LocalDate date: bookingDates) {
-            availableDates.remove(date);
-        }
-    }
-
     public Double getPrice(Integer days, Integer tenants){
         //Assume days >= minDays
         return (basePrice + tenants*chargePerPerson)*days;
@@ -135,19 +131,28 @@ public class Rental {
         this.rating = rating;
     }
 
-    public Rental(NewRentalDTO dto, User user){
+    private List<LocalDate> convertToLocalDate(List<String> stringDates){
+        if (Objects.isNull(stringDates)) return null;
+        if (stringDates.isEmpty()) return null;
+        List<LocalDate> localDates = new ArrayList<>();
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            for (String date : stringDates) {
+                LocalDate localDate = LocalDate.parse(date, formatter);
+                localDates.add(localDate);
+            }
+        }
+        catch(DateTimeParseException d){
+            return null;
+        }
+        return localDates;
+    }
+
+    public Rental(User user, NewRentalDTO dto){
         this.title = dto.getTitle();
         this.basePrice = dto.getBasePrice();
         this.chargePerPerson = dto.getChargePerPerson();
-
-        this.availableDates = new ArrayList<>();
-        if (!dto.getAvailableDates().isEmpty()) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            for (String date : dto.getAvailableDates()) {
-                LocalDate localDate = LocalDate.parse(date, formatter);
-                this.availableDates.add(localDate);
-            }
-        }
+        this.availableDates = convertToLocalDate(dto.getAvailableDates());
         this.maxGuests = dto.getMaxGuests();
         this.beds = dto.getBeds();
         this.bedrooms = dto.getBedrooms();
@@ -162,6 +167,7 @@ public class Rental {
         this.minDays = dto.getMinDays();
         this.address = dto.getAddress();
         this.publicTransport = dto.getPublicTransport();
+        this.photos = new HashSet<>();
         this.hasWiFi = dto.getHasWiFi();
         this.hasAC = dto.getHasAC();
         this.hasHeating = dto.getHasHeating();
@@ -171,7 +177,6 @@ public class Rental {
         this.hasElevator = dto.getHasElevator();
         this.host = user;
         this.reviews = new HashSet<>();
-
     }
 
     public Long getId() {

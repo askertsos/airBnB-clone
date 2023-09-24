@@ -1,19 +1,12 @@
 package com.rbbnbb.TediTry1.services;
 
-import com.rbbnbb.TediTry1.domain.Rental;
 import com.rbbnbb.TediTry1.dto.SearchRequestDTO;
 import com.rbbnbb.TediTry1.dto.SpecificationDTO;
-import com.rbbnbb.TediTry1.repository.RentalRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,6 +16,9 @@ import java.util.Objects;
 
 @Service
 public class SpecificationService<T> {
+
+    @Autowired
+    private DateTimeFormatter formatter;
 
     public Specification<T> getSearchSpecification(SearchRequestDTO searchRequestDTO){
         return (root, query, criteriaBuilder) -> {
@@ -60,6 +56,11 @@ public class SpecificationService<T> {
                         predicates.add(greaterThan);
                         break;
 
+                    case GREATER_OR_EQUAL:
+                        Predicate greaterThanOrEqualTo = criteriaBuilder.greaterThanOrEqualTo(root.get(specDTO.getColumn()),specDTO.getValue());
+                        predicates.add(greaterThanOrEqualTo);
+                        break;
+
                     case LESS_THAN:
                         Predicate lessThan = criteriaBuilder.lessThan(root.get(specDTO.getColumn()),specDTO.getValue());
                         predicates.add(lessThan);
@@ -71,9 +72,6 @@ public class SpecificationService<T> {
                         break;
 
                     case DATES:
-                        //Split the dates
-                        String[] stringDates = specDTO.getValue().split(",");
-
                         //Convert them to LocalDate and insert them into a list
                         List<LocalDate> datesList = new ArrayList<>();
                         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -83,8 +81,17 @@ public class SpecificationService<T> {
                                 datesList.add(localDate);
                                 System.out.println("Adding date " + localDate);
                                 predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
-
                         }
+//
+//                        //Convert them to LocalDate and insert them into a list
+//                        List<LocalDate> datesList = new ArrayList<>();
+//                        List<Predicate> predicateList = new ArrayList<>();
+//                        for (String stringDate: stringDates) {
+//                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
+//                                datesList.add(localDate);
+//                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
+//
+//                        }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
                         //Every element of the list must be in the "availableDates" field
@@ -115,6 +122,12 @@ public class SpecificationService<T> {
 //                            inClause.value(date);
 //                        }
 //                        query.select(root).where(inClause);
+                    case AMENITIES:
+                    case BOOLEAN:
+                        boolean boolValue = Boolean.parseBoolean(specDTO.getValue());
+                        Predicate bool = criteriaBuilder.equal(root.get(specDTO.getColumn()),boolValue);
+                        predicates.add(bool);
+                        break;
 
                     default: throw new IllegalStateException("Invalid operator");
                 }
@@ -126,7 +139,7 @@ public class SpecificationService<T> {
             if (searchRequestDTO.getGlobalOperator().equals(SearchRequestDTO.GlobalOperator.OR))
                 return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
 
-            else return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }

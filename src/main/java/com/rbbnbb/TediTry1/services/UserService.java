@@ -74,6 +74,7 @@ public class UserService implements UserDetailsService {
     }
 
     public Optional<User> getUserByJwt(String jwt){
+        if (Objects.isNull(jwt)) return Optional.empty();
         String pureJwt = jwt;
         pureJwt = pureJwt.replaceFirst("Bearer ", "");
         Jwt decodedJWT = jwtDecoder.decode(pureJwt);
