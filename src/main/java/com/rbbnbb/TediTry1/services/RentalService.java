@@ -1,5 +1,6 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Address;
 import com.rbbnbb.TediTry1.domain.Booking;
 import com.rbbnbb.TediTry1.domain.Photo;
 import com.rbbnbb.TediTry1.domain.Rental;
@@ -10,7 +11,9 @@ import com.rbbnbb.TediTry1.repository.BookingRepository;
 import com.rbbnbb.TediTry1.repository.PhotoRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.cglib.core.Local;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,8 +29,9 @@ import java.util.*;
 public class RentalService {
 
     @Bean
+
     public DateTimeFormatter dateTimeFormatter(){
-        return DateTimeFormatter.ofPattern("yyyy-MM-d");
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd");
     }
 
     @Autowired
@@ -132,6 +136,15 @@ public class RentalService {
 
         for (String filePath:dto.getPhotoPaths()){
             photoRepository.save(new Photo(filePath));
+          
+        if (Objects.nonNull(dto.getAddress())){
+            Address address = dto.getAddress();
+            if (Objects.nonNull(address.getCountry())) rental.getAddress().setCountry(address.getCountry());
+            if (Objects.nonNull(address.getCity())) rental.getAddress().setCity(address.getCity());
+            if (Objects.nonNull(address.getNeighbourhood())) rental.getAddress().setNeighbourhood(address.getNeighbourhood());
+            if (Objects.nonNull(address.getStreet())) rental.getAddress().setStreet(address.getStreet());
+            if (Objects.nonNull(address.getNumber())) rental.getAddress().setNumber(address.getNumber());
+            if (Objects.nonNull(address.getFloorNo())) rental.getAddress().setFloorNo(address.getFloorNo());
         }
 
         if (Objects.nonNull(dto.getMaxGuests())) rental.setMaxGuests(dto.getMaxGuests());
@@ -146,7 +159,7 @@ public class RentalService {
         if (Objects.nonNull(dto.getAllowPets())) rental.setAllowPets(dto.getAllowPets());
         if (Objects.nonNull(dto.getAllowEvents())) rental.setAllowEvents(dto.getAllowEvents());
         if (Objects.nonNull(dto.getMinDays())) rental.setMinDays(dto.getMinDays());
-        if (Objects.nonNull(dto.getAddress())) rental.setAddress(dto.getAddress());
+
         if (Objects.nonNull(dto.getPublicTransport())) rental.setPublicTransport(dto.getPublicTransport());
         if (Objects.nonNull(dto.getHasWiFi())) rental.setHasWiFi(dto.getHasWiFi());
         if (Objects.nonNull(dto.getHasAC())) rental.setHasAC(dto.getHasAC());

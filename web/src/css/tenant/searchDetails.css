@@ -1,0 +1,162 @@
+.search-details-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 1000px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.host-details-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 2000px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.host-new-rental-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 1000px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.details-box {
+    background-color: burlywood;
+    width: 1810px;
+    height: 880px;
+    position: relative;
+    left : 25px;
+    top : 45px;
+    border: 3px solid rgb(8, 7, 7);
+}
+
+.host-details-box {
+    background-color: burlywood;
+    width: 1810px;
+    height: 900px;
+    position: relative;
+    left : 25px;
+    bottom : 40px;
+    border: 3px solid rgb(8, 7, 7);
+}
+
+.host-details-box2 {
+    background-color: burlywood;
+    width: 1810px;
+    height: 900px;
+    position: relative;
+    left : 25px;
+    bottom : 75px;
+    border: 3px solid rgb(8, 7, 7);
+}
+
+.details-section1 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left : 10px;
+}
+
+.details-section2 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left: 460px;
+    bottom : 870px;
+}
+
+.details-section3 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left: 910px;
+    bottom : 1740px;
+}
+
+.details-section4 {
+    font-size: 20px;
+    background-color: beige;
+    width: 440px;
+    height: 410px;
+    text-align: center;
+    position: relative;
+    left: 1360px;
+    bottom : 2610px;
+}
+
+.backToList {
+    position: relative;
+    bottom: 885px;
+    left: 1496px;
+}
+
+.backToListHost {
+    position: relative;
+    bottom: 41px;
+    left: 25px;
+}
+
+.bookRental {
+    position: relative;
+    bottom: 885px;
+    left: 25px;
+}
+
+.details-header {
+    font-size: 30px;
+    background-color: #f5f5f8;
+    width: 220px;
+    border: 3px solid black;
+    text-align: center;
+}
+
+.view-header {
+    position: relative;
+    top: 2px;
+    left: 820px;
+}
+
+.change-header {
+    font-size: 30px;
+    background-color: #f5f5f8;
+    width: 270px;
+    border: 3px solid black;
+    text-align: center;
+    position: relative;
+    bottom: 33px;
+    left: 820px;
+}
+
+.submit-host-changes {
+    position: relative;
+    bottom: 76px;
+    left: 25px;
+}
+
+.submit-new-rental {
+    position: relative;
+    bottom: 41px;
+    left: 25px;
+}
+
+.new-rental-header{
+    font-size: 30px;
+    background-color: #f5f5f8;
+    width: 270px;
+    border: 3px solid black;
+    text-align: center;
+    position: relative;
+    top: 2px;
+    left: 820px;
+}

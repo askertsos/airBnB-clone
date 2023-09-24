@@ -72,17 +72,15 @@ public class SpecificationService<T> {
                         break;
 
                     case DATES:
-                        //Get the start date and end date
-                        String[] stringDates = specDTO.getValue().split(",");
-                        if (stringDates.length != 2){
-                            throw new IllegalArgumentException("Dates call must consist of start date and end date");
-                        }
-                        LocalDate startDate = LocalDate.parse(stringDates[0],formatter);
-                        LocalDate endDate = LocalDate.parse(stringDates[1],formatter);
-                        List<LocalDate> dateList = startDate.datesUntil(endDate.plusDays(1L)).toList();
-
-                        for (LocalDate date: dateList) {
-                            predicates.add(criteriaBuilder.isMember(date,root.get("availableDates")));
+                        //Convert them to LocalDate and insert them into a list
+                        List<LocalDate> datesList = new ArrayList<>();
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        List<Predicate> predicateList = new ArrayList<>();
+                        for (String stringDate: stringDates) {
+                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
+                                datesList.add(localDate);
+                                System.out.println("Adding date " + localDate);
+                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
                         }
 //
 //                        //Convert them to LocalDate and insert them into a list

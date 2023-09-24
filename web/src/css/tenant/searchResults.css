@@ -1,0 +1,76 @@
+.searchList-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 2350px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.rental {
+    background-color: burlywood;
+    width: 1000px;
+    height: 200px;
+    position: relative;
+    left : 410px;
+    bottom : 429px;
+    cursor: pointer;
+    border: 3px solid rgb(8, 7, 7);
+}
+
+.rental:hover {
+    background-color: rgb(212, 189, 158);
+    color: rgb(8, 7, 7);
+}
+
+
+.rentalPic {
+    height: 150px;
+    width: 150px;
+    position: relative;
+    top : 20px;
+    left : -400px;
+}
+
+.rental-field1 {
+    font-size: 20px;
+    width: 600px;
+    height: 40px;
+    text-align: center;
+    line-height: 100px;
+    position: relative;
+    left: 120px;
+    bottom : 190px;
+}
+
+.rental-field2 {
+    font-size: 20px;
+    width: 600px;
+    height: 40px;
+    text-align: center;
+    line-height: 100px;
+    position: relative;
+    bottom : 370px;
+    left : 500px;
+}
+
+.filter-bar {
+    font-size: 20px;
+    background-color: burlywood;
+    width: 440px;
+    height: 410px;
+    border: 3px solid rgb(8, 7, 7);
+    position: relative;
+    top : 2px;
+}
+
+.add-filters {
+    position: relative;
+    left : 140px;
+    top : 20px;
+}
+
+.host-rental-list {
+    position: relative;
+    top : 0px;
+    left : 410px;
+}

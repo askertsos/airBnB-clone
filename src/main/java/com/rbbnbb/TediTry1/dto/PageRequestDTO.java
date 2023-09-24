@@ -9,6 +9,7 @@ import java.util.Objects;
 public class PageRequestDTO {
 
     private Integer pageNo = 0;
+
     private Integer pageSize = 10;
 
     private Sort.Direction sort = Sort.Direction.ASC;
@@ -18,14 +19,14 @@ public class PageRequestDTO {
     public PageRequestDTO(){}
 
     public Pageable getPageable(PageRequestDTO dto){
+        if (Objects.isNull(dto)) return PageRequest.of(this.pageNo,this.pageSize,this.sort,this.sortByColumn);
+
         Integer pageNum = Objects.nonNull(dto.getPageNo()) ? dto.getPageNo() : this.pageNo;
         Integer pageSz = Objects.nonNull(dto.getPageSize()) ? dto.getPageSize() : this.pageSize;
         Sort.Direction sortType = Objects.nonNull(dto.getSort()) ? dto.getSort() : this.sort;
         String sortColumn = Objects.nonNull(dto.getSortByColumn()) ? dto.getSortByColumn() : this.sortByColumn;
 
-        PageRequest pageRequest = PageRequest.of(pageNum,pageSz,sortType,sortColumn);
-
-        return pageRequest;
+        return PageRequest.of(pageNum,pageSz,sortType,sortColumn);
     }
 
     public Integer getPageNo() {

@@ -56,6 +56,7 @@ public class SearchController {
     @Autowired
     private RentalRepository rentalRepository;
 
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -138,4 +139,11 @@ public class SearchController {
 
         return ResponseEntity.ok().body(rental);
     }
+
+    @GetMapping("/{rentalId}/details")
+    public ResponseEntity<?> rentalInfo(@PathVariable("rentalId") Long rentalId){
+        Rental rental = rentalRepository.findById(rentalId).get();
+        return ResponseEntity.ok().body(rental);
+    }
+
 }

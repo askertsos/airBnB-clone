@@ -37,7 +37,7 @@ public class NewRentalDTO {
     //Location
     private Address address;
     //map
-    private String publicTransport;
+    private List<String> publicTransport;
 
     //Amenities
     private Boolean hasWiFi;
@@ -223,11 +223,11 @@ public class NewRentalDTO {
         this.address = address;
     }
 
-    public String getPublicTransport() {
+    public List<String> getPublicTransport() {
         return publicTransport;
     }
 
-    public void setPublicTransport(String publicTransport) {
+    public void setPublicTransport(List<String> publicTransport) {
         this.publicTransport = publicTransport;
     }
 

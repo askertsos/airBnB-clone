@@ -3,7 +3,16 @@ package com.rbbnbb.TediTry1.controller;
 import com.rbbnbb.TediTry1.domain.*;
 import com.rbbnbb.TediTry1.dto.NewRentalDTO;
 import com.rbbnbb.TediTry1.dto.PageRequestDTO;
+
 import com.rbbnbb.TediTry1.repository.*;
+
+import com.rbbnbb.TediTry1.dto.UserDTO;
+import com.rbbnbb.TediTry1.dto.UserDetailsDTO;
+import com.rbbnbb.TediTry1.repository.MessageHistoryRepository;
+import com.rbbnbb.TediTry1.repository.RentalRepository;
+import com.rbbnbb.TediTry1.repository.ReviewRepository;
+import com.rbbnbb.TediTry1.repository.UserRepository;
+
 import com.rbbnbb.TediTry1.services.AuthenticationService;
 import com.rbbnbb.TediTry1.services.RentalService;
 import com.rbbnbb.TediTry1.services.UserService;
@@ -11,9 +20,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -22,7 +33,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/host")
@@ -55,15 +73,27 @@ public class HostController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @PostMapping("/new")
+    @GetMapping("/auth")
+    public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
+        User host = userService.getUserByJwt(jwt).get();
+        return ResponseEntity.ok().body(host.getAuthorities());
+    }
+
+    @PostMapping("/rental/new")
     @Transactional
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
         User host = userService.getUserByJwt(jwt).get();
+
 
         //Create new rental entity
         Rental newRental = new Rental(host,body);
 
         //Save first time to generate the id, which is used for the path of the photos
+
+        User host = userService.getUserByJwt(jwt).get();
+
+        Rental newRental = new Rental(body,host);
+
         rentalRepository.save(newRental);
 
         //Generate the full path of each photo based on the rental's id and then store them inside the rental entity
@@ -87,26 +117,53 @@ public class HostController {
         return ResponseEntity.ok().body(newRental);
     }
 
-    @PostMapping("/{rental_id}/info")
+    @PostMapping("/rental/{rental_id}/update")
     @Transactional
-    public ResponseEntity<?> updateRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt, @RequestBody NewRentalDTO dto){
-        Optional<Rental> optionalRental = rentalRepository.findById(Long.parseLong(id));
-        if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
-        Rental rental = optionalRental.get();
+    public ResponseEntity<?> updateRentalInfo(@PathVariable("rental_id") Long rental_id, @RequestBody NewRentalDTO dto, @RequestHeader("Authorization") String jwt){
 
-        User host = userService.assertUserHasAuthority(jwt,"HOST");
-        if (Objects.isNull(host)) return ResponseEntity.badRequest().build();
-
-        if (!rental.getHost().equals(host)) return ResponseEntity.badRequest().build();
-
+        Rental rental;
         try {
-            rentalService.updateRental(rental.getId(), dto);
-        }
-        catch (IllegalArgumentException e){
+            rental = rentalRepository.findById(rental_id).get();
+        } catch(Exception e){
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.ok().body(rental);
+        User host = userService.getUserByJwt(jwt).get();
+        if (!host.equals(rental.getHost())) return ResponseEntity.badRequest().build();
+        rentalService.updateRental(rental_id, dto);
+        Rental responseBody = rentalRepository.findById(rental_id).get();
+
+        return ResponseEntity.ok().body(responseBody);
+    }
+
+    @PostMapping("/rental/list")
+    @Transactional
+    public ResponseEntity<?> listRental(@RequestBody PageRequestDTO dto, @RequestHeader("Authorization") String jwt){
+
+        User host = userService.getUserByJwt(jwt).get();
+
+        Page<Rental> listRentalsPaginated = rentalRepository.findByHostWithPagination(host, dto.getPageable(dto));
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Rentals", listRentalsPaginated);
+
+        return ResponseEntity.ok().body(ResponseBody);
+    }
+
+    @GetMapping("/{rental_id}/info")
+    @Transactional
+    public ResponseEntity<?> detailRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt){
+
+        Optional<Rental> optionalRental = rentalRepository.findById(Long.parseLong(id));
+        if(optionalRental.isEmpty()) return ResponseEntity.notFound().build();
+        Rental rental = optionalRental.get();
+
+        User host = userService.assertUserHasAuthority(jwt,"HOST");
+        if (!rental.getHost().equals(host)) return ResponseEntity.badRequest().build();
+
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Rental", rental);
+
+        return ResponseEntity.ok().body(ResponseBody);
     }
 
     @GetMapping("/rentals/{rentalId}/messages/{pageNo}")

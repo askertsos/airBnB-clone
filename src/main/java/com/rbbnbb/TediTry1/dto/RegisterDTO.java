@@ -11,7 +11,11 @@ public class RegisterDTO {
     private String roles;
     private String pictureName;
 
-    public RegisterDTO(String username, String password, String first_name, String last_name, String email, String phoneNumber, String roles, String pictureName) {
+
+    private String profilePic;
+
+    public RegisterDTO(String username, String password, String first_name, String last_name, String email, String phoneNumber, String roles, String profilePic) {
+
         this.username = username;
         this.password = password;
         this.first_name = first_name;
@@ -19,7 +23,7 @@ public class RegisterDTO {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.roles = roles;
-        this.pictureName = pictureName;
+        this.profilePic = profilePic;
     }
 
     public String getUsername() {
@@ -29,6 +33,10 @@ public class RegisterDTO {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getProfilePicture() { return profilePic; }
+
+    public void setProfilePicture(String profilePic) { this.profilePic = profilePic; }
 
     public String getPassword() {
         return password;

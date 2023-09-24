@@ -55,9 +55,10 @@ public class RentalController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @GetMapping("/{rentalId}")
+    @GetMapping("/{rentalId}/details")
     public ResponseEntity<?> rentalInfo(@PathVariable("rentalId") Long rentalId){
-        return ResponseEntity.ok().build();
+        Rental rental = rentalRepository.findById(rentalId).get();
+        return ResponseEntity.ok().body(rental);
     }
 
     @PostMapping("/{rentalId}/get_price")

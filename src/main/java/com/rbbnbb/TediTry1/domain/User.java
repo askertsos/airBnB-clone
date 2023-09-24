@@ -25,6 +25,11 @@ public class User implements UserDetails {
 //    @Column(nullable = false, unique = true)
     private String email;
 
+    private String profilePic;
+
+
+    private boolean isAuthenticatedHost;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Photo profilePicture;
 
@@ -75,6 +80,10 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    public String getProfilePic() { return profilePic; }
+
+    public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
+
     public String getUsername() {
         return username;
     }
@@ -82,6 +91,10 @@ public class User implements UserDetails {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public boolean getIsAuthenticatedHost() { return isAuthenticatedHost; }
+
+    public void setAuthenticatedHost(boolean authenticatedHost) { isAuthenticatedHost = authenticatedHost; }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
