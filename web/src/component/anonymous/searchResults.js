@@ -136,6 +136,7 @@ function SearchResults() {
             );
 
             const reqBody = {
+                jwt : localStorage.getItem("jwt"),
                 specificationList: specList,
                 globalOperator : "AND",
                 pageRequestDTO : {
@@ -148,16 +149,15 @@ function SearchResults() {
 
             const fetchOptions = {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
                 method: "post",
                 body: JSON.stringify(reqBody),
             };
-            console.log(fetchOptions);
+
             fetch("https://localhost:8080/search/", fetchOptions)
             .then((response) => response.json())
             .then(response => {
-                console.log(response);
                 let tempList = [];
                 response.content.map((rental) => {
                     let passesMaxCostCheck = true;

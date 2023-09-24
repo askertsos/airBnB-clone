@@ -5,6 +5,7 @@ import java.util.List;
 public class SearchRequestDTO {
     public enum GlobalOperator {AND,OR};
 
+    private String jwt;
     private GlobalOperator globalOperator;
 
     private List<SpecificationDTO> specificationList;
