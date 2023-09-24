@@ -393,6 +393,7 @@ public class RecommendationService {
         final double cityWeight = 5d;
         final double neighbourhoodWeight = 25d;
         final double avgGuestsWeight = 5d;
+        final double booleanWeight = 2d;
 
         for (int j=0; j<allRentals.size(); j++) {
             Rental rental = allRentals.get(j);
@@ -403,43 +404,89 @@ public class RecommendationService {
                 Q[k][j] = new RentalInfo(rental, random.nextDouble());
             }
 
-            double rentalFreq = Collections.frequency(rentalsVisited, rental) / (double) rentalsVisited.size();
-            double countryFreq = Collections.frequency(
-                    searchList.
-                            stream().
-                            map(Search::getCountry).
-                            toList(),
-                    rental.
-                            getAddress().
-                            getCountry())
-                    / (double) searchList.size();
+            double countryFreq = 0d;
+            double cityFreq = 0d;
+            double neighbourhoodFreq = 0d;
+            double avgGuests = 0d;
+            double wifiFreq = 0d;
+            double acFreq = 0d;
+            double heatingFreq = 0d;
+            double kitchenFreq = 0d;
+            double tvFreq = 0d;
+            double parkingFreq = 0d;
+            double elevatorFreq = 0d;
 
+            //Count the frequency(percentage of searches where a value appears) for each value.
+            //A for loop is used instead of Collections.frequency to only iterate through the list once and reduce the complexity
+            for (Search s: searchList) {
+                String country = s.getCountry();
+                String city = s.getCity();
+                String neighbourhood = s.getNeighbourhood();
 
-            double cityFreq = Collections.frequency(
-                    searchList.
-                            stream().
-                            map(Search::getCity).
-                            toList(),
-                    rental.
-                            getAddress().
-                            getCity())
-                    / (double) searchList.size();
+                Integer guests = s.getGuests();
 
-            double neighbourhoodFreq = Collections.frequency(
-                    searchList.
-                            stream().
-                            map(Search::getNeighbourhood).
-                            toList(),
-                    rental.
-                            getAddress().
-                            getNeighbourhood())
-                    / (double) searchList.size();
+                Boolean hasWiFi = s.getHasWiFi();
+                Boolean hasAC = s.getHasAC();
+                Boolean hasHeating = s.getHasHeating();
+                Boolean hasKitchen = s.getHasKitchen();
+                Boolean hasTV = s.getHasTV();
+                Boolean hasParking = s.getHasParking();
+                Boolean hasElevator = s.getHasElevator();
 
-            //Average number of guests in searches
-            double averageGuests = 0;
-            OptionalDouble average = searchList.stream().mapToDouble(Search::getGuests).average();
-            if (average.isPresent()) averageGuests = average.getAsDouble();
+                Address address = rental.getAddress();
+                if (Objects.nonNull(country) && country.equals(address.getCountry())) countryFreq += 1/(double)searchList.size();
+                if (Objects.nonNull(city) && city.equals(address.getCity())) cityFreq += 1/(double)searchList.size();
+                if (Objects.nonNull(neighbourhood) && neighbourhood.equals(address.getNeighbourhood())) neighbourhoodFreq += 1/(double)searchList.size();
+
+                avgGuests += guests / (double) searchList.size();
+
+                if (Objects.nonNull(hasWiFi) && hasWiFi) wifiFreq += 1 / (double) searchList.size();
+                if (Objects.nonNull(hasAC) && hasAC) acFreq += 1 / (double) searchList.size();
+                if (Objects.nonNull(hasHeating) && hasHeating) heatingFreq += 1 / (double) searchList.size();
+                if (Objects.nonNull(hasKitchen) && hasKitchen) kitchenFreq += 1 / (double) searchList.size();
+                if (Objects.nonNull(hasTV) && hasTV) tvFreq += 1 / (double) searchList.size();
+                if (Objects.nonNull(hasParking) && hasParking) parkingFreq += 1 / (double) searchList.size();
+                if (Objects.nonNull(hasElevator) && hasWiFi) elevatorFreq += 1 / (double) searchList.size();
+            }
+//
+//            double rentalFreq = Collections.frequency(rentalsVisited, rental) / (double) rentalsVisited.size();
+//            double countryFreq = Collections.frequency(
+//                    searchList.
+//                            stream().
+//                            map(Search::getCountry).
+//                            toList(),
+//                    rental.
+//                            getAddress().
+//                            getCountry())
+//                    / (double) searchList.size();
+//
+//
+//            double cityFreq = Collections.frequency(
+//                    searchList.
+//                            stream().
+//                            map(Search::getCity).
+//                            toList(),
+//                    rental.
+//                            getAddress().
+//                            getCity())
+//                    / (double) searchList.size();
+//
+//            double neighbourhoodFreq = Collections.frequency(
+//                    searchList.
+//                            stream().
+//                            map(Search::getNeighbourhood).
+//                            toList(),
+//                    rental.
+//                            getAddress().
+//                            getNeighbourhood())
+//                    / (double) searchList.size();
+//
+//            //Average number of guests in searches
+//            double averageGuests = 0;
+//            OptionalDouble average = searchList.stream().mapToDouble(Search::getGuests).average();
+//            if (average.isPresent()) averageGuests = average.getAsDouble();
             double x = 0d;
+
         }
 
 //
