@@ -130,6 +130,14 @@ function SearchResults() {
 
             specList.push(
                 {
+                    value: peopleCount,
+                    operation: "GREATER_OR_EQUAL",
+                    column : "maxGuests"
+                }
+            );
+
+            specList.push(
+                {
                     value: dates,
                     operation : "DATES"
                 }

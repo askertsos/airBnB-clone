@@ -12,11 +12,11 @@ function Home() {
 	const [neighbourhood, setNeighbourhood] = useState(null);
 	const [peopleCount, setPeopleCount] = useState(null);
 	const [dates, setDates] = useState(null);
+	const [recommendedRentals, setRecommendedRentals] = useState(null);
 
 	const loggedIn = localStorage.getItem("jwt");
 
 	const [isBoth, setIsBoth] = useState(false);
-	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -45,11 +45,9 @@ function Home() {
 					if (auth.authority === "TENANT") tenant = true;
 				})
 				setIsBoth(host && tenant);
-				setLoading(false);
 			})
 			.catch((message) => console.log(message));
 		}
-		else setLoading(false);
 	}, [isBoth, loggedIn]);
 
 	const Search = () => {
@@ -84,9 +82,22 @@ function Home() {
 		return;
 	};
 
-	if (loading === true){
-		return (<h1>Loading...</h1>);
-	}
+	const Recommend = () => {
+		const fetchOptions = {
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": "Bearer "  + loggedIn,
+			},
+			method: "get",
+		};
+		fetch("https://localhost:8080/user/recommended_rentals", fetchOptions)
+		.then((response) => response.json())
+		.then((response) => {
+			console.log(response);
+			// setRecommendedRentals(response);
+		})
+		.catch((message) => console.log(message));
+	};
 
 	return (
 		<>
@@ -111,6 +122,9 @@ function Home() {
 						<a href = 'https://localhost:3000/auth/logout'>
 							<button className="bar-button small-button">Logout</button>
 						</a>
+						<button className="bar-button" onClick = {() => Recommend()}>
+							Recomended rentals for you!
+						</button>
 						{isBoth === true &&
 							<a href = 'https://localhost:3000/host/hostHome'>
 								<button className="bar-button big-button">Host homepage</button>
