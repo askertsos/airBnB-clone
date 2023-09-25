@@ -1,10 +1,13 @@
 package com.rbbnbb.TediTry1.services;
 
+import com.rbbnbb.TediTry1.domain.Photo;
 import com.rbbnbb.TediTry1.domain.Role;
 import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.dto.UserDTO;
+import com.rbbnbb.TediTry1.repository.PhotoRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +32,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PhotoRepository photoRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
@@ -41,6 +47,20 @@ public class UserService implements UserDetailsService {
         if (Objects.nonNull(userDTO.getLast_name())) user.setLast_name(userDTO.getLast_name());
         if (Objects.nonNull(userDTO.getEmail())) user.setEmail(userDTO.getEmail());
         if (Objects.nonNull(userDTO.getPhoneNumber())) user.setPhoneNumber(userDTO.getPhoneNumber());
+
+        String filePath = userDTO.getProfilePicture();
+        if (Objects.nonNull(filePath)) {
+            Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+            if (optionalPhoto.isEmpty()){
+                Photo photo = new Photo(filePath);
+                photoRepository.save(photo);
+                user.setProfilePicture(photo);
+                userRepository.save(user);
+            }
+            Photo photo = optionalPhoto.get();
+            user.setProfilePicture(photo);
+            userRepository.save(user);
+        }
 
         //Roles cannot be changed
 

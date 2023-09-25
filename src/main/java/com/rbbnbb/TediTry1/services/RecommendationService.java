@@ -4,40 +4,39 @@ import com.rbbnbb.TediTry1.domain.*;
 import com.rbbnbb.TediTry1.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class RecommendationService {
     @Autowired
-    private static UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    private static RoleRepository roleRepository;
+    private RoleRepository roleRepository;
+    @Autowired
+    private RecommendedRentalsRepository recommendedRentalsRepository;
+    @Autowired
+    private RentalRepository rentalRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
+    @Autowired
+    private SearchHistoryRepository searchHistoryRepository;
 
-    @Autowired
-    private static RecommendedRentalsRepository recommendedRentalsRepository;
-    @Autowired
-    private static RentalRepository rentalRepository;
-    @Autowired
-    private static ReviewRepository reviewRepository;
-
-    @Autowired
-    private static BookingRepository bookingRepository;
-
-    @Autowired
-    private static SearchHistoryRepository searchHistoryRepository;
-
-    private static final Double alpha = 0.0002;
-    private static final Double beta = 0.02;
-    private static final Double epsilon = 0.001;
-    private static final Integer steps = 5000;
-    private static final Integer K = 3;
-    private static final Integer rentalsToRecommend = 5;
+    private final Double alpha = 0.0002;
+    private final Double beta = 0.02;
+    private final Double epsilon = 0.001;
+    private final Integer steps = 5000;
+    private final Integer K = 3;
+    private final Integer rentalsToRecommend = 5;
 
     public RecommendationService(){}
 
-    private static class RentalRating{
+    private class RentalRating{
         private Rental rental;
         private Double expRating;
 
@@ -70,30 +69,28 @@ public class RecommendationService {
     }
 
 
-    public static void setRentalsToRecommend(List<User> allTenants){
+    public void setRentalsToRecommend(List<User> allTenants){
         for (User tenant: allTenants) {
+            Set<Rental> rentals = recommend(tenant);
             Optional<RecommendedRentals> optional = recommendedRentalsRepository.findByTenant(tenant);
-
             if (optional.isEmpty()){
-                Set<Rental> rentals = recommend(tenant);
-                RecommendedRentals recommendedRentals = new RecommendedRentals(tenant,rentals);
-                recommendedRentalsRepository.save(recommendedRentals);
+                recommendedRentalsRepository.save(new RecommendedRentals(tenant,rentals));
                 continue;
             }
             RecommendedRentals recommendedRentals = optional.get();
-            recommendedRentals.setRentals(recommend(tenant));
+            recommendedRentals.setRentals(rentals);
             recommendedRentalsRepository.save(recommendedRentals);
         }
     }
-    private static Set<Rental> recommend(User tenant) {
+    private Set<Rental> recommend(User tenant) {
         List<Review> userReviews = new ArrayList<>(reviewRepository.findByReviewer(tenant));
         if (userReviews.isEmpty()) return recommendBasedOnSearchHistory(tenant);
         List<Booking> userBookings = new ArrayList<>(bookingRepository.findByBooker(tenant));
         return recommendBasedOnBookingsAndReviews(tenant,userBookings,userReviews);
     }
 
-    private static Set<Rental> recommendBasedOnBookingsAndReviews(User tenant, List<Booking> userBookings, List<Review> userReviews){
-
+    private Set<Rental> recommendBasedOnBookingsAndReviews(User tenant, List<Booking> userBookings, List<Review> userReviews){
+        System.out.println("Recommending based on bookings and reviews");
         List<Review> allReviews = reviewRepository.findAll();
 
         //Get the rental from each booking the user has made. Note: May include duplicate rentals if user booked the same rental twice
@@ -125,7 +122,7 @@ public class RecommendationService {
             User reviewer = allReviewers.get(i);
 
             //Row #i corresponds to user of interest
-            if (reviewer.equals(tenant)) {
+            if (reviewer.getId().equals(tenant.getId())) {
                 userIndex = i;
 
                 for (int j=0; j<allRentals.size(); j++){
@@ -234,7 +231,8 @@ public class RecommendationService {
 
     }
 
-    private static Set<Rental> recommendBasedOnSearchHistory(User user){
+    private Set<Rental> recommendBasedOnSearchHistory(User user){
+        System.out.println("Recommendinb based on Search History");
         Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
         if (optionalSearchHistory.isEmpty()){ //No search history, recommend 5 most highly-rated rentals
             return recommendMostHighlyRated();
@@ -342,7 +340,7 @@ public class RecommendationService {
 
             if (rental.getMaxGuests() < avgGuests) avgGuestsWeight = -avgGuestsWeight;
             if (rental.getHasWiFi()) wifiWeight = wifiFreq; else wifiWeight = 1 - wifiFreq;
-            if (rental.getHasAC()) acWeight =acFreq; else acWeight = 1 - acFreq;
+            if (rental.getHasAC()) acWeight = acFreq; else acWeight = 1 - acFreq;
             if (rental.getHasHeating()) heatingWeight = heatingFreq; else heatingWeight = 1 - heatingFreq;
             if (rental.getHasKitchen()) kitchenWeight = kitchenFreq; else kitchenWeight = 1 - kitchenFreq;
             if (rental.getHasTV()) tvWeight = tvFreq; else tvWeight = 1 - tvFreq;
@@ -421,7 +419,7 @@ public class RecommendationService {
         return new HashSet<>(recommendedRentals);
     }
 
-    private static Set<Rental> recommendMostHighlyRated(){
+    private Set<Rental> recommendMostHighlyRated(){
         List<Rental> rentalList = rentalRepository.findAll();
 
         final int minReviews = 20;
@@ -441,7 +439,7 @@ public class RecommendationService {
 
     //x simulates similarity with past searches, return value simulates expected rating
     //high similarity -> high rating, capped in range [1,5] to simulate star rating in reviews
-    private static Double ratingSigmoid(double x){
+    private Double ratingSigmoid(double x){
         final double lambda = 0.7; //True sigmoid when lambda = 1. Lambda --> inf => sign function, Lambda --> 0 => y=0.5
         final double offset = 5d; //Without it, sigmoid(0) would return 3. Now it returns 0.000... and sigmoid(offset) = 3
                                   //Offset essentially acts as protection against high scores with low x. higher offset -> higher x needed for good rating.
@@ -450,7 +448,7 @@ public class RecommendationService {
         return 4 * sigmoid + 1; //finally ranges between 1 and 5
     }
 
-    private static double getLastReviewRating(List<Review> reviewList){
+    private double getLastReviewRating(List<Review> reviewList){
         reviewList.sort(new Comparator<Review>() {
             @Override
             public int compare(Review r1, Review r2) {
@@ -461,7 +459,7 @@ public class RecommendationService {
         return reviewList.get(0).getStars();
     }
 
-    private static Object[] matrixFactorization(RentalRating[][] Ratings, RentalRating[][] UserFeatures, RentalRating[][] RentalFeatures){
+    private Object[] matrixFactorization(RentalRating[][] Ratings, RentalRating[][] UserFeatures, RentalRating[][] RentalFeatures){
         for (int s=0; s<steps; s++){
             for(int i=0; i<Ratings.length; i++){
                 for(int j=0; j<Ratings[i].length; j++) {
@@ -501,7 +499,7 @@ public class RecommendationService {
     }
 
 
-    private static RentalRating[][] transpose(RentalRating[][] M){
+    private RentalRating[][] transpose(RentalRating[][] M){
         int rows = M.length;
         int columns = M[0].length;
 
@@ -514,7 +512,7 @@ public class RecommendationService {
         }
         return T;
     }
-    private static Double dotProduct(RentalRating[] A, RentalRating[] B)
+    private Double dotProduct(RentalRating[] A, RentalRating[] B)
     {
         double product = 0d;
         final int n = A.length;
@@ -525,7 +523,7 @@ public class RecommendationService {
         return product;
     }
 
-    private static RentalRating[][] dotProduct(RentalRating[][] A, RentalRating[][] B){
+    private RentalRating[][] dotProduct(RentalRating[][] A, RentalRating[][] B){
         RentalRating[][] D = new RentalRating[A.length][B[0].length];
         for (int i=0; i<A.length; i++) {
             for(int j=0; j<B[0].length; j++){
@@ -544,7 +542,7 @@ public class RecommendationService {
         return D;
     }
 
-    private static RentalRating[] getColumn(RentalRating[][] A, int index){
+    private RentalRating[] getColumn(RentalRating[][] A, int index){
         RentalRating[] column = new RentalRating[A.length];
         for(int i=0; i<column.length; i++){
             column[i] = A[i][index];
@@ -552,9 +550,3 @@ public class RecommendationService {
         return column;
     }
 }
-
-
-
-
-
-

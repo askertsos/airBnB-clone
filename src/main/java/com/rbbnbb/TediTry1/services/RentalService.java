@@ -78,35 +78,6 @@ public class RentalService {
         Set<LocalDate> availableDateSet = new HashSet<LocalDate>(rental.getAvailableDates());
         if (!availableDateSet.containsAll(bookingDates)) return null;
 
-
-
-//        try { rental.removeAvailableDates(bookingDTO.getDates()); }
-//        catch(IllegalArgumentException e) { return null; }
-
-//        List<LocalDate> bookingDates;
-//        try{
-//            bookingDates = convertToLocalDate(bookingDTO.getDates());
-//        }
-//        catch(DateTimeParseException e){
-//            return null;
-//        }
-//
-////        //Convert all dates from String to LocalDate and, if one is invalid, return null
-////        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-////        List<LocalDate> bookingDates = new ArrayList<>();
-////        try {
-////            for (String date : bookingDTO.getDates()) {
-////                LocalDate localDate = LocalDate.parse(date, formatter);
-////                if (!rental.getAvailableDates().contains(localDate)) return null;
-////                bookingDates.add(localDate);
-////            }
-////        }
-////        catch (DateTimeParseException d){return null;}
-//        if (!rental.getAvailableDates().containsAll(bookingDates)) return null;
-//
-//        //All dates are both valid and available in the rental, go through with removing them and creating the new booking
-//        rental.removeAvailableDates(bookingDates);
-
         return new Booking(booker, rental, startDate, endDate, bookingDTO.getGuests());
     }
 
@@ -136,7 +107,17 @@ public class RentalService {
 
         if (Objects.nonNull(dto.getPhotoPaths())) {
             for (String filePath : dto.getPhotoPaths()) {
-                photoRepository.save(new Photo(filePath));
+                Photo photo;
+                Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+                if (optionalPhoto.isEmpty()) {
+                    photo = new Photo(filePath);
+                    photoRepository.save(photo);
+                    rental.addPhoto(photo);
+                    rentalRepository.save(rental);
+                }
+                photo = optionalPhoto.get();
+                rental.addPhoto(photo);
+                rentalRepository.save(rental);
             }
         }
           
