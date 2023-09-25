@@ -10,7 +10,7 @@ public class RecommendedRentals {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", referencedColumnName="id")
     private User tenant;
 
