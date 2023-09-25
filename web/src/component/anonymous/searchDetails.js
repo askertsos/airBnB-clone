@@ -13,6 +13,9 @@ function SearchDetails() {
     const [rental, setRental] = useState([]);
     const rentalId = routeParams.id;
 
+    const dates = localStorage.getItem("search_dates");
+    const peopleCount = localStorage.getItem("search_peopleCount");
+
 	useEffect(() => {
 		const fetchOptions = {
 			headers: {
@@ -31,6 +34,42 @@ function SearchDetails() {
             navigate("/");
         })
 	}, [rentalId]);
+
+    const Book = () => {
+
+        if (localStorage.getItem("jwt") === null) {
+            navigate("/unauthorized/user");
+            return;
+        }
+
+        let dates_list = dates.split(",");
+
+        const reqBody = {
+            startDate : dates_list[0],
+            endDate : dates_list[dates_list.length - 1],
+            guests : peopleCount,
+            price :  (rental.chargePerPerson * parseInt(peopleCount, 10) + rental.basePrice) * dates.split(",").length
+        };
+
+        console.log(reqBody);
+		const fetchOptions = {
+			headers: {
+				"Content-Type": "application/json",
+                "Authorization": "Bearer "  + localStorage.getItem("jwt")
+			},
+			method: "post",
+            body: JSON.stringify(reqBody),
+		};
+		fetch("https://localhost:8080/rentals/" + rentalId + "/book/confirm", fetchOptions)
+        .then((response) => {
+            navigate("/tenant/book/complete");
+            return;
+        })
+        .catch((message) => {
+            console.log(message);
+            navigate("/");
+        })
+    };
 
     if(loading){
         return(<h1>Loading...</h1>)
@@ -112,7 +151,7 @@ function SearchDetails() {
                         Back to rental list
                     </button>
                 </a>
-                <button className="button bookRental">
+                <button className="button bookRental" onClick={() => Book()}>
                         Book rental
                 </button>
                 <a href = {"https://localhost:3000/tenant/" + rental.id + "/review"}>

@@ -60,6 +60,10 @@ function Review() {
                 navigate("/tenant/review/complete");
                 return;
             }
+            else {
+                navigate("/unauthorized/user");
+                return;
+            }
         })
         .catch((message) => {
             console.log(message);

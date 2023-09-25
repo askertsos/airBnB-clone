@@ -91,7 +91,7 @@ function Home() {
 			method: "get",
 		};
 		fetch("https://localhost:8080/user/recommended_rentals", fetchOptions)
-		.then((response) => response.json())
+		// .then((response) => response.json())
 		.then((response) => {
 			console.log(response);
 			// setRecommendedRentals(response);
