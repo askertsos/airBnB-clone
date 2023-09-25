@@ -62,9 +62,9 @@ function RentalDetails() {
             setLoading(false);
         })
         .catch((message) => {
-            navigate("/unauthorized/user");
-            return;
-        });
+            console.log(message);
+            navigate("/");
+        })
 	}, [rentalId,navigate]);
 
     const updateRental = () => {
