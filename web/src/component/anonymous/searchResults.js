@@ -162,7 +162,7 @@ function SearchResults() {
                 response.content.map((rental) => {
                     let passesMaxCostCheck = true;
                     let passesTypeCheck = true;
-                    if ( maxCost !== null && (rental.chargePerPerson * parseInt(peopleCount, 10)) > maxCost) passesMaxCostCheck = false;
+                    if ( maxCost !== null && ((rental.chargePerPerson * parseInt(peopleCount, 10) + rental.basePrice) * dates.split(",").length) > maxCost) passesMaxCostCheck = false;
                     if ( type !== null && rental.type !== type) passesTypeCheck = false;
                     if ( passesMaxCostCheck && passesTypeCheck) tempList.push(rental);
                 });
@@ -363,7 +363,7 @@ function SearchResults() {
                                     <button className="rental ">
                                         <img className="rentalPic" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
                                         <p className="rental-field1"> Title : {data.title} </p>
-                                        <p className="rental-field1"> Price : {data.chargePerPerson * parseInt(peopleCount, 10)} </p>
+                                        <p className="rental-field1"> Price : {((data.chargePerPerson * parseInt(peopleCount, 10) + data.basePrice) * dates.split(",").length)} </p>
                                         <p className="rental-field1"> Type : {data.type} </p>
                                         <p className="rental-field2"> Number of beds : {data.beds} </p>
                                         <p className="rental-field2"> Number of reviews : {data.reviews.length} </p>
