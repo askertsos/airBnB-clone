@@ -66,6 +66,11 @@ public class SpecificationService<T> {
                         predicates.add(lessThan);
                         break;
 
+                    case LESS_OR_EQUAL:
+                        Predicate lessThanOrEqualTo = criteriaBuilder.lessThanOrEqualTo(root.get(specDTO.getColumn()),specDTO.getValue());
+                        predicates.add(lessThanOrEqualTo);
+                        break;
+
                     case JOIN:
                         Predicate join = criteriaBuilder.equal(root.join(specDTO.getJoinTable()).get(specDTO.getColumn()),specDTO.getValue());
                         predicates.add(join);
