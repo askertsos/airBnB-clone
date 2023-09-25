@@ -70,11 +70,7 @@ public class RecommendationService {
     }
 
 
-    public static void setRentalsToRecommend(){
-        Role tenantRole = roleRepository.findByAuthority("TENANT").get();
-        List<User> allTenants = userRepository.findAll();
-        allTenants.removeIf(t -> (!t.getAuthorities().contains(tenantRole)));
-
+    public static void setRentalsToRecommend(List<User> allTenants){
         for (User tenant: allTenants) {
             Optional<RecommendedRentals> optional = recommendedRentalsRepository.findByTenant(tenant);
 

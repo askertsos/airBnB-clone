@@ -5,7 +5,7 @@ import com.rbbnbb.TediTry1.domain.User;
 import com.rbbnbb.TediTry1.repository.RoleRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 import com.rbbnbb.TediTry1.services.RecommendationService;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,13 +15,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 
 @SpringBootApplication
 @EnableScheduling
 public class TediTry1Application {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TediTry1Application.class, args);
@@ -42,8 +48,11 @@ public class TediTry1Application {
 		};
 	}
 
-	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 60 * 100 * 199)
+	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 60)
 	public void updateRecommendedRentals(){
-		RecommendationService.setRentalsToRecommend();
+		Role tenantRole = roleRepository.findByAuthority("TENANT").get();
+		List<User> allTenants = userRepository.findAll();
+		allTenants.removeIf(t -> (!t.getAuthorities().contains(tenantRole)));
+		RecommendationService.setRentalsToRecommend(allTenants);
 	}
 }

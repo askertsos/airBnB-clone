@@ -74,5 +74,4 @@ public class AdminController {
         List<Rental> allRentals = rentalRepository.findAll();
         return ResponseEntity.ok(allRentals);
     }
-
 }
