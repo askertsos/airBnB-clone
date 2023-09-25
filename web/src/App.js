@@ -26,6 +26,7 @@ import RentalDetails from "./component/host/rentalDetails";
 
 import Review from "./component/tenant/review";
 import ReviewComplete from "./component/tenant/reviewComplete";
+import BookComplete from "./component/tenant/bookComplete";
 
 import Profile from "./component/global/profile";
 import ProfileUpdateComplete from "./component/global/profileUpdateComplete";
@@ -67,6 +68,7 @@ function App() {
 
 				<Route exact path="/tenant/:id/review" element={<Review />}></Route>
 				<Route exact path="/tenant/review/complete" element={<ReviewComplete />}></Route>
+				<Route exact path="/tenant/book/complete" element={<BookComplete />}></Route>
 
 			</Routes>
 		</Router>
