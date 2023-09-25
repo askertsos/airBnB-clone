@@ -136,6 +136,15 @@ function SearchResults() {
                 }
             );
 
+            let numDays = dates.split(",").length;
+            specList.push(
+                {
+                    value: numDays,
+                    operation: "LESS_OR_EQUAL",
+                    column : "minDays"
+                }
+            );
+
             specList.push(
                 {
                     value: dates,

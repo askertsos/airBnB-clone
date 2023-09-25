@@ -3,7 +3,7 @@ package com.rbbnbb.TediTry1.dto;
 public class SpecificationDTO {
 
     public enum Operation{
-        EQUAL, IN, LIKE, BETWEEN, GREATER_THAN, GREATER_OR_EQUAL, LESS_THAN, JOIN, DATES, AMENITIES, BOOLEAN
+        EQUAL, IN, LIKE, BETWEEN, GREATER_THAN, GREATER_OR_EQUAL, LESS_THAN, LESS_OR_EQUAL, JOIN, DATES, AMENITIES, BOOLEAN
     }
     private String column;
     //private Double valueDouble, private Integer valueInteger, private List<String> valueStringList, k.o.k
