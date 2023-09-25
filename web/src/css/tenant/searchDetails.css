@@ -1,7 +1,7 @@
 .search-details-bg {
     background-image : url("../images/home_background.jpg");
     position:absolute;
-    height : 1000px;
+    height : 1250px;
     width: 1864px;
     background-size : cover; 
 }
@@ -20,6 +20,59 @@
     height : 1000px;
     width: 1864px;
     background-size : cover; 
+}
+
+.host-info-box {
+    background-color: burlywood;
+    width: 902px;
+    height : 270px;
+    position: relative;
+    top : 60px;
+    left : 479px;
+    border: 3px solid rgb(8, 7, 7);
+    text-align: center;
+}
+
+.host-info-box:hover{
+    background-color: rgb(185, 170, 150);
+    cursor: pointer;
+}
+
+.host-info-pic{
+    height: 150px;
+    width: 150px;
+    position: relative;
+    right : 340px;
+    top : 30px;
+}
+
+.host-info-review{
+    font-size: 30px;
+    position: relative;
+    bottom : 85px;
+}
+
+.host-info-stars{
+    font-size: 30px;
+    position: relative;
+    bottom : 60px;
+}
+
+.host-info-header {
+    font-size: 30px;
+    background-color: beige;
+    border: 1px solid rgb(8, 7, 7);
+    width: 220px;
+    text-align: center;
+    position: relative;
+    left : 320px;
+    top : 20px;
+}
+
+.host-info-name {
+    font-size: 30px;
+    position: relative;
+    bottom : 110px;
 }
 
 .details-box {
@@ -109,8 +162,8 @@
 
 .bookRental {
     position: relative;
-    bottom: 885px;
-    left: 25px;
+    bottom: 890px;
+    right: 877px;
 }
 
 .details-header {
