@@ -55,6 +55,11 @@ public class RentalController {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @GetMapping("/auth")
+    public ResponseEntity<?> hasAccess(){
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/{rentalId}/details")
     public ResponseEntity<?> rentalInfo(@PathVariable("rentalId") Long rentalId){
         Rental rental = rentalRepository.findById(rentalId).get();

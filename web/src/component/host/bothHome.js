@@ -24,7 +24,10 @@ function BothHome() {
 			}
 			setLoading(false);
 		})
-		.catch((message) => console.log(message));
+		.catch((message) => {
+            console.log(message);
+            navigate("/");
+        })
 	}, [navigate]);
 
 	if (loading === true){

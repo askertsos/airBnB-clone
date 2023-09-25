@@ -63,6 +63,10 @@ function Home() {
 			alert("Select visitors amount to proceed!");
 			return;
 		}
+		else if (peopleCount <= 0){
+			alert("Selected visitors must be at least 1");
+			return;
+		}
 
 		let reformated_dates = ""
 		dates.map((date) => {

@@ -33,7 +33,10 @@ function HostHome() {
 			setIsBoth(host && tenant);
 			setLoading(false);
 		})
-		.catch((message) => console.log(message));
+		.catch((message) => {
+            console.log(message);
+            navigate("/");
+        })
 	}, [isBoth, navigate]);
 
 	if (loading === true){
