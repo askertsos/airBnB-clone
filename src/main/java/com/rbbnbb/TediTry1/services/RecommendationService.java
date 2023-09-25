@@ -90,7 +90,6 @@ public class RecommendationService {
     }
 
     private Set<Rental> recommendBasedOnBookingsAndReviews(User tenant, List<Booking> userBookings, List<Review> userReviews){
-        System.out.println("Recommending based on bookings and reviews");
         List<Review> allReviews = reviewRepository.findAll();
 
         //Get the rental from each booking the user has made. Note: May include duplicate rentals if user booked the same rental twice
@@ -115,7 +114,6 @@ public class RecommendationService {
         int userIndex = -1;
 
         Random rClass = new Random();
-        System.out.println("There are " + allReviewers.size() + " reviewers, " + allRentals.size() + " rentals and " + allReviews.size() + " reviews");
 
         //for all rows in R
         for (int i = 0; i < allReviewers.size(); i++) {
@@ -232,7 +230,6 @@ public class RecommendationService {
     }
 
     private Set<Rental> recommendBasedOnSearchHistory(User user){
-        System.out.println("Recommendinb based on Search History");
         Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
         if (optionalSearchHistory.isEmpty()){ //No search history, recommend 5 most highly-rated rentals
             return recommendMostHighlyRated();
@@ -263,7 +260,7 @@ public class RecommendationService {
         final double neighbourhoodWeight = 25d;
         double avgGuestsWeight = 1.5;
         double booleanWeight = 0.7;
-        double wifiWeight, acWeight, heatingWeight, kitchenWeight, tvWeight, parkingWeight, elevatorWeight;
+        double wifiWeight = 0d, acWeight = 0d, heatingWeight = 0d, kitchenWeight = 0d, tvWeight = 0d, parkingWeight = 0d, elevatorWeight = 0d;
 
         double avgGuests = 0d;
 
@@ -443,7 +440,7 @@ public class RecommendationService {
         final double lambda = 0.7; //True sigmoid when lambda = 1. Lambda --> inf => sign function, Lambda --> 0 => y=0.5
         final double offset = 5d; //Without it, sigmoid(0) would return 3. Now it returns 0.000... and sigmoid(offset) = 3
                                   //Offset essentially acts as protection against high scores with low x. higher offset -> higher x needed for good rating.
-        final double newX = lambda*(x - offset);
+        final double newX = lambda*(- x + offset);
         double sigmoid = 1 / (1 + Math.exp(newX)); //ranges between 0 and 1
         return 4 * sigmoid + 1; //finally ranges between 1 and 5
     }
