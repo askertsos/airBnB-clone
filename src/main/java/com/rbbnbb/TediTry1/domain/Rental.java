@@ -57,6 +57,9 @@ public class Rental {
     @JoinColumn(referencedColumnName = "id")
     private Address address;
     //map
+
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "rental_public_transport", joinColumns = @JoinColumn(name = "rental_id"))
     private List<String> publicTransport;
 
     //Photos

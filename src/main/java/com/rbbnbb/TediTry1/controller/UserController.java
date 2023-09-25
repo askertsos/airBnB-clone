@@ -40,6 +40,9 @@ public class UserController {
     @Autowired
     private MessageHistoryRepository messageHistoryRepository;
 
+    @Autowired
+    private RecommendedRentalsRepository recommendedRentalsRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -90,5 +93,21 @@ public class UserController {
         dto.setHostRentals(hostRentals);
 
         return ResponseEntity.ok().body(dto);
+    }
+
+    //--------------------------------------------------------------------------------------------
+    //-----------------                     TENANTS                     --------------------------
+    //--------------------------------------------------------------------------------------------
+
+    @GetMapping("/recommended_rentals")
+    public ResponseEntity<?> getRecommendedRentals(@RequestHeader("Authorization") String jwt){
+        User tenant = userService.getUserByJwt(jwt).get();
+        Optional<RecommendedRentals> optional = recommendedRentalsRepository.findByTenant(tenant);
+        if (optional.isEmpty()) return ResponseEntity.badRequest().build();
+        RecommendedRentals recommendedRentals = optional.get();
+
+        List<Rental> rentalList = new ArrayList<>(recommendedRentals.getRentals());
+
+        return ResponseEntity.ok().body(rentalList);
     }
 }

@@ -75,49 +75,11 @@ public class SpecificationService<T> {
                         String[] stringDates = specDTO.getValue().split(",");
                         //Convert them to LocalDate and insert them into a list
                         for (String stringDate: stringDates) {
-                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
-                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
+                            LocalDate localDate = LocalDate.parse(stringDate, formatter);
+                            predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
                         }
-//
-//                        //Convert them to LocalDate and insert them into a list
-//                        List<LocalDate> datesList = new ArrayList<>();
-//                        List<Predicate> predicateList = new ArrayList<>();
-//                        for (String stringDate: stringDates) {
-//                                LocalDate localDate = LocalDate.parse(stringDate, formatter);
-//                                datesList.add(localDate);
-//                                predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
-//
-//                        }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 
-                        //Every element of the list must be in the "availableDates" field
-//                        for (LocalDate localDate: datesList) {
-//                            predicates.add(root.get("availableDates").in(localDate));
-//                        }
-//                        System.out.println("before root.get.in");
-//                        Predicate date = root.get("availableDates").in(datesList);
-//                        predicates.add(date);
-
-//                        Predicate isMember = criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
-//                        predicates.add(isMember);
-
-
-
-
-
-
-//                        for (LocalDate availableDate: root.get("availableDates")){
-//
-//                        }
-
-
-//                        LocalDate[] dateArray = new LocalDate[datesList.size()];
-//                        dateArray = datesList.toArray(new LocalDate[0]);
-//                        CriteriaBuilder.In<Rental> inClause = criteriaBuilder.in(root.get("availableDates"));
-//                        for (LocalDate date: datesList) {
-//                            inClause.value(date);
-//                        }
-//                        query.select(root).where(inClause);
                     case AMENITIES:
                     case BOOLEAN:
                         boolean boolValue = Boolean.parseBoolean(specDTO.getValue());

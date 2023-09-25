@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,17 +53,19 @@ public class SearchService {
                 continue;
             }
             if (specDto.getOperation().equals(SpecificationDTO.Operation.DATES)){
-                String[] dates = value.split(",");
-                if (dates.length != 2) throw new IllegalArgumentException();
+                String[] stringDates = value.split(",");
+                List<LocalDate> dateList = new ArrayList<>();
                 try {
-                    startDate = LocalDate.parse(dates[0], dateTimeFormatter);
-                    endDate = LocalDate.parse(dates[1], dateTimeFormatter);
+                    for (String date: stringDates) {
+                        LocalDate localDate = LocalDate.parse(date,dateTimeFormatter);
+                        dateList.add(localDate);
+                    }
                 }
                 catch (DateTimeParseException d){
                     throw new IllegalArgumentException();
                 }
-                newSearch.setStartDate(startDate);
-                newSearch.setEndDate(endDate);
+                newSearch.setStartDate(dateList.get(0));
+                newSearch.setEndDate(dateList.get(dateList.size()-1));
                 continue;
             }
             if (specDto.getOperation().equals(SpecificationDTO.Operation.GREATER_OR_EQUAL)){

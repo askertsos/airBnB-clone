@@ -67,10 +67,8 @@ public class SearchController {
 
     @PostMapping("/")
     public ResponseEntity<?> searchRentals(@Nullable @RequestHeader("Authorization") String jwt, @RequestBody SearchRequestDTO dto){
-        System.out.println("in SearchRentals");
         Optional<User> optionalUser = userService.getUserByJwt(jwt);
         if (optionalUser.isPresent()){
-            System.out.println("user is present");
             try{
                 User user = optionalUser.get();
                 searchService.addSearch(user,dto);
@@ -79,7 +77,7 @@ public class SearchController {
                 return ResponseEntity.badRequest().build();
             }
         }
-        System.out.println("outside of if");
+
 
         Specification<Rental> searchSpecification = rentalSpecificationService.getSearchSpecification(dto);
 
@@ -93,8 +91,12 @@ public class SearchController {
         for (SpecificationDTO specDto: specList) {
             if (specDto.getOperation().equals(SpecificationDTO.Operation.DATES)){
                 String[] stringDates = specDto.getValue().split(",");
+
                 LocalDate startDate = LocalDate.parse(stringDates[0],dateTimeFormatter);
-                LocalDate endDate = LocalDate.parse(stringDates[1],dateTimeFormatter);
+                LocalDate endDate = startDate;
+                if (stringDates.length == 2) {
+                    endDate = LocalDate.parse(stringDates[1], dateTimeFormatter);
+                }
                 days = startDate.datesUntil(endDate.plusDays(1L)).toList().size();
                 continue;
             }
