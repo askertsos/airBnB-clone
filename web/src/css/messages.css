@@ -5,6 +5,21 @@
     background-size : cover; 
 }
 
+.host-messages-bg {
+    background-image : url("./images/home_background.jpg");
+    height : 2350px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.msg-user-color {
+    background-color: burlywood;
+}
+
+.msg-user-color:hover{
+    background-color: rgb(185, 161, 130);
+}
+
 .message-history-box {
     background-color: burlywood;
     width: 1810px;

@@ -23,6 +23,8 @@ import NewRentalComplete from "./component/host/newRentalComplete";
 import NewRental from "./component/host/newRental";
 import ListRentals from "./component/host/listRentals";
 import RentalDetails from "./component/host/rentalDetails";
+import MessageHistoryHost from "./component/host/messageHistory";
+import MessageDetails from "./component/host/messageDetails";
 
 import Review from "./component/tenant/review";
 import ReviewComplete from "./component/tenant/reviewComplete";
@@ -66,6 +68,8 @@ function App() {
 				<Route exact path="/host/rental/:id/details" element={<RentalDetails />}></Route>
 				<Route exact path="/host/newRental" element={<NewRental />}></Route>
 				<Route exact path="/host/newRentalComplete" element={<NewRentalComplete />}></Route>
+				<Route exact path="/host/rental/:id/messages" element={<MessageHistoryHost />}></Route>
+				<Route exact path="/host/rental/:id/messages/tenant/:tenant_id" element={<MessageDetails />}></Route>
 
 				<Route exact path="/tenant/:id/review" element={<Review />}></Route>
 				<Route exact path="/tenant/review/complete" element={<ReviewComplete />}></Route>

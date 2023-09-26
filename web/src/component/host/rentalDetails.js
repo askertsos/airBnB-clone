@@ -149,6 +149,11 @@ function RentalDetails() {
                     Back to rental list
                 </button>
             </a>
+            <a href={"https://localhost:3000/host/rental/" + rentalId + "/messages"}>
+                <button className="button backToListHost">
+                    View messages
+                </button>
+            </a>
             <div className="host-details-box">
                 <div className="details-section1">
                     <h2>Basic : </h2>

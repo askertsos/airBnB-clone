@@ -147,7 +147,10 @@ public class RentalController {
 
         Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
         if (optionalMessageHistory.isEmpty()){
-            return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
+            Map<String, Object> ResponseBody = new HashMap<String, Object>();
+            ResponseBody.put("Messages", null);
+            ResponseBody.put("MaxPage", 1);
+            return ResponseEntity.ok().body(ResponseBody);
         }
 
         MessageHistory messageHistory = optionalMessageHistory.get();

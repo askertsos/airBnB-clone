@@ -202,7 +202,52 @@ public class HostController {
         int end = Math.min((index + 1) * pageSize,messageHistoryList.size());
         List<MessageHistory> pagedList = messageHistoryList.subList(start,end);
 
-        return ResponseEntity.ok().body(pagedList);
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("History", pagedList);
+        ResponseBody.put("MaxPage", maxPageNo);
+
+        return ResponseEntity.ok().body(ResponseBody);
+    }
+
+    @GetMapping("/{rentalId}/tenant/{tenantId}/message_history/{pageNo}")
+    public ResponseEntity<?> viewMessageHistory(@PathVariable("rentalId") Long rentalId,@PathVariable("tenantId") Long tenantId ,@PathVariable("pageNo") Integer pageNo, @RequestHeader("Authorization") String jwt){
+        User tenant = userRepository.findById(tenantId).get();
+
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
+
+        Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
+        if (optionalMessageHistory.isEmpty()){
+            return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
+        }
+
+        MessageHistory messageHistory = optionalMessageHistory.get();
+        List<Message> messageList = new ArrayList<>(messageHistory.getMessageList());
+
+        //Assert that the pageNo is valid
+        final int index = pageNo - 1;
+        final int pageSize = 18;
+        final double messagesPerPage = (double) messageList.size() / pageSize;
+        int maxPageNo = (int)Math.ceil(messagesPerPage);
+        if (index < 0 || index > maxPageNo) return ResponseEntity.badRequest().build();
+
+        messageList.sort(new Comparator<Message>() {
+            @Override
+            public int compare(Message m1, Message m2) {
+                return m2.getSentAt().compareTo(m1.getSentAt());
+            }
+        });
+        messageHistory.setMessageList(messageList);
+        final int start = index*pageSize;
+        int end = Math.min((index + 1) * pageSize,messageList.size());
+        List<Message> pagedList = messageList.subList(start,end);
+
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Messages", pagedList);
+        ResponseBody.put("MaxPage", maxPageNo);
+
+        return ResponseEntity.ok().body(ResponseBody);
     }
 
     @PostMapping("/rentals/{rentalId}/message/{tenantId}")
@@ -233,7 +278,7 @@ public class HostController {
         messageHistory.addMessage(newMessage);
         messageHistoryRepository.save(messageHistory);
 
-        return ResponseEntity.ok().body(text);
+        return ResponseEntity.ok().body(messageHistory);
     }
 
 }

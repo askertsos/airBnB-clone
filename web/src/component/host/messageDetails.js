@@ -1,10 +1,10 @@
-// messageHistory.js
+// messageDetail.js
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import "../../css/messages.css"
 
-function MessageHistory() {
+function MessageDetail() {
 
     const [history, setHistory] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -13,6 +13,7 @@ function MessageHistory() {
     const navigate = useNavigate();
     const routeParams = useParams();
     const rentalId = routeParams.id;
+    const tenantId = routeParams.tenant_id;
 
     useEffect(() => {
 		const fetchOptions = {
@@ -22,11 +23,11 @@ function MessageHistory() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/rentals/" + rentalId + "/message_history/" + page, fetchOptions)
+		fetch("https://localhost:8080/host/" + rentalId + "/tenant/" + tenantId + "/message_history/" + page, fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            let reverted_history = [];
-            if(response.Messages !== null) {
+            let reverted_history;
+            if(response.Messages.length > 0) {
                 reverted_history = new Array(18);
                 response.Messages.map((message, index) => {
                     reverted_history[18 - index] = message;
@@ -58,7 +59,7 @@ function MessageHistory() {
                 method: "post",
                 body: newMessage
             };
-            fetch("https://localhost:8080/rentals/" + rentalId + "/message_host", fetchOptions)
+            fetch("https://localhost:8080/host/rentals/" + rentalId + "/message/" + tenantId, fetchOptions)
             .then((response) => {
                 window.location.reload(false);
             })
@@ -81,7 +82,7 @@ function MessageHistory() {
 	return (
 		<>
             <div className="messages-bg">
-                <a href = {"https://localhost:3000/search/" + rentalId + "/details"}>
+                <a href = {"https://localhost:3000/host/rental/" + rentalId + "/messages"}>
                     <button className="button back-todetails">
                         Back to rental details
                     </button>
@@ -115,4 +116,4 @@ function MessageHistory() {
 	);
 }
 
-export default MessageHistory;
+export default MessageDetail;
