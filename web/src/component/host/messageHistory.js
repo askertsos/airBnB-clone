@@ -50,7 +50,7 @@ function MessageHistoryHost() {
 	return (
 		<>
             <div className="host-messages-bg">
-                <a href = {"https://localhost:3000/search/" + rentalId + "/details"}>
+                <a href = {"https://localhost:3000/host/rental/" + rentalId + "/details"}>
                     <button className="button back-todetails">
                         Back to rental details
                     </button>
