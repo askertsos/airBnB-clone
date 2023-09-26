@@ -1,6 +1,6 @@
 // searchDetails.js
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { resolvePath, useNavigate, useParams } from "react-router-dom";
 import Calendar from "react-multi-date-picker";
 
 import "../../css/tenant/searchDetails.css"
@@ -11,6 +11,7 @@ function SearchDetails() {
     const navigate = useNavigate();
     const [loading ,setLoading] = useState(true);
     const [rental, setRental] = useState([]);
+    const [host, setHost] = useState(null);
     const rentalId = routeParams.id;
 
     const dates = localStorage.getItem("search_dates");
@@ -26,6 +27,7 @@ function SearchDetails() {
 		fetch("https://localhost:8080/search/" + rentalId + "/details", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+            setHost(response.host);
             setRental(response);
             setLoading(false);
         })
@@ -146,6 +148,14 @@ function SearchDetails() {
                     </div>
                         
                 </div>
+                <button className="host-info-box" onClick={() => {navigate("/rental/" + rentalId + "/message/history")}}>
+                    <div className="host-info-header ">Host info </div>
+                        <img className="host-info-pic" src={require("../profile_photos/" + host.profilePic + ".jpg")} alt="profilePic"/>
+                        <div className="host-info-name">Name : {host.first_name} {host.last_name} </div>
+                        <div className="host-info-review">Reviews : {rental.reviews.length} </div>
+                        {rental.rating === null && <div className="host-info-stars"> Stars : - </div>}
+                        {rental.rating !== null && <div className="host-info-stars"> Stars : {rental.rating} </div>}
+                </button>
                 <a href="https://localhost:3000/search/results">
                     <button className="button bookRental">
                         Back to rental list
