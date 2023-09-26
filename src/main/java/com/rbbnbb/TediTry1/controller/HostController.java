@@ -178,31 +178,42 @@ public class HostController {
 
         if (messageHistoryList.isEmpty()) return ResponseEntity.ok().body(new ArrayList());
 
+
+
+        List<Message> completeMessageList = new ArrayList<>();
+        for (MessageHistory mh: messageHistoryList) {
+            completeMessageList.addAll(mh.getMessageSet());
+        }
+
+        completeMessageList.sort(new Comparator<Message>() {
+            @Override
+            public int compare(Message m1, Message m2) {
+                return m2.getSentAt().compareTo(m1.getSentAt());
+            }
+        });
+//        messageHistoryList.sort(new Comparator<MessageHistory>() {
+//            @Override
+//            public int compare(MessageHistory m1, MessageHistory m2) {
+//                List<Message> messageList1 = new ArrayList<>(m1.getMessageSet());
+//                List<Message> messageList2 = new ArrayList<>(m2.getMessageSet());
+//
+//                messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
+//                messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
+//
+//                return messageList2.get(0).getSentAt().compareTo(messageList1.get(0).getSentAt());
+//            }
+//        });
+
         //Assert that the pageNo is valid
         final int index = pageNo - 1;
         final int pageSize = 10;
-        final double messagesPerPage = (double) messageHistoryList.size() / pageSize;
+        final double messagesPerPage = (double) completeMessageList.size() / pageSize;
         int maxPageNo = (int)Math.ceil(messagesPerPage);
         if (pageNo < 1 || pageNo > maxPageNo) return ResponseEntity.badRequest().build();
 
-        Collections.sort(messageHistoryList, new Comparator<MessageHistory>() {
-            @Override
-            public int compare(MessageHistory m1, MessageHistory m2) {
-                List<Message> messageList1 = new ArrayList<>(m1.getMessageSet());
-                List<Message> messageList2 = new ArrayList<>(m2.getMessageSet());
-
-                messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
-                messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
-
-                return messageList2.get(0).getSentAt().compareTo(messageList1.get(0).getSentAt());
-            }
-        });
-
-        final int startIndex = index*pageSize;
-        int endIndex = (index + 1) * pageSize;
-        if (endIndex >= messageHistoryList.size()) endIndex = messageHistoryList.size() - 1;
-
-        List<MessageHistory> pagedList = messageHistoryList.subList(startIndex,endIndex);
+        final int start = index*pageSize;
+        int end = Math.min((index + 1) * pageSize,completeMessageList.size());
+        List<Message> pagedList = completeMessageList.subList(start,end);
 
         return ResponseEntity.ok().body(pagedList);
     }

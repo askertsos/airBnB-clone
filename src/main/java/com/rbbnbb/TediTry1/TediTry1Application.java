@@ -28,10 +28,6 @@ public class TediTry1Application {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Autowired
-	private RoleRepository roleRepository;
-
 	@Autowired
 	private RecommendationService recommendationService;
 
@@ -56,7 +52,6 @@ public class TediTry1Application {
 
 	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 5)
 	public void updateRecommendedRentals(){
-		Role tenantRole = roleRepository.findByAuthority("TENANT").get();
 		List<User> allTenants = userRepository.findAll();
 		allTenants.removeIf(u -> (!u.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("TENANT")));
 		LocalDateTime before = LocalDateTime.now();
