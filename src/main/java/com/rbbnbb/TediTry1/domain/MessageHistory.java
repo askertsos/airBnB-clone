@@ -2,7 +2,9 @@ package com.rbbnbb.TediTry1.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,23 +24,23 @@ public class MessageHistory {
 
     @ElementCollection
     @CollectionTable(name = "history_messages", joinColumns = @JoinColumn(name = "message_id"))
-    private Set<Message> messageSet = new HashSet<>();
+    private List<Message> messageList = new ArrayList<>();
 
-    public void addMessage(Message m){ this.messageSet.add(m); }
+    public void addMessage(Message m){ this.messageList.add(m); }
 
     public MessageHistory() {}
 
-    public MessageHistory(Long id, User tenant, Rental rental, Set<Message> messageSet) {
+    public MessageHistory(Long id, User tenant, Rental rental, List<Message> messageList) {
         this.id = id;
         this.tenant = tenant;
         this.rental = rental;
-        this.messageSet = messageSet;
+        this.messageList = messageList;
     }
 
     public MessageHistory(User tenant, Rental rental, Message message){
         this.tenant = tenant;
         this.rental = rental;
-        this.messageSet.add(message);
+        this.messageList.add(message);
     }
 
     public MessageHistory(User tenant, Rental rental){
@@ -67,11 +69,11 @@ public class MessageHistory {
     }
 
 
-    public Set<Message> getMessageSet() {
-        return messageSet;
+    public List<Message> getMessageList() {
+        return messageList;
     }
 
-    public void setMessageSet(Set<Message> messageSet) {
-        this.messageSet = messageSet;
+    public void setMessageList(List<Message> messageList) {
+        this.messageList = messageList;
     }
 }

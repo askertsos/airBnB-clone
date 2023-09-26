@@ -137,8 +137,8 @@ public class RentalController {
         return ResponseEntity.ok().body(review);
     }
 
-    @GetMapping("/{rentalId}/message_history")
-    public ResponseEntity<?> viewMessageHistory(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt){
+    @GetMapping("/{rentalId}/message_history/{pageNo}")
+    public ResponseEntity<?> viewMessageHistory(@PathVariable("rentalId") Long rentalId,@PathVariable("pageNo") Integer pageNo, @RequestHeader("Authorization") String jwt){
         User tenant = userService.getUserByJwt(jwt).get();
 
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
@@ -149,15 +149,28 @@ public class RentalController {
         if (optionalMessageHistory.isEmpty()){
             return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
         }
+
         MessageHistory messageHistory = optionalMessageHistory.get();
-        Set<Message> messages = messageHistory.getMessageSet();
-        messages = messages.stream().sorted(new Comparator<Message>() {
+        List<Message> messageList = new ArrayList<>(messageHistory.getMessageList());
+
+        //Assert that the pageNo is valid
+        final int index = pageNo - 1;
+        final int pageSize = 10;
+        final double messagesPerPage = (double) messageList.size() / pageSize;
+        int maxPageNo = (int)Math.ceil(messagesPerPage);
+        if (pageNo < 1 || pageNo > maxPageNo) return ResponseEntity.badRequest().build();
+
+        messageList.sort(new Comparator<Message>() {
             @Override
             public int compare(Message m1, Message m2) {
                 return m2.getSentAt().compareTo(m1.getSentAt());
             }
-        }).collect(Collectors.toSet());
-        messageHistory.setMessageSet(messages);
+        });
+        messageHistory.setMessageList(messageList);
+        final int start = index*pageSize;
+        int end = Math.min((index + 1) * pageSize,messageList.size());
+        List<Message> pagedList = messageList.subList(start,end);
+
         return ResponseEntity.ok().body(messageHistory);
     }
 

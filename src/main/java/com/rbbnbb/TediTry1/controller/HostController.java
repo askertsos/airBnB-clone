@@ -188,8 +188,8 @@ public class HostController {
         messageHistoryList.sort(new Comparator<MessageHistory>() {
             @Override
             public int compare(MessageHistory m1, MessageHistory m2) {
-                List<Message> messageList1 = new ArrayList<>(m1.getMessageSet());
-                List<Message> messageList2 = new ArrayList<>(m2.getMessageSet());
+                List<Message> messageList1 = new ArrayList<>(m1.getMessageList());
+                List<Message> messageList2 = new ArrayList<>(m2.getMessageList());
 
                 messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
                 messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
