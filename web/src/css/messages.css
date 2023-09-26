@@ -5,13 +5,28 @@
     background-size : cover; 
 }
 
+.host-messages-bg {
+    background-image : url("./images/home_background.jpg");
+    height : 2350px;
+    width: 1864px;
+    background-size : cover; 
+}
+
+.msg-user-color {
+    background-color: burlywood;
+}
+
+.msg-user-color:hover{
+    background-color: rgb(185, 161, 130);
+}
+
 .message-history-box {
     background-color: burlywood;
     width: 1810px;
     height: 880px;
     position: relative;
     left : 25px;
-    top : 50px;
+    bottom : 35px;
     border: 3px solid rgb(8, 7, 7);
 }
 
@@ -39,6 +54,30 @@
     position: absolute;
     top : 840px;
     left : 1610px;
+}
+
+.page-header-mes {
+    font-size: 30px;
+    position: relative;
+    text-align: center;
+    background-color: aliceblue;
+    width: 320px;
+    border: 2px solid black;
+    position: relative;
+    left : 272px;
+    top : 5px;
+}
+
+.mes-next {
+    position: relative;
+    left : 597px;
+    bottom : 38px;
+}
+
+.mes-prev {
+    position: relative;
+    left : 599px;
+    bottom : 38px;
 }
 
 .back-todetails {

@@ -147,7 +147,10 @@ public class RentalController {
 
         Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
         if (optionalMessageHistory.isEmpty()){
-            return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
+            Map<String, Object> ResponseBody = new HashMap<String, Object>();
+            ResponseBody.put("Messages", null);
+            ResponseBody.put("MaxPage", 1);
+            return ResponseEntity.ok().body(ResponseBody);
         }
 
         MessageHistory messageHistory = optionalMessageHistory.get();
@@ -155,10 +158,10 @@ public class RentalController {
 
         //Assert that the pageNo is valid
         final int index = pageNo - 1;
-        final int pageSize = 10;
+        final int pageSize = 18;
         final double messagesPerPage = (double) messageList.size() / pageSize;
         int maxPageNo = (int)Math.ceil(messagesPerPage);
-        if (pageNo < 1 || pageNo > maxPageNo) return ResponseEntity.badRequest().build();
+        if (index < 0 || index > maxPageNo) return ResponseEntity.badRequest().build();
 
         messageList.sort(new Comparator<Message>() {
             @Override
@@ -171,7 +174,11 @@ public class RentalController {
         int end = Math.min((index + 1) * pageSize,messageList.size());
         List<Message> pagedList = messageList.subList(start,end);
 
-        return ResponseEntity.ok().body(messageHistory);
+        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        ResponseBody.put("Messages", pagedList);
+        ResponseBody.put("MaxPage", maxPageNo);
+
+        return ResponseEntity.ok().body(ResponseBody);
     }
 
     @PostMapping("/{rentalId}/message_host")
