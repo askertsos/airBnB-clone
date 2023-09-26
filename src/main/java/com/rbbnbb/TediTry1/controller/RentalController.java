@@ -18,9 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/rentals")
@@ -151,6 +150,14 @@ public class RentalController {
             return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
         }
         MessageHistory messageHistory = optionalMessageHistory.get();
+        Set<Message> messages = messageHistory.getMessageSet();
+        messages = messages.stream().sorted(new Comparator<Message>() {
+            @Override
+            public int compare(Message m1, Message m2) {
+                return m2.getSentAt().compareTo(m1.getSentAt());
+            }
+        }).collect(Collectors.toSet());
+        messageHistory.setMessageSet(messages);
         return ResponseEntity.ok().body(messageHistory);
     }
 
