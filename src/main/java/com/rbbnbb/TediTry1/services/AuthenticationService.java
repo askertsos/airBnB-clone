@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.ResponseEntity;
 
+import java.io.File;
 import java.util.*;
 
 @Service
@@ -56,7 +57,7 @@ public class AuthenticationService {
     @Autowired
     private RecommendationService recommendationService;
 
-    public ResponseEntity<?> registerUser(RegisterDTO body){
+    public ResponseEntity<?> registerUser(RegisterDTO body) {
         String username = body.getUsername();
         String encodedPassword = passwordEncoder.encode(body.getPassword());
         String first_name = body.getFirst_name();
@@ -69,14 +70,12 @@ public class AuthenticationService {
         Role hostRole = roleRepository.findByAuthority("HOST").get();
         Set<Role> authorities = new HashSet<>();
 
-        if (body.getRoles().equals("both")){
+        if (body.getRoles().equals("both")) {
             authorities.add(tenantRole);
             authorities.add(hostRole);
-        }
-        else if(body.getRoles().equals("tenant")){
+        } else if (body.getRoles().equals("tenant")) {
             authorities.add(tenantRole);
-        }
-        else{
+        } else {
             authorities.add(hostRole);
         }
 
@@ -84,24 +83,17 @@ public class AuthenticationService {
         User newUser = new User(username, encodedPassword, first_name, last_name, email, phoneNumber, authorities);
         userRepository.save(newUser);
 
-
-        //If the user sent a profile picture name, create new Photo instance and add it to the user
-        if (Objects.nonNull(body.getPictureName()) && !(body.getPictureName().isEmpty())) {
-
-            try {
-                //Create profile picture path based on the user's generated id
-                String fullPath = "src/main/resources/ProfilePictures/" + newUser.getId().toString() + "/" + body.getPictureName();
-                Photo profilePicture = new Photo(fullPath);
-                photoRepository.save(profilePicture);
-                newUser.setProfilePicture(profilePicture);
-                userRepository.save(newUser);
-                }
-            catch (Exception e){
-                return ResponseEntity.badRequest().build();
-            }
+        //Try to create directory for the profile photo. If it fails, ignore it until the user tries to upload a photo.
+        //Create it then
+        File userDirectory = new File(newUser.getPhotoDirectory());
+        try{
+            userDirectory.mkdir();
         }
-        return ResponseEntity.ok().build();
+        catch(Exception e){
+            //do nothing
+        }
 
+        return ResponseEntity.ok().build();
     }
 
     public ResponseEntity<?> loginUser(String username, String password){
@@ -119,8 +111,6 @@ public class AuthenticationService {
             body.put("isTenant", userRepository.findByUsername(username).get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("TENANT")) ? "true" : "false");
             body.put("isHost", userRepository.findByUsername(username).get().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("HOST")) ? "true" : "false");
             body.put("isAdmin", userRepository.findByUsername(username).get().getAuthorities().stream().allMatch(a -> a.getAuthority().equals("ADMIN")) ? "true" : "false");
-
-//            recommendationService.recommendBasedOnSearchHistory((User)auth.getPrincipal());
 
             return ResponseEntity.ok()
                                  .body(body);

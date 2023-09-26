@@ -318,8 +318,9 @@ public class RecommendationService {
                 totalVisits += entry.getValue();
                 if (entry.getKey().equals(rental)) rentalVisits = entry.getValue();
             }
-            double rentalFreq = rentalVisits / (double) totalVisits;
-
+            double rentalFreq;
+            if (totalVisits != 0) rentalFreq = rentalVisits / (double) totalVisits;
+            else rentalFreq = 0;
 
             //Count the frequency(percentage of searches where a value appears) for each value.
             //A for loop is used instead of Collections.frequency to improve time complexity by only iterating through the list once
@@ -422,6 +423,8 @@ public class RecommendationService {
         final int minReviews = 20;
 
         rentalList.removeIf(r -> reviewRepository.countByRental(r) < minReviews);
+
+        if (rentalList.isEmpty()) return new HashSet<>(rentalList);
         rentalList.sort(new Comparator<Rental>() {
             @Override
             public int compare(Rental r1, Rental r2) {
