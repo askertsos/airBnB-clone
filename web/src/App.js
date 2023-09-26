@@ -30,6 +30,7 @@ import BookComplete from "./component/tenant/bookComplete";
 
 import Profile from "./component/global/profile";
 import ProfileUpdateComplete from "./component/global/profileUpdateComplete";
+import MessageHistory from "./component/global/messageHistory";
 
 import "./App.css";
 
@@ -69,6 +70,8 @@ function App() {
 				<Route exact path="/tenant/:id/review" element={<Review />}></Route>
 				<Route exact path="/tenant/review/complete" element={<ReviewComplete />}></Route>
 				<Route exact path="/tenant/book/complete" element={<BookComplete />}></Route>
+
+				<Route exact path="/rental/:id/message/history" element={<MessageHistory />}></Route>
 
 			</Routes>
 		</Router>
