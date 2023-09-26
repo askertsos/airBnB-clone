@@ -38,7 +38,6 @@ function MessageHistory() {
 
     const sendNewMessage = () =>{
 
-        console.log(newMessage);
         if( newMessage !== ""){
             const fetchOptions = {
                 headers: {
@@ -48,7 +47,7 @@ function MessageHistory() {
                 method: "post",
                 body: newMessage
             };
-            fetch("https://localhost:8080/rentals" + rentalId + "/message_host", fetchOptions)
+            fetch("https://localhost:8080/rentals/" + rentalId + "/message_host", fetchOptions)
             .then((response) => {
                 window.location.reload(false);
             })
