@@ -67,7 +67,7 @@ function ListRentals() {
 
 	return (
 		<>
-            <div className="searchList-bg">
+            <div className="rentalList-host-bg">
                 <h2>Current page : {pageNum + 1}</h2>
                     <button className="button" id="submit" type="button" onClick={() => nextPage()}>
                             Next Page
