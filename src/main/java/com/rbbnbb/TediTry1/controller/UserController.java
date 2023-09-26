@@ -142,6 +142,8 @@ public class UserController {
         byte[] imageData;
         Photo profilePicture = user.getProfilePicture();
 
+        if (Objects.isNull(profilePicture)) return ResponseEntity.badRequest().build();
+
         try { imageData = photoService.getImageData(profilePicture); }
         catch (IOException e){ return ResponseEntity.internalServerError().build();}
 
