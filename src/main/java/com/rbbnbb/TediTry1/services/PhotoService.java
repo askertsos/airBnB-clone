@@ -2,7 +2,6 @@ package com.rbbnbb.TediTry1.services;
 
 import com.rbbnbb.TediTry1.domain.Photo;
 import com.rbbnbb.TediTry1.repository.PhotoRepository;
-import com.rbbnbb.TediTry1.utils.PhotoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,8 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Optional;
 
 @Service
 @Transactional

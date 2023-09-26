@@ -92,11 +92,17 @@ public class Rental {
         this.reviews.add(review);
     }
 
-    public void addPhoto(Photo photo) {this.photos.add(photo); }
+    public void addPhoto(Photo photo) {this.photos.add(photo);}
+
+    public void removePhoto(Photo photo){this.photos.remove(photo);}
 
     public Double getPrice(Integer days, Integer tenants){
         //Assume days >= minDays
         return (basePrice + tenants*chargePerPerson)*days;
+    }
+
+    public String getPhotoDirectory(){
+        return "src/main/resources/RentalPhotos/rental_" + id.toString();
     }
 
     public Rental(){}

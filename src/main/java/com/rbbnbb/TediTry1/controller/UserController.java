@@ -113,7 +113,7 @@ public class UserController {
         //Check whether user directory was successfully created during registration.
         //if not, create it now
         String userPhotoDirectory = user.getPhotoDirectory();
-        File userDirectory = new File(user.getPhotoDirectory());
+        File userDirectory = new File(userPhotoDirectory);
         if (!userDirectory.exists() || !userDirectory.isDirectory()){
             if (!userDirectory.mkdir()) return ResponseEntity.internalServerError().build();
         }
