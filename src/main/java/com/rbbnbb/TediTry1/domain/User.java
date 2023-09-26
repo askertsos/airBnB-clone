@@ -22,10 +22,8 @@ public class User implements UserDetails {
 
     private String last_name;
 
-//    @Column(nullable = false, unique = true)
     private String email;
 
-    private String profilePic;
     private boolean isAuthenticatedHost;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -75,10 +73,6 @@ public class User implements UserDetails {
     public void setId(Long id) {
         this.id = id;
     }
-
-    public String getProfilePic() { return profilePic; }
-
-    public void setProfilePic(String profilePic) { this.profilePic = profilePic; }
 
     public String getUsername() {
         return username;

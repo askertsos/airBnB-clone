@@ -6,11 +6,8 @@ import com.rbbnbb.TediTry1.dto.PageRequestDTO;
 
 import com.rbbnbb.TediTry1.repository.*;
 
-import com.rbbnbb.TediTry1.dto.UserDTO;
-import com.rbbnbb.TediTry1.dto.UserDetailsDTO;
 import com.rbbnbb.TediTry1.repository.MessageHistoryRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
-import com.rbbnbb.TediTry1.repository.ReviewRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 
 import com.rbbnbb.TediTry1.services.AuthenticationService;
@@ -22,15 +19,9 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -83,7 +74,7 @@ public class HostController {
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
         User host = userService.getUserByJwt(jwt).get();
-        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        Map<String, Object> ResponseBody = new HashMap<>();
         ResponseBody.put("Roles", host.getAuthorities());
         ResponseBody.put("isAuthenticatedHost", host.getIsAuthenticatedHost());
         return ResponseEntity.ok().body(ResponseBody);
@@ -144,6 +135,9 @@ public class HostController {
         List<Photo> photoList = new ArrayList<>(photos.size());
         try {
             for (MultipartFile file : photos) {
+                String filePath = rentalPhotoDirectory + File.separator + file.getOriginalFilename();
+                Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+                if (optionalPhoto.isPresent()) continue;
                 Photo photo = photoService.saveImage(file, rentalPhotoDirectory);
                 photoList.add(photo);
             }
@@ -242,19 +236,18 @@ public class HostController {
         int maxPageNo = (int)Math.ceil(messagesPerPage);
         if (pageNo < 1 || pageNo > maxPageNo) return ResponseEntity.badRequest().build();
 
-        messageHistoryList.sort(new Comparator<MessageHistory>() {
-            @Override
-            public int compare(MessageHistory m1, MessageHistory m2) {
-                List<Message> messageList1 = new ArrayList<>(m1.getMessageList());
-                List<Message> messageList2 = new ArrayList<>(m2.getMessageList());
+        //Sort messageHistoryList with descending order depending on whose message was sent last
+        messageHistoryList.sort((m1, m2) -> {
+            List<Message> messageList1 = new ArrayList<>(m1.getMessageList());
+            List<Message> messageList2 = new ArrayList<>(m2.getMessageList());
 
-                messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
-                messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
+            messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
+            messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
 
-                return messageList2.get(0).getSentAt().compareTo(messageList1.get(0).getSentAt());
-            }
+            return messageList2.get(0).getSentAt().compareTo(messageList1.get(0).getSentAt());
         });
 
+        //Simulate pagination by getting the respective sublist
         final int start = index*pageSize;
         int end = Math.min((index + 1) * pageSize,messageHistoryList.size());
         List<MessageHistory> pagedList = messageHistoryList.subList(start,end);
@@ -274,6 +267,10 @@ public class HostController {
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
 
+        User host = userService.getUserByJwt(jwt).get();
+        if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
+
+
         Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
         if (optionalMessageHistory.isEmpty()){
             return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
@@ -289,12 +286,9 @@ public class HostController {
         int maxPageNo = (int)Math.ceil(messagesPerPage);
         if (index < 0 || index > maxPageNo) return ResponseEntity.badRequest().build();
 
-        messageList.sort(new Comparator<Message>() {
-            @Override
-            public int compare(Message m1, Message m2) {
-                return m2.getSentAt().compareTo(m1.getSentAt());
-            }
-        });
+        //Sort messageList in descending order with respect to when each message was sent
+        messageList.sort((m1, m2) -> m2.getSentAt().compareTo(m1.getSentAt()));
+
         messageHistory.setMessageList(messageList);
         final int start = index*pageSize;
         int end = Math.min((index + 1) * pageSize,messageList.size());
@@ -327,7 +321,7 @@ public class HostController {
         MessageHistory messageHistory = optionalMessageHistory.get();
 
         SimpleJpaRepository<Message, Long> messageRepo;
-        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
+        messageRepo = new SimpleJpaRepository<>(Message.class, entityManager);
 
         Message newMessage = new Message(host,tenant,text);
         messageRepo.save(newMessage);
