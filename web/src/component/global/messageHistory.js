@@ -8,6 +8,8 @@ function MessageHistory() {
 
     const [history, setHistory] = useState([]);
     const [newMessage, setNewMessage] = useState("");
+    const [page, setPage] = useState(1);
+    const [maxPage, setMaxPage] = useState(1);
     const navigate = useNavigate();
     const routeParams = useParams();
     const rentalId = routeParams.id;
@@ -20,16 +22,22 @@ function MessageHistory() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/rentals/" + rentalId + "/message_history", fetchOptions)
+		fetch("https://localhost:8080/rentals/" + rentalId + "/message_history/" + page, fetchOptions)
         .then((response) => response.json())
         .then((response) => {
-            setHistory(response.messageSet);
+            console.log(response);
+            let reverted_history = new Array(18);
+            response.Messages.map((message, index) => {
+                reverted_history[18 - index] = message;
+            })
+            setHistory(reverted_history);
+            setMaxPage(response.MaxPage);
         })
         .catch((message) => {
             console.log(message);
             navigate("/");
         })
-    }, []);
+    }, [page]);
 
     const reformatDate = (datetime) => {
         let reformated_datetime = datetime.substring(0,10) + " " + datetime.substring(11,16);
@@ -58,6 +66,15 @@ function MessageHistory() {
 
     };
 
+    const nextPage = () => {
+        if (page + 1 <= maxPage) setPage(page + 1);
+    };
+
+    const previousPage = () => {
+        if (page > 1) setPage(page - 1);
+    };
+
+
 	return (
 		<>
             <div className="messages-bg">
@@ -66,9 +83,16 @@ function MessageHistory() {
                         Back to rental details
                     </button>
                 </a>
+                <div className="page-header-mes" >Current page : {page}</div>
+                <button className="button mes-next" id="submit" type="button" onClick={() => nextPage()}>
+                        Next Page
+                </button>
+                <button className="button mes-prev" id="submit" type="button" onClick={() => previousPage()}>
+                        Previous Page
+                </button>
                 <div className="message-history-box">
-                    {history.slice(0, 18).map((message) => (
-                        <p className="message"> [{reformatDate(message.sentAt)}] {message.sender.username} : {message.contents}</p>
+                    {history.map((message) => (
+                        <p className="message"> [{reformatDate(message.sentAt)}] {message.sender.first_name} : {message.contents}</p>
                     ))}
                     <input 
                         className="new-message-input"
