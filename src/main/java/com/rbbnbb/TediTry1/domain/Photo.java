@@ -10,16 +10,17 @@ public class Photo {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String filePath; //Path in local file system
+    private String name;
+
+    private String contentType;
+
+    private String filePath;
 
     public Photo() {}
 
-    public Photo(Long id, String filePath) {
-        this.id = id;
-        this.filePath = filePath;
-    }
-
-    public Photo(String filePath) {
+    public Photo(String name, String contentType, String filePath) {
+        this.name = name;
+        this.contentType = contentType;
         this.filePath = filePath;
     }
 
@@ -31,6 +32,22 @@ public class Photo {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     public String getFilePath() {
         return filePath;
     }
@@ -38,4 +55,7 @@ public class Photo {
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
+
+
+
 }

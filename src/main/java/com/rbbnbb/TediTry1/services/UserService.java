@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,6 +36,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PhotoRepository photoRepository;
 
+    @Autowired
+    private PhotoService photoService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
@@ -48,18 +52,42 @@ public class UserService implements UserDetailsService {
         if (Objects.nonNull(userDTO.getEmail())) user.setEmail(userDTO.getEmail());
         if (Objects.nonNull(userDTO.getPhoneNumber())) user.setPhoneNumber(userDTO.getPhoneNumber());
 
-        String filePath = userDTO.getProfilePicture();
-        if (Objects.nonNull(filePath)) {
+        String photoName = userDTO.getProfilePicture();
+
+        if (Objects.nonNull(photoName) && !photoName.isEmpty()) {
+//            photoName = photoName.substring(photoName.lastIndexOf("\\") + 1);
+            String filePath = user.getPhotoDirectory() + "/" + photoName;
+
             Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
-            if (optionalPhoto.isEmpty()){
-                Photo photo = new Photo(filePath);
-                photoRepository.save(photo);
-                user.setProfilePicture(photo);
-                userRepository.save(user);
-            }
-            Photo photo = optionalPhoto.get();
-            user.setProfilePicture(photo);
-            userRepository.save(user);
+
+//            if (optionalPhoto.isEmpty()){
+////                Photo photo = photoService.saveImage();
+//            }
+
+//
+//
+////            Photo photo = new Photo(filePath);
+////            photoRepository.save(photo);
+////
+////            user.setProfilePicture(photo);
+//
+//            try {
+//                File temp = new File(filePath);
+//                File profilePhoto = new File(temp.getAbsolutePath());
+//                System.out.println("full is " + profilePhoto.getPath());
+//                if (profilePhoto.createNewFile()) {
+//                    System.out.println("createNewFile successful");
+//                    Photo previous = user.getProfilePicture();
+//                    if (Objects.nonNull(previous)) photoRepository.deleteById(previous.getId());
+//                    user.setProfilePicture(null);
+//                    Photo profilePicture = new Photo(filePath);
+//                    photoRepository.save(profilePicture);
+//                    user.setProfilePicture(profilePicture);
+//                    userRepository.save(user);
+//                }
+//            } catch (Exception e) {
+//                //Do nothing
+//            }
         }
 
         //Roles cannot be changed

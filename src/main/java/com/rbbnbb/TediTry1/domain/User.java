@@ -26,8 +26,6 @@ public class User implements UserDetails {
     private String email;
 
     private String profilePic;
-
-
     private boolean isAuthenticatedHost;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -151,12 +149,14 @@ public class User implements UserDetails {
         this.profilePicture = profilePicture;
     }
 
-    public Boolean getAuthenticatedHost() {
-        return isAuthenticatedHost;
-    }
 
     public void setAuthenticatedHost(Boolean authenticatedHost) {
         isAuthenticatedHost = authenticatedHost;
+    }
+    public boolean isAuthenticatedHost() {return isAuthenticatedHost;}
+
+    public String getPhotoDirectory(){
+        return "src/main/resources/ProfilePictures/user_" + id.toString();
     }
 
     @Override

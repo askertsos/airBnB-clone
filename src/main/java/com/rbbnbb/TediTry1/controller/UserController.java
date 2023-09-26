@@ -8,16 +8,21 @@ import com.rbbnbb.TediTry1.dto.UserDTO;
 import com.rbbnbb.TediTry1.repository.*;
 
 import com.rbbnbb.TediTry1.services.AuthenticationService;
+import com.rbbnbb.TediTry1.services.PhotoService;
 import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -28,14 +33,17 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
+    private PhotoService photoService;
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
     private RentalRepository rentalRepository;
-
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private PhotoRepository photoRepository;
 
     @Autowired
     private MessageHistoryRepository messageHistoryRepository;
@@ -93,6 +101,51 @@ public class UserController {
         dto.setHostRentals(hostRentals);
 
         return ResponseEntity.ok().body(dto);
+    }
+
+
+    @PostMapping("/update_profile_picture")
+    @Transactional
+    public ResponseEntity<?> uploadUserProfilePicture(@RequestHeader("Authorization") String jwt, @RequestParam("image") MultipartFile file){
+        User user = userService.getUserByJwt(jwt).get();
+        Photo newPhoto;
+
+        //Check whether user directory was successfully created during registration.
+        //if not, create it now
+        String userPhotoDirectory = user.getPhotoDirectory();
+        File userDirectory = new File(user.getPhotoDirectory());
+        if (!userDirectory.exists() || !userDirectory.isDirectory()){
+            if (!userDirectory.mkdir()) return ResponseEntity.internalServerError().build();
+        }
+
+        try {
+            newPhoto = photoService.saveImage(file, userPhotoDirectory);
+        }
+        catch(IOException e){
+            return ResponseEntity.internalServerError().build();
+        }
+
+        Photo oldPhoto = user.getProfilePicture();
+        if (Objects.nonNull(oldPhoto)){
+            photoRepository.deleteById(oldPhoto.getId());
+            user.setProfilePicture(null);
+        }
+        user.setProfilePicture(newPhoto);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/profile_picture")
+    public ResponseEntity<?> getUserProfilePicture(@RequestHeader("Authorization") String jwt){
+        User user = userService.getUserByJwt(jwt).get();
+
+        byte[] imageData;
+        Photo profilePicture = user.getProfilePicture();
+
+        try { imageData = photoService.getImageData(profilePicture); }
+        catch (IOException e){ return ResponseEntity.internalServerError().build();}
+
+        return ResponseEntity.ok().contentType(MediaType.valueOf(profilePicture.getContentType())).body(imageData);
     }
 
     //--------------------------------------------------------------------------------------------
