@@ -64,11 +64,8 @@ public class AdminController {
     }
 
     @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getJson() throws InterruptedException {
-        System.out.println("in getJson");
-        wait(1000L);
+    public ResponseEntity<?> getJson(){
         List<Rental> allRentals = rentalRepository.findAll();
-        System.out.println("returning allRentals in json");
         return ResponseEntity.ok(allRentals);
     }
 
