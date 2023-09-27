@@ -29,6 +29,7 @@ function ListRentals() {
 		fetch("https://localhost:8080/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+            console.log(response);
             setRentals(response.Rentals.content);
             setMaxPage(response.Rentals.totalPages);
             setLoading(false);
@@ -111,7 +112,8 @@ function ListRentals() {
                             <p>
                                 <a href={"https://localhost:3000/host/rental/" + data.id + "/details"}>
                                     <button className="rental host-rental-list">
-                                        <img className="rentalPic" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
+                                        {data.photos.length === 0 &&  <img className="rentalPic" src={require("../rental_photos/default.jpg")} alt="rentalPic"/>}
+                                        {data.photos.length > 0 && <img className="rentalPic" src={require("../rental_photos/rental_" + data.id + "/" + data.photos[0].name)} alt="rentalPic"/>}
                                         <p className="rental-field1"> Title : {data.title} </p>
                                         <p className="rental-field1"> Charge per person : {data.chargePerPerson} </p>
                                         <p className="rental-field1"> Type : {data.type} </p>

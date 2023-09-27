@@ -378,7 +378,8 @@ function SearchResults() {
                             <p>
                                 <a href={"https://localhost:3000/search/" + data.id + "/details"}>
                                     <button className="rental ">
-                                        <img className="rentalPic" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
+                                        {data.photos.length === 0 &&  <img className="rentalPic" src={require("../rental_photos/default.jpg")} alt="rentalPic"/>}
+                                        {data.photos.length > 0 && <img className="rentalPic" src={require("../rental_photos/rental_" + data.id + "/" + data.photos[0].name)} alt="rentalPic"/>}
                                         <p className="rental-field1"> Title : {data.title} </p>
                                         <p className="rental-field1"> Price : {((data.chargePerPerson * parseInt(peopleCount, 10) + data.basePrice) * dates.split(",").length)} </p>
                                         <p className="rental-field1"> Type : {data.type} </p>
