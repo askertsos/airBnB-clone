@@ -66,7 +66,8 @@ function MessageHistoryHost() {
                     {history.map((item) => (
                         <p>
                             <button className="user-list msg-user-color" onClick={() => MessageDetails(item.tenant.id, item.messageList)}>
-                                <img className="admin-photo-field" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
+                                {item.tenant.profilePicture !== null && <img className="admin-photo-field" src={require("../profile_photos/user_" + item.tenant.id + "/" + item.tenant.profilePicture.name)} alt="profilePic"/>}
+					            {item.tenant.profilePicture === null && <img className="admin-photo-field" src={require("../profile_photos/default.jpg")} alt="profilePic"/>}
                                 <div className="admin-uname-field"> Username : {item.tenant.username} </div>
                             </button>
                         </p>

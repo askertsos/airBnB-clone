@@ -142,12 +142,17 @@ public class UserController {
         byte[] imageData;
         Photo profilePicture = user.getProfilePicture();
 
-        if (Objects.isNull(profilePicture)) return ResponseEntity.badRequest().build();
+        if (Objects.isNull(profilePicture)){
+            Map<String, Object> responseBody = new HashMap<String, Object>();
+            responseBody.put("Photo", null);
+            return ResponseEntity.ok().body(responseBody);
+        }
 
-        try { imageData = photoService.getImageData(profilePicture); }
-        catch (IOException e){ return ResponseEntity.internalServerError().build();}
+        System.out.println(profilePicture.getName());
+        Map<String, Object> responseBody = new HashMap<String, Object>();
+        responseBody.put("Photo", profilePicture.getName());
 
-        return ResponseEntity.ok().contentType(MediaType.valueOf(profilePicture.getContentType())).body(imageData);
+        return ResponseEntity.ok().body(responseBody);
     }
 
     //--------------------------------------------------------------------------------------------

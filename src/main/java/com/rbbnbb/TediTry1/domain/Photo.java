@@ -9,11 +9,12 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     private String contentType;
 
+    @Column(nullable = false, unique = true)
     private String filePath;
 
     public Photo() {}

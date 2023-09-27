@@ -150,7 +150,7 @@ public class User implements UserDetails {
     public boolean isAuthenticatedHost() {return isAuthenticatedHost;}
 
     public String getPhotoDirectory(){
-        return "web/src/photos/profile_photos/user_" + id.toString();
+        return "web/src/component/profile_photos/user_" + id.toString();
     }
 
     @Override
