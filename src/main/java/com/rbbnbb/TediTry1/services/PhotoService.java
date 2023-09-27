@@ -20,7 +20,7 @@ public class PhotoService {
 
     @Transactional
     public Photo saveImage(MultipartFile file, String directoryPath) throws IOException {
-        String filePath = directoryPath + File.separator + file.getOriginalFilename();
+        String filePath = directoryPath + "/" + file.getOriginalFilename();
 
         Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
         if (optionalPhoto.isPresent()) return null;
