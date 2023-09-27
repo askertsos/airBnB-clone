@@ -104,23 +104,7 @@ public class RentalService {
             }
             rental.setAvailableDates(dates);
         }
-//
-//        if (Objects.nonNull(dto.getPhotoPaths())) {
-//            for (String filePath : dto.getPhotoPaths()) {
-//                Photo photo;
-//                Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
-//                if (optionalPhoto.isEmpty()) {
-//                    photo = new Photo(filePath);
-//                    photoRepository.save(photo);
-//                    rental.addPhoto(photo);
-//                    rentalRepository.save(rental);
-//                }
-//                photo = optionalPhoto.get();
-//                rental.addPhoto(photo);
-//                rentalRepository.save(rental);
-//            }
-//        }
-          
+
         if (Objects.nonNull(dto.getAddress())){
             Address address = dto.getAddress();
             if (Objects.nonNull(address.getCountry())) rental.getAddress().setCountry(address.getCountry());
