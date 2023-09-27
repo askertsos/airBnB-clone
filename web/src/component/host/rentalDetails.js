@@ -33,6 +33,10 @@ function RentalDetails() {
     const [hasTV,setHasTV] = useState(null);
     const [hasParking,setHasParking] = useState(null);
     const [hasElevator,setHasElevator] = useState(null);
+    const [newPhotos,setNewPhotos] = useState([]);
+
+    const [photos, setPhotos] = useState(null);
+    const [photosIndex, setPhotosIndex] = useState(null);
 
 	const [bus,setBus] = useState(null);
 	const [train,setTrain] = useState(null);
@@ -57,6 +61,8 @@ function RentalDetails() {
 		fetch("https://localhost:8080/host/" + rentalId + "/info", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+            setPhotos(response.Rental.photos);
+            setPhotosIndex(0);
             setRental(response.Rental);
             setSelectedDates(response.Rental.availableDates);
             setLoading(false);
@@ -136,6 +142,60 @@ function RentalDetails() {
 			});
 	};
 
+    const submitPhotos = () => {
+		if (newPhotos.length > 0 ) {
+            for(let i = 0; i < newPhotos.length; i++){
+                const reqBody = new FormData();
+                reqBody.append("image", newPhotos[i]);
+                console.log(reqBody);
+                const fetchOptions = {
+                    headers: {
+                        "Authorization": "Bearer "  + localStorage.getItem("jwt")
+                    },
+                    method: "post",
+                    body: reqBody
+                };
+                console.log(fetchOptions);
+                fetch("https://localhost:8080/host/rental/" + rentalId + "/add_photo", fetchOptions)
+            }
+            window.location.reload(false);
+		}
+    };
+
+    const deletePhoto = () => {
+		if (photos.length > 0 ) {
+                const fetchOptions = {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer "  + localStorage.getItem("jwt")
+                    },
+                    method: "post",
+                    body: JSON.stringify([photos[photosIndex].name])
+                };
+                console.log(fetchOptions);
+                fetch("https://localhost:8080/host/rental/" + rentalId + "/remove_photos", fetchOptions)
+                .then((response) => {
+                    console.log(response);
+                    if (response.status !== 200) {
+                        alert("Failed to remove rental picture.");
+                    }
+                    else window.location.reload(false);
+                })
+                .catch((message) => {
+                    alert(message);
+                });
+            }
+    };
+
+    const nextPhoto = () => {
+        if (photosIndex < photos.length - 1) setPhotosIndex(photosIndex + 1);
+    }
+
+    const previousPhoto = () => {
+        if (photosIndex > 0) setPhotosIndex(photosIndex - 1);
+    }
+
+
     if(loading){
         return(<h1>Loading...</h1>)
     }
@@ -208,7 +268,20 @@ function RentalDetails() {
 
                 <div className="details-section4">
                     <h2>Photos :</h2>
-                        <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                        {photos.length > 0 &&
+                            <>
+                                <button className="button" onClick={() => nextPhoto()}>
+                                    Next photo
+                                </button>
+                                <button className="button" onClick={() => previousPhoto()}>
+                                    Previous photo
+                                </button>
+                                <img className="rental-photo-details" src={require("../rental_photos/rental_" + rental.id + "/" + photos[photosIndex].name)} alt="rentalPic"/>
+                                <button className="button" onClick={() => deletePhoto()}>
+                                    Delete photo
+                                </button>
+                            </>
+                        }
                 </div>
 
                 <div className="details-section4">
@@ -602,7 +675,27 @@ function RentalDetails() {
 
                 <div className="details-section4">
                     <h2>Photos </h2>
-                        <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                        <p>
+                            <label>
+                                Add rental photos : (Control + click for multiple photos)
+                                <input
+                                    multiple
+                                    id="new profile picture"
+                                    name="new profile picture"
+                                    type="file"
+                                    placeholder="new profile picture"
+                                    onChange={(event) => {
+                                        if(event.target.value === "") setNewPhotos([]);
+                                        else setNewPhotos(event.target.files);
+                                    }}
+                                />
+                            </label>
+                        </p>
+                        <p>
+                            <button className="button" onClick={() => submitPhotos()}>
+                                Submit photos
+                            </button>
+                        </p>
                 </div>
 
                 <div className="details-section4">

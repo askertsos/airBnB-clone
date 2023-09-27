@@ -14,6 +14,9 @@ function SearchDetails() {
     const [host, setHost] = useState(null);
     const rentalId = routeParams.id;
 
+    const [photos, setPhotos] = useState(null);
+    const [photosIndex, setPhotosIndex] = useState(null);
+
     const dates = localStorage.getItem("search_dates");
     const peopleCount = localStorage.getItem("search_peopleCount");
 
@@ -27,6 +30,8 @@ function SearchDetails() {
 		fetch("https://localhost:8080/search/" + rentalId + "/details", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
+            setPhotos(response.photos);
+            setPhotosIndex(0);
             setHost(response.host);
             setRental(response);
             setLoading(false);
@@ -72,6 +77,15 @@ function SearchDetails() {
             navigate("/");
         })
     };
+
+    const nextPhoto = () => {
+        if (photosIndex < photos.length - 1) setPhotosIndex(photosIndex + 1);
+    }
+
+    const previousPhoto = () => {
+        if (photosIndex > 0) setPhotosIndex(photosIndex - 1);
+    }
+
 
     if(loading){
         return(<h1>Loading...</h1>)
@@ -133,7 +147,17 @@ function SearchDetails() {
 
                     <div className="details-section4">
                         <h2>Photos :</h2>
-                            <p>{rental.photos.map((item) => (<> {item} </>))}</p>
+                        {photos.length > 0 &&
+                            <>
+                               <button className="button" onClick={() => nextPhoto()}>
+                                    Next photo
+                                </button>
+                                <button className="button" onClick={() => previousPhoto()}>
+                                    Previous photo
+                                </button>
+                                <img className="rental-photo-details" src={require("../rental_photos/rental_" + rental.id + "/" + photos[photosIndex].name)} alt="rentalPic"/>
+                            </>
+                        }
                     </div>
 
                     <div className="details-section4">
@@ -150,7 +174,8 @@ function SearchDetails() {
                 </div>
                 <button className="host-info-box" onClick={() => {navigate("/rental/" + rentalId + "/message/history")}}>
                     <div className="host-info-header ">Host info </div>
-                        <img className="host-info-pic" src={require("../profile_photos/" + host.profilePic + ".jpg")} alt="profilePic"/>
+                        {host.profilePicture !== null && <img className="host-info-pic" src={require("../profile_photos/user_" + host.id + "/" + host.profilePicture.name)} alt="profilePic"/>}
+                        {host.profilePicture === null && <img className="host-info-pic" src={require("../profile_photos/default.jpg")} alt="profilePic"/>}
                         <div className="host-info-name">Name : {host.first_name} {host.last_name} </div>
                         <div className="host-info-review">Reviews : {rental.reviews.length} </div>
                         {rental.rating === null && <div className="host-info-stars"> Stars : - </div>}

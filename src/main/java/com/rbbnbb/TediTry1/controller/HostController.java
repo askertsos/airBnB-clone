@@ -29,6 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import java.util.HashMap;
@@ -113,10 +116,10 @@ public class HostController {
         return ResponseEntity.ok().body(responseBody);
     }
 
-    @PostMapping("/rental/{rentalId}/add_photos")
+    @PostMapping("/rental/{rentalId}/add_photo")
     public ResponseEntity<?> addRentalPhotos(@PathVariable("rentalId") Long rentalId,
                                              @RequestHeader("Authorization") String jwt,
-                                             @RequestParam("image")List<MultipartFile> photos){
+                                             @RequestParam("image")MultipartFile photo){
 
 
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
@@ -132,27 +135,21 @@ public class HostController {
             if (!rentalDirectory.mkdir()) return ResponseEntity.internalServerError().build();
         }
 
-        List<Photo> photoList = new ArrayList<>(photos.size());
         try {
-            for (MultipartFile file : photos) {
-                String filePath = rentalPhotoDirectory + File.separator + file.getOriginalFilename();
-                Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
-                if (optionalPhoto.isPresent()) continue;
-                Photo photo = photoService.saveImage(file, rentalPhotoDirectory);
-                photoList.add(photo);
+            String filePath = rentalPhotoDirectory + "/" + photo.getOriginalFilename();
+            Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+            if (optionalPhoto.isPresent()) {
+                return ResponseEntity.badRequest().build();
             }
+            Photo newPhoto = photoService.saveImage(photo, rentalPhotoDirectory);
+            photoRepository.save(newPhoto);
+            rental.addPhoto(newPhoto);
+            rentalRepository.save(rental);
+            return ResponseEntity.ok().build();
         }
         catch(IOException e){
             return ResponseEntity.internalServerError().build();
         }
-
-        for (Photo p: photoList) {
-            photoRepository.save(p);
-            rental.addPhoto(p);
-        }
-        rentalRepository.save(rental);
-
-        return ResponseEntity.ok().build();
     }
 
 
@@ -170,12 +167,18 @@ public class HostController {
         if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
 
         for (String filePath : filePathList) {
-            Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+            Optional<Photo> optionalPhoto = photoRepository.findByName(filePath);
             if (optionalPhoto.isEmpty()) continue;
 
             Photo photo = optionalPhoto.get();
+            Path path = Path.of(rental.getPhotoDirectory() + "/rental_" + rental.getId() + "/" + photo.getName());
             rental.removePhoto(photo);
             photoRepository.deleteById(photo.getId());
+            try {
+                Files.delete(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         rentalRepository.save(rental);
