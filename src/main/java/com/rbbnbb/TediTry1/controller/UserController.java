@@ -117,21 +117,21 @@ public class UserController {
         if (!userDirectory.exists() || !userDirectory.isDirectory()){
             if (!userDirectory.mkdir()) return ResponseEntity.internalServerError().build();
         }
-
         try {
             newPhoto = photoService.saveImage(file, userPhotoDirectory);
         }
         catch(IOException e){
             return ResponseEntity.internalServerError().build();
         }
-
-        Photo oldPhoto = user.getProfilePicture();
-        if (Objects.nonNull(oldPhoto)){
-            photoRepository.deleteById(oldPhoto.getId());
-            user.setProfilePicture(null);
+        if (Objects.nonNull(newPhoto)) {
+            Photo oldPhoto = user.getProfilePicture();
+            if (Objects.nonNull(oldPhoto)) {
+                photoRepository.deleteById(oldPhoto.getId());
+                user.setProfilePicture(null);
+            }
+            user.setProfilePicture(newPhoto);
+            userRepository.save(user);
         }
-        user.setProfilePicture(newPhoto);
-        userRepository.save(user);
         return ResponseEntity.ok().build();
     }
 

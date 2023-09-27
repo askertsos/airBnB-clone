@@ -26,7 +26,7 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private Double basePrice;
+    private Double basePrice; //Price just for renting the rental for the day, not including guest number
     private Double chargePerPerson;
     private Integer maxGuests;
 
@@ -97,12 +97,11 @@ public class Rental {
     public void removePhoto(Photo photo){this.photos.remove(photo);}
 
     public Double getPrice(Integer days, Integer tenants){
-        //Assume days >= minDays
         return (basePrice + tenants*chargePerPerson)*days;
     }
 
     public String getPhotoDirectory(){
-        return "src/main/resources/RentalPhotos/rental_" + id.toString();
+        return "web/src/photos/rental_photos/rental_" + id.toString();
     }
 
     public Rental(){}

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,6 +21,9 @@ public class PhotoService {
     @Transactional
     public Photo saveImage(MultipartFile file, String directoryPath) throws IOException {
         String filePath = directoryPath + File.separator + file.getOriginalFilename();
+
+        Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+        if (optionalPhoto.isPresent()) return null;
 
         Photo newPhoto = new Photo(file.getOriginalFilename(), file.getContentType(),filePath);
         file.transferTo(new File(filePath).toPath());

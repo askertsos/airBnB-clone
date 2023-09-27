@@ -100,7 +100,7 @@ public class SearchController {
                 days = startDate.datesUntil(endDate.plusDays(1L)).toList().size();
                 continue;
             }
-            if (specDto.getColumn().equals("maxGuests") && specDto.getOperation().equals(SpecificationDTO.Operation.GREATER_THAN)){
+            if (specDto.getColumn().equals("maxGuests") && specDto.getOperation().equals(SpecificationDTO.Operation.GREATER_OR_EQUAL)){
                 guests = Integer.parseInt(specDto.getValue());
             }
             if (days > 0 && guests > 0) break;
