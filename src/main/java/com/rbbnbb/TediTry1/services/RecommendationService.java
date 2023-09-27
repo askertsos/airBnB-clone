@@ -3,9 +3,12 @@ package com.rbbnbb.TediTry1.services;
 import com.rbbnbb.TediTry1.domain.*;
 import com.rbbnbb.TediTry1.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -69,7 +72,9 @@ public class RecommendationService {
     }
 
 
-    public void setRentalsToRecommend(List<User> allTenants){
+    public void updateRecommendationTable(){
+        List<User> allTenants = userRepository.findAll();
+        allTenants.removeIf(u -> (!u.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("TENANT")));
         for (User tenant: allTenants) {
             Set<Rental> rentals = recommend(tenant);
             Optional<RecommendedRentals> optional = recommendedRentalsRepository.findByTenant(tenant);

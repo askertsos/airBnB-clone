@@ -52,48 +52,8 @@ public class UserService implements UserDetailsService {
         if (Objects.nonNull(userDTO.getEmail())) user.setEmail(userDTO.getEmail());
         if (Objects.nonNull(userDTO.getPhoneNumber())) user.setPhoneNumber(userDTO.getPhoneNumber());
 
-        String photoName = userDTO.getProfilePicture();
-
-        if (Objects.nonNull(photoName) && !photoName.isEmpty()) {
-//            photoName = photoName.substring(photoName.lastIndexOf("\\") + 1);
-            String filePath = user.getPhotoDirectory() + "/" + photoName;
-
-            Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
-
-//            if (optionalPhoto.isEmpty()){
-////                Photo photo = photoService.saveImage();
-//            }
-
-//
-//
-////            Photo photo = new Photo(filePath);
-////            photoRepository.save(photo);
-////
-////            user.setProfilePicture(photo);
-//
-//            try {
-//                File temp = new File(filePath);
-//                File profilePhoto = new File(temp.getAbsolutePath());
-//                System.out.println("full is " + profilePhoto.getPath());
-//                if (profilePhoto.createNewFile()) {
-//                    System.out.println("createNewFile successful");
-//                    Photo previous = user.getProfilePicture();
-//                    if (Objects.nonNull(previous)) photoRepository.deleteById(previous.getId());
-//                    user.setProfilePicture(null);
-//                    Photo profilePicture = new Photo(filePath);
-//                    photoRepository.save(profilePicture);
-//                    user.setProfilePicture(profilePicture);
-//                    userRepository.save(user);
-//                }
-//            } catch (Exception e) {
-//                //Do nothing
-//            }
-        }
-
         //Roles cannot be changed
-
         userRepository.save(user);
-
     }
 
     public User assertUserHasAuthority(User user, String authority){

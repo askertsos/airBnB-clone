@@ -113,25 +113,25 @@ public class UserController {
         //Check whether user directory was successfully created during registration.
         //if not, create it now
         String userPhotoDirectory = user.getPhotoDirectory();
-        File userDirectory = new File(user.getPhotoDirectory());
+        File userDirectory = new File(userPhotoDirectory);
         if (!userDirectory.exists() || !userDirectory.isDirectory()){
             if (!userDirectory.mkdir()) return ResponseEntity.internalServerError().build();
         }
-
         try {
             newPhoto = photoService.saveImage(file, userPhotoDirectory);
         }
         catch(IOException e){
             return ResponseEntity.internalServerError().build();
         }
-
-        Photo oldPhoto = user.getProfilePicture();
-        if (Objects.nonNull(oldPhoto)){
-            photoRepository.deleteById(oldPhoto.getId());
-            user.setProfilePicture(null);
+        if (Objects.nonNull(newPhoto)) {
+            Photo oldPhoto = user.getProfilePicture();
+            if (Objects.nonNull(oldPhoto)) {
+                photoRepository.deleteById(oldPhoto.getId());
+                user.setProfilePicture(null);
+            }
+            user.setProfilePicture(newPhoto);
+            userRepository.save(user);
         }
-        user.setProfilePicture(newPhoto);
-        userRepository.save(user);
         return ResponseEntity.ok().build();
     }
 
@@ -141,6 +141,8 @@ public class UserController {
 
         byte[] imageData;
         Photo profilePicture = user.getProfilePicture();
+
+        if (Objects.isNull(profilePicture)) return ResponseEntity.badRequest().build();
 
         try { imageData = photoService.getImageData(profilePicture); }
         catch (IOException e){ return ResponseEntity.internalServerError().build();}

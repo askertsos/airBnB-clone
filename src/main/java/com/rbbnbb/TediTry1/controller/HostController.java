@@ -6,14 +6,12 @@ import com.rbbnbb.TediTry1.dto.PageRequestDTO;
 
 import com.rbbnbb.TediTry1.repository.*;
 
-import com.rbbnbb.TediTry1.dto.UserDTO;
-import com.rbbnbb.TediTry1.dto.UserDetailsDTO;
 import com.rbbnbb.TediTry1.repository.MessageHistoryRepository;
 import com.rbbnbb.TediTry1.repository.RentalRepository;
-import com.rbbnbb.TediTry1.repository.ReviewRepository;
 import com.rbbnbb.TediTry1.repository.UserRepository;
 
 import com.rbbnbb.TediTry1.services.AuthenticationService;
+import com.rbbnbb.TediTry1.services.PhotoService;
 import com.rbbnbb.TediTry1.services.RentalService;
 import com.rbbnbb.TediTry1.services.UserService;
 import jakarta.persistence.EntityManager;
@@ -21,19 +19,16 @@ import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import java.util.HashMap;
@@ -56,6 +51,9 @@ public class HostController {
     private RentalService rentalService;
 
     @Autowired
+    private PhotoService photoService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -76,7 +74,7 @@ public class HostController {
     @GetMapping("/auth")
     public ResponseEntity<?> authenticateJWT(@RequestHeader("Authorization") String jwt){
         User host = userService.getUserByJwt(jwt).get();
-        Map<String, Object> ResponseBody = new HashMap<String, Object>();
+        Map<String, Object> ResponseBody = new HashMap<>();
         ResponseBody.put("Roles", host.getAuthorities());
         ResponseBody.put("isAuthenticatedHost", host.getIsAuthenticatedHost());
         return ResponseEntity.ok().body(ResponseBody);
@@ -93,49 +91,101 @@ public class HostController {
         //Save first time to generate the id, which is used for the path of the photos
         rentalRepository.save(newRental);
 
-        //Generate the full path of each photo based on the rental's id and then store them inside the rental entity
-        Set<Photo> rentalPhotos = new HashSet<>();
-
-        if (Objects.nonNull(body.getPhotoPaths())) {
-            //Add the appropriate prefix to all saved photos
-            for (String filePath : body.getPhotoPaths()) {
-                String fullPath = "src/main/resources/RentalPhotos/" + newRental.getId().toString() + "/" + filePath;
-                Photo newPhoto = new Photo(fullPath);
-                photoRepository.save(newPhoto);
-                rentalPhotos.add(newPhoto);
-            }
-        }
-
-        //Update the new rental entity and save it again
-        newRental.setPhotos(rentalPhotos);
-        rentalRepository.save(newRental);
-
-
         return ResponseEntity.ok().body(newRental);
     }
 
-    @PostMapping("/rental/{rental_id}/update")
+    @PostMapping("/rental/{rentalId}/update")
     @Transactional
-    public ResponseEntity<?> updateRentalInfo(@PathVariable("rental_id") Long rental_id, @RequestBody NewRentalDTO dto, @RequestHeader("Authorization") String jwt){
+    public ResponseEntity<?> updateRental(@PathVariable("rentalId") Long rentalId, @RequestBody NewRentalDTO dto, @RequestHeader("Authorization") String jwt){
 
         Rental rental;
         try {
-            rental = rentalRepository.findById(rental_id).get();
+            rental = rentalRepository.findById(rentalId).get();
         } catch(Exception e){
             return ResponseEntity.badRequest().build();
         }
 
         User host = userService.getUserByJwt(jwt).get();
         if (!host.equals(rental.getHost())) return ResponseEntity.badRequest().build();
-        rentalService.updateRental(rental_id, dto);
-        Rental responseBody = rentalRepository.findById(rental_id).get();
+        rentalService.updateRental(rentalId, dto);
+        Rental responseBody = rentalRepository.findById(rentalId).get();
 
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @PostMapping("/rental/{rentalId}/add_photos")
+    public ResponseEntity<?> addRentalPhotos(@PathVariable("rentalId") Long rentalId,
+                                             @RequestHeader("Authorization") String jwt,
+                                             @RequestParam("image")List<MultipartFile> photos){
+
+
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
+
+        User host = userService.getUserByJwt(jwt).get();
+        if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
+
+        String rentalPhotoDirectory = rental.getPhotoDirectory();
+        File rentalDirectory = new File(rentalPhotoDirectory);
+        if (!rentalDirectory.exists() || !rentalDirectory.isDirectory()){
+            if (!rentalDirectory.mkdir()) return ResponseEntity.internalServerError().build();
+        }
+
+        List<Photo> photoList = new ArrayList<>(photos.size());
+        try {
+            for (MultipartFile file : photos) {
+                String filePath = rentalPhotoDirectory + File.separator + file.getOriginalFilename();
+                Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+                if (optionalPhoto.isPresent()) continue;
+                Photo photo = photoService.saveImage(file, rentalPhotoDirectory);
+                photoList.add(photo);
+            }
+        }
+        catch(IOException e){
+            return ResponseEntity.internalServerError().build();
+        }
+
+        for (Photo p: photoList) {
+            photoRepository.save(p);
+            rental.addPhoto(p);
+        }
+        rentalRepository.save(rental);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/rental/{rentalId}/remove_photos")
+    public ResponseEntity<?> removeRentalPhotos(@PathVariable("rentalId") Long rentalId,
+                                             @RequestHeader("Authorization") String jwt,
+                                             @RequestBody List<String> filePathList){
+
+
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
+        Rental rental = optionalRental.get();
+
+        User host = userService.getUserByJwt(jwt).get();
+        if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
+
+        for (String filePath : filePathList) {
+            Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+            if (optionalPhoto.isEmpty()) continue;
+
+            Photo photo = optionalPhoto.get();
+            rental.removePhoto(photo);
+            photoRepository.deleteById(photo.getId());
+        }
+
+        rentalRepository.save(rental);
+
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/rental/list")
     @Transactional
-    public ResponseEntity<?> listRental(@RequestBody PageRequestDTO dto, @RequestHeader("Authorization") String jwt){
+    public ResponseEntity<?> listRentals(@RequestBody PageRequestDTO dto, @RequestHeader("Authorization") String jwt){
 
         User host = userService.getUserByJwt(jwt).get();
 
@@ -146,16 +196,16 @@ public class HostController {
         return ResponseEntity.ok().body(ResponseBody);
     }
 
-    @GetMapping("/{rental_id}/info")
+    @GetMapping("/{rentalId}/info")
     @Transactional
-    public ResponseEntity<?> detailRental(@PathVariable("rental_id") String id, @RequestHeader("Authorization") String jwt){
+    public ResponseEntity<?> viewRentalInfo(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt){
 
-        Optional<Rental> optionalRental = rentalRepository.findById(Long.parseLong(id));
-        if(optionalRental.isEmpty()) return ResponseEntity.notFound().build();
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
 
-        User host = userService.assertUserHasAuthority(jwt,"HOST");
-        if (!rental.getHost().equals(host)) return ResponseEntity.badRequest().build();
+        User host = userService.getUserByJwt(jwt).get();
+        if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
 
         Map<String, Object> ResponseBody = new HashMap<String, Object>();
         ResponseBody.put("Rental", rental);
@@ -172,7 +222,8 @@ public class HostController {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
-        if (!host.equals(rental.getHost())) return ResponseEntity.badRequest().build();
+
+        if (!host.getId().equals(rental.getHost().getId())) return ResponseEntity.badRequest().build();
         //List containing all message histories with all tenants on this rental
         List<MessageHistory> messageHistoryList = messageHistoryRepository.findByRental(rental);
 
@@ -185,19 +236,18 @@ public class HostController {
         int maxPageNo = (int)Math.ceil(messagesPerPage);
         if (pageNo < 1 || pageNo > maxPageNo) return ResponseEntity.badRequest().build();
 
-        messageHistoryList.sort(new Comparator<MessageHistory>() {
-            @Override
-            public int compare(MessageHistory m1, MessageHistory m2) {
-                List<Message> messageList1 = new ArrayList<>(m1.getMessageList());
-                List<Message> messageList2 = new ArrayList<>(m2.getMessageList());
+        //Sort messageHistoryList with descending order depending on whose message was sent last
+        messageHistoryList.sort((m1, m2) -> {
+            List<Message> messageList1 = new ArrayList<>(m1.getMessageList());
+            List<Message> messageList2 = new ArrayList<>(m2.getMessageList());
 
-                messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
-                messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
+            messageList1.sort(Comparator.comparing(Message::getSentAt).reversed());
+            messageList2.sort(Comparator.comparing(Message::getSentAt).reversed());
 
-                return messageList2.get(0).getSentAt().compareTo(messageList1.get(0).getSentAt());
-            }
+            return messageList2.get(0).getSentAt().compareTo(messageList1.get(0).getSentAt());
         });
 
+        //Simulate pagination by getting the respective sublist
         final int start = index*pageSize;
         int end = Math.min((index + 1) * pageSize,messageHistoryList.size());
         List<MessageHistory> pagedList = messageHistoryList.subList(start,end);
@@ -217,6 +267,10 @@ public class HostController {
         if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
         Rental rental = optionalRental.get();
 
+        User host = userService.getUserByJwt(jwt).get();
+        if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
+
+
         Optional<MessageHistory> optionalMessageHistory = messageHistoryRepository.findByTenantAndRental(tenant,rental);
         if (optionalMessageHistory.isEmpty()){
             return ResponseEntity.ok().body(new MessageHistory(tenant,rental));
@@ -232,12 +286,9 @@ public class HostController {
         int maxPageNo = (int)Math.ceil(messagesPerPage);
         if (index < 0 || index > maxPageNo) return ResponseEntity.badRequest().build();
 
-        messageList.sort(new Comparator<Message>() {
-            @Override
-            public int compare(Message m1, Message m2) {
-                return m2.getSentAt().compareTo(m1.getSentAt());
-            }
-        });
+        //Sort messageList in descending order with respect to when each message was sent
+        messageList.sort((m1, m2) -> m2.getSentAt().compareTo(m1.getSentAt()));
+
         messageHistory.setMessageList(messageList);
         final int start = index*pageSize;
         int end = Math.min((index + 1) * pageSize,messageList.size());
@@ -270,7 +321,7 @@ public class HostController {
         MessageHistory messageHistory = optionalMessageHistory.get();
 
         SimpleJpaRepository<Message, Long> messageRepo;
-        messageRepo = new SimpleJpaRepository<Message, Long>(Message.class,entityManager);
+        messageRepo = new SimpleJpaRepository<>(Message.class, entityManager);
 
         Message newMessage = new Message(host,tenant,text);
         messageRepo.save(newMessage);

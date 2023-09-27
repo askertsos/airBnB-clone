@@ -27,8 +27,6 @@ public class NewRentalDTO {
     //Description
     private String description;
 
-    private List<String> photoPaths;
-
     //Rules
     private Boolean allowSmoking;
     private Boolean allowPets;
@@ -52,7 +50,7 @@ public class NewRentalDTO {
 
     public NewRentalDTO() {}
 
-    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, List<String> photoPaths, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, List<String> publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
+    public NewRentalDTO(String title, Double basePrice, Double chargePerPerson, List<String> availableDates, Integer maxGuests, Integer beds, Integer bedrooms, Integer bathrooms, Rental.RentalType type, Boolean hasLivingRoom, Double surfaceArea, String description, Boolean allowSmoking, Boolean allowPets, Boolean allowEvents, Integer minDays, Address address, List<String> publicTransport, Boolean hasWiFi, Boolean hasAC, Boolean hasHeating, Boolean hasKitchen, Boolean hasTV, Boolean hasParking, Boolean hasElevator) {
         this.title = title;
         this.basePrice = basePrice;
         this.chargePerPerson = chargePerPerson;
@@ -65,7 +63,6 @@ public class NewRentalDTO {
         this.hasLivingRoom = hasLivingRoom;
         this.surfaceArea = surfaceArea;
         this.description = description;
-        this.photoPaths = photoPaths;
         this.allowSmoking = allowSmoking;
         this.allowPets = allowPets;
         this.allowEvents = allowEvents;
@@ -175,14 +172,6 @@ public class NewRentalDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<String> getPhotoPaths() {
-        return photoPaths;
-    }
-
-    public void setPhotoPaths(List<String> photoPaths) {
-        this.photoPaths = photoPaths;
     }
 
     public Boolean getAllowSmoking() {

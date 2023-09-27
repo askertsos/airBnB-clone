@@ -25,9 +25,6 @@ import java.util.Set;
 @SpringBootApplication
 @EnableScheduling
 public class TediTry1Application {
-
-	@Autowired
-	private UserRepository userRepository;
 	@Autowired
 	private RecommendationService recommendationService;
 
@@ -50,14 +47,13 @@ public class TediTry1Application {
 		};
 	}
 
-	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 5)
+	//Schedule this for once per day, as its complexity is ~= O(n*m*r) or O(n*m*s) where n=users, m=rentals, r=reviews, s=searches
+	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 5 * 60 * 60)
 	public void updateRecommendedRentals(){
-		List<User> allTenants = userRepository.findAll();
-		allTenants.removeIf(u -> (!u.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("TENANT")));
+		System.out.println("Commencing the recommendation service");
 		LocalDateTime before = LocalDateTime.now();
-		recommendationService.setRentalsToRecommend(allTenants);
+		recommendationService.updateRecommendationTable();
 		LocalDateTime after = LocalDateTime.now();
-		System.out.println("updateRecommendedRentals took " + before.until(after, ChronoUnit.SECONDS));
-
+		System.out.println("Recommendation service completed after " + before.until(after, ChronoUnit.SECONDS) + " seconds");
 	}
 }
