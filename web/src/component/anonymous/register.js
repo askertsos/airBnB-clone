@@ -14,14 +14,12 @@ function Register() {
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [roles, setRoles] = useState("");
-    const [profilePicture, setProfilePicture] = useState("");
 
     const navigate = useNavigate();
 
 	const onSubmit = (e) => {
 
         //Validate required fields have values
-		let pPic = profilePicture;
         if ( username === "" ){
             alert("'Username' is required to continue!");
             return;
@@ -54,9 +52,6 @@ function Register() {
             alert("'Roles on site' is required to continue!");
             return;
         }
-		if ( pPic === "" ){
-            pPic = "default";
-        }
 
         //Validate password and confirm password are the same
         if(password !== confirmPassword){
@@ -71,8 +66,7 @@ function Register() {
             last_name : lastName,
             email : email,
             phoneNumber : phoneNumber,
-            roles : roles,
-            profilePicture : pPic
+            roles : roles
 		};
 		const fetchOptions = {
 			headers: {
@@ -219,20 +213,6 @@ function Register() {
 							<option value="host">Host</option>
 							<option value="both">Both</option>
 						</select>
-					</div>
-					<div className="register-h2 photo-header">
-						<label>
-							Profile picture 
-							<input
-								className="photo-input"
-								id="profilePicture"
-								name="profilePicture"
-								type="file"
-								placeholder="profilePicture"
-								onChange={(event) => setProfilePicture(event.target.value)}
-								value={profilePicture}
-							/>
-						</label>
 					</div>
 					<button className="register-btn submit-register" id="submit" type="button" onClick={() => onSubmit()}>
 						Register

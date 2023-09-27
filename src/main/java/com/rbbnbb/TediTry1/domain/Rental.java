@@ -101,7 +101,7 @@ public class Rental {
     }
 
     public String getPhotoDirectory(){
-        return "web/src/photos/rental_photos/rental_" + id.toString();
+        return "src/main/resources/RentalPhotos/rental_" + id.toString();
     }
 
     public Rental(){}

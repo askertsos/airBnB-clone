@@ -14,6 +14,7 @@ function Profile() {
 	const [email, setEmail] = useState(null);
 	const [phoneNumber, setPhoneNumber] = useState(null);
 	const [profilePic, setProfilePic] = useState(null);
+	const [renderedProfilePic, setRenderedProfilePic] = useState(null);
 
 	const [isTenant, setIsTenant] = useState(false);
 	const [isHost, setIsHost] = useState(false);
@@ -40,6 +41,18 @@ function Profile() {
 			})
 			setIsBoth(isHost && isTenant);
 			setLoading(false);
+		})
+        .catch((message) => {
+            console.log(message);
+            navigate("/unauthorized/user");
+            return;
+        });
+
+		fetch("https://localhost:8080/user/profile_picture", fetchOptions)
+		.then((response) => response.json())
+		.then((response) => {
+			console.log(response);
+			setRenderedProfilePic(response.Photo);
 		})
         .catch((message) => {
             console.log(message);
@@ -93,6 +106,35 @@ function Profile() {
 			.catch((message) => {
 				alert(message);
 			});
+	};
+
+	const submitPhoto = () => {
+		if (profilePic !== null) {
+			const reqBody = new FormData();
+			reqBody.append("image", profilePic[0]);
+			console.log(reqBody);
+			const fetchOptions = {
+				headers: {
+					"Authorization": "Bearer "  + localStorage.getItem("jwt")
+				},
+				method: "post",
+				body: reqBody
+			};
+			console.log(fetchOptions);
+			fetch("https://localhost:8080/user/update_profile_picture", fetchOptions)
+			.then((response) => {
+				if (response.status === 200) {
+					window.location.reload(false);
+					return;
+				}
+				else {
+					alert("Failed to update profile picture.");
+				}
+			})
+			.catch((message) => {
+				alert(message);
+			});
+		}
 	};
 
 	if (loading === true){
@@ -225,8 +267,8 @@ function Profile() {
 						</p>
 					</p>
 					<h1 className="header header3">Profile picture</h1>
-					{user.profilePic !== null && <img className="profilePic" src={require("../profile_photos/" + user.profilePic + ".jpg")} alt="profilePic"/>}
-					{user.profilePic === null && <img className="profilePic" src={require("../profile_photos/default.jpg")} alt="profilePic"/>}
+					{renderedProfilePic !== null && <img className="profilePic" src={require("../profile_photos/user_" + user.id + "/" + renderedProfilePic)} alt="profilePic"/>}
+					{renderedProfilePic === null && <img className="profilePic" src={require("../profile_photos/default.jpg")} alt="profilePic"/>}
 					<p className="field profilePicInput">
 						<label>
 							Change profile picture :
@@ -237,10 +279,15 @@ function Profile() {
 								placeholder="new profile picture"
 								onChange={(event) => {
 									if(event.target.value === "") setProfilePic(null);
-									else setProfilePic(event.target.value);
+									else setProfilePic(event.target.files);
 								}}
 							/>
 						</label>
+					</p>
+					<p>
+						<button className="button submit-photo-btn" onClick={() => submitPhoto()}>
+							Submit photo
+						</button>
 					</p>
 					<div>
 						<button className="button submit" id="submit" type="button" onClick={() => updateUser()}>

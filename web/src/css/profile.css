@@ -1,7 +1,7 @@
 .bg {
     background-image : url("./images/profile_bg.jpg");
     position:absolute;
-    height : 1135px;
+    height : 1335px;
     width: 1879px;
     background-size : cover; 
 }
@@ -33,13 +33,13 @@
 
 .submit {
     position: relative;
-    bottom : 320px;
+    bottom : 400px;
     left : 200px;
 }
 
 .home {
     position: relative;
-    bottom : 363px;
+    bottom : 443px;
     left : 20px;
 }
 
@@ -56,6 +56,12 @@
     left : 550px;
     bottom: 365px;
 }
+
+.submit-photo-btn {
+    position: relative;
+    bottom: 380px;
+    left : 550px;
+};
 
 
 .header {
