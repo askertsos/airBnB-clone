@@ -79,11 +79,13 @@ function Home() {
 		localStorage.setItem("search_peopleCount", peopleCount);
 
 		navigate("/search/results");
+		localStorage.setItem("isRecomendation", false);
 		return;
 	};
 
 	const Recommend = () => {
 		navigate("/recomendations");
+		localStorage.setItem("isRecomendation", true);
 		return;
 	};
 
