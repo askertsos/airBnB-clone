@@ -158,8 +158,9 @@ public class HostController {
     @PostMapping("/rental/{rentalId}/remove_photos")
     public ResponseEntity<?> removeRentalPhotos(@PathVariable("rentalId") Long rentalId,
                                              @RequestHeader("Authorization") String jwt,
-                                             @RequestBody List<String> filePathList){
+                                             @RequestBody String photoName){
 
+        final String name = photoName.replaceAll("\"","");
 
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if(optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
@@ -168,20 +169,21 @@ public class HostController {
         User host = userService.getUserByJwt(jwt).get();
         if (!rental.getHost().getId().equals(host.getId())) return ResponseEntity.badRequest().build();
 
-        for (String filePath : filePathList) {
-            Optional<Photo> optionalPhoto = photoRepository.findByName(filePath);
-            if (optionalPhoto.isEmpty()) continue;
+        String filePath = rental.getPhotoDirectory() + "/" + name;
 
-            Photo photo = optionalPhoto.get();
-            Path path = Path.of(rental.getPhotoDirectory() + "/rental_" + rental.getId() + "/" + photo.getName());
-            rental.removePhoto(photo);
-            photoRepository.deleteById(photo.getId());
-            try {
-                Files.delete(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Optional<Photo> optionalPhoto = photoRepository.findByFilePath(filePath);
+        if (optionalPhoto.isEmpty()) return ResponseEntity.badRequest().build();
+
+        Photo photo = optionalPhoto.get();
+//            Path path = Path.of(rental.getPhotoDirectory() + "/rental_" + rental.getId() + "/" + photo.getName());
+        rental.removePhoto(photo);
+        photoRepository.deleteById(photo.getId());
+//            try {
+//                Files.delete(path);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
 
         rentalRepository.save(rental);
 

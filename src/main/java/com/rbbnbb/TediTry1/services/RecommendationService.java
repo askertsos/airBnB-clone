@@ -364,8 +364,8 @@ public class RecommendationService {
         }
 
         //for all rows in R
-        for (int i = 1; i < allReviewers.size() + 1; i++) {
-            User reviewer = allReviewers.get(i - 1);
+        for (int i = 1; i < allReviewers.size()+1; i++) {
+            User reviewer = allReviewers.get(i-1);
 
             //for all columns in R
             for (int j=0; j < allRentals.size(); j++){
