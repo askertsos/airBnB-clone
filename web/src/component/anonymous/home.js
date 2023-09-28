@@ -83,20 +83,8 @@ function Home() {
 	};
 
 	const Recommend = () => {
-		const fetchOptions = {
-			headers: {
-				"Content-Type": "application/json",
-				"Authorization": "Bearer "  + loggedIn,
-			},
-			method: "get",
-		};
-		fetch("https://localhost:8080/user/recommended_rentals", fetchOptions)
-		// .then((response) => response.json())
-		.then((response) => {
-			console.log(response);
-			// setRecommendedRentals(response);
-		})
-		.catch((message) => console.log(message));
+		navigate("/recomendations");
+		return;
 	};
 
 	return (
