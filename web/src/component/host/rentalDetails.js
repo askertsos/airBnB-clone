@@ -170,7 +170,7 @@ function RentalDetails() {
                         "Authorization": "Bearer "  + localStorage.getItem("jwt")
                     },
                     method: "post",
-                    body: JSON.stringify([photos[photosIndex].name])
+                    body: JSON.stringify(photos[photosIndex].name)
                 };
                 console.log(fetchOptions);
                 fetch("https://localhost:8080/host/rental/" + rentalId + "/remove_photos", fetchOptions)

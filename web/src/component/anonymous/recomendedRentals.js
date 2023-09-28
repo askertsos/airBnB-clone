@@ -1,11 +1,11 @@
 // recomendedRentals.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function RecomendedRentals() {
 
     const [recommendedRentals,setRecommendedRentals] = useState([]);
 
-	const Recommend = () => {
+	useEffect (() => {
 		const fetchOptions = {
 			headers: {
 				"Content-Type": "application/json",
@@ -20,7 +20,7 @@ function RecomendedRentals() {
 			setRecommendedRentals(response);
 		})
 		.catch((message) => console.log(message));
-	};
+	},[]);
 
     return(
         <>
