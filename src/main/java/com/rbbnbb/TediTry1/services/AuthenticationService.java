@@ -98,7 +98,6 @@ public class AuthenticationService {
 
     public ResponseEntity<?> loginUser(String username, String password){
         try {
-
             // Generate jwt if password and username combination is correct
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
             Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);

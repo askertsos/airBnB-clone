@@ -1,116 +1,156 @@
 .admin-bg {
-    background-image : url("../images/admin_background.jpg");
-    position:absolute;
-    height : 938px;
-    width: 1879px;
-    background-size : cover; 
+	background-image: url("../images/admin_background.jpg");
+	position: absolute;
+	height: 938px;
+	width: 1879px;
+	background-size: cover;
 }
 
 .searchList-admin-bg {
-    background-image : url("../images/admin_background.jpg");
-    position:absolute;
-    height : 2350px;
-    width: 1864px;
-    background-size : cover; 
+	background-image: url("../images/admin_background.jpg");
+	position: absolute;
+	height: 2350px;
+	width: 1864px;
+	background-size: cover;
 }
 
 .searchDetails-admin-bg {
-    background-image : url("../images/admin_background.jpg");
-    position:absolute;
-    height : 938px;
-    width: 1864px;
-    background-size : cover; 
+	background-image: url("../images/admin_background.jpg");
+	position: absolute;
+	height: 938px;
+	width: 1864px;
+	background-size: cover;
 }
 
 .list-users-btn-admin {
-    width: 400px;
-    height: 500px;
-    font-size: 45px;
-    cursor: pointer;
-    position: relative;
-    top : 200px;
-    left : 650px;
-    background-color: rgb(121, 21, 116);
+	width: 600px;
+	height: 200px;
+	font-size: 45px;
+	color: white;
+	cursor: pointer;
+	position: relative;
+	top: 200px;
+	left: 650px;
+	background-color: rgb(121, 21, 116);
 }
 
-.list-users-btn-admin:hover{
-    background-color: rgb(73, 29, 71);
-    color: rgb(8, 7, 7);
+.list-users-btn-admin:hover {
+	background-color: rgb(73, 29, 71);
+	color: rgb(8, 7, 7);
+}
+
+.download-db-button-json {
+	width: 300px;
+	height: 100px;
+	font-size: 25px;
+	color: white;
+	cursor: pointer;
+	position: relative;
+	top: 300px;
+	left: 650px;
+	background-color: rgb(1, 80, 1);
+}
+
+.download-db-button-json:hover {
+	color: black;
+	opacity: 0.5;
+}
+
+.download-db-button-xml {
+	width: 300px;
+	height: 100px;
+	font-size: 25px;
+	color: white;
+	cursor: pointer;
+	position: relative;
+	top: 300px;
+	left: 650px;
+	background-color: rgb(121, 1, 1);
+}
+
+.download-db-button-xml:hover {
+	color: black;
+	opacity: 0.5;
+}
+
+.download-db-button:hover {
+	background-color: rgb(73, 29, 71);
+	color: rgb(8, 7, 7);
 }
 
 .admin-bar {
-    position: relative;
-    bottom : 500px;
-    background-color: rgb(106, 68, 116);
+	position: absolute;
+	top: 0px;
+	background-color: black;
 }
 
 .user-list {
-    background-color: rgb(133, 24, 56);
-    width: 900px;
-    height: 200px;
-    position: relative;
-    left : 410px;
-    top : 20px;
-    cursor: pointer;
-    border: 3px solid rgb(8, 7, 7);
-    text-align: left;
+	background-color: rgb(133, 24, 56);
+	width: 900px;
+	height: 200px;
+	position: relative;
+	left: 410px;
+	top: 20px;
+	cursor: pointer;
+	border: 3px solid rgb(8, 7, 7);
+	text-align: left;
 }
 
 .user-list:hover {
-    background-color: rgb(122, 48, 70);
-    color: rgb(8, 7, 7);
+	background-color: rgb(122, 48, 70);
+	color: rgb(8, 7, 7);
 }
 
 .admin-photo-field {
-    height: 150px;
-    width: 150px;
-    position: relative;
-    left :30px;
-    top: 20px;
+	height: 150px;
+	width: 150px;
+	position: relative;
+	left: 30px;
+	top: 20px;
 }
 
 .admin-uname-field {
-    font-size: 30px;
-    position: relative;
-    bottom: 80px;
-    left: 190px;
+	font-size: 30px;
+	position: relative;
+	bottom: 80px;
+	left: 190px;
 }
 
 .user-details-box {
-    background-color: rgb(133, 24, 56);
-    width: 900px;
-    height: 580px;
-    position: relative;
-    left : 400px;
-    top : 130px;
-    border: 3px solid rgb(8, 7, 7);
-    text-align: center;
+	background-color: rgb(133, 24, 56);
+	width: 900px;
+	height: 580px;
+	position: relative;
+	left: 400px;
+	top: 130px;
+	border: 3px solid rgb(8, 7, 7);
+	text-align: center;
 }
 
 .user-details-fields {
-    font-size: 30px;
-    width: 440px;
-    height: 410px;
-    text-align: left;
-    position: relative;
-    left : 30px;
-    bottom:10px;
+	font-size: 30px;
+	width: 440px;
+	height: 410px;
+	text-align: left;
+	position: relative;
+	left: 30px;
+	bottom: 10px;
 }
 
 .backList-admin {
-    position: absolute;
-    top: 85px;
-    right : 1360px;
+	position: absolute;
+	top: 85px;
+	right: 1360px;
 }
 
 .activate-user {
-    position: absolute;
-    top: 85px;
-    right: 1061px;
+	position: absolute;
+	top: 85px;
+	right: 1061px;
 }
 
 .homepage-admin-user {
-    position: absolute;
-    top: 85px;
-    right: 1223px;
+	position: absolute;
+	top: 85px;
+	right: 1223px;
 }

@@ -26,13 +26,14 @@ public class User implements UserDetails {
 
     private boolean isAuthenticatedHost;
 
+    @JacksonXmlProperty(localName = "Profile_Picture")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Photo profilePicture;
 
 //    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
-    @JacksonXmlElementWrapper(localName = "authorities")
+    @JacksonXmlElementWrapper(localName = "Authorities")
     @JacksonXmlProperty(localName = "authority")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

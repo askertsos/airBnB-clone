@@ -30,6 +30,8 @@ public class Rental {
     private Double chargePerPerson;
     private Integer maxGuests;
 
+    @JacksonXmlElementWrapper(localName = "availableDates")
+    @JacksonXmlProperty(localName = "date")
     @ElementCollection(targetClass = LocalDate.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "rental_available_dates", joinColumns = @JoinColumn(name = "rental_id"))
     private List<LocalDate> availableDates = new ArrayList<LocalDate>();
