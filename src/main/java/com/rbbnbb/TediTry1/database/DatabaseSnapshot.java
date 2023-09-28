@@ -10,6 +10,7 @@ import com.rbbnbb.TediTry1.domain.User;
 import java.util.ArrayList;
 import java.util.List;
 
+//This whole package is created specifically for portraying the state of the database in a manner appropriate for a .json/.xml file
 public class DatabaseSnapshot {
 
     @JacksonXmlElementWrapper(localName = "All_Hosts")
