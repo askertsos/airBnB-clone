@@ -60,8 +60,6 @@ const exportDatabaseToXML = (data) => {
 	link.click();
 	link.remove();
 
-	console.log(xmlString);
-
-	// window.location.reload(false);
+	window.location.reload(false);
 };
 export { downloadDatabaseJSON, downloadDatabaseXML };
