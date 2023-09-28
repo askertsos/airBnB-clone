@@ -207,7 +207,7 @@ function Register() {
 						<label for="roles" >
 							Roles on site 
 						</label>
-						<select className = "register-input roles-input" name="roles" id="roles" value={roles} onChange={(event) => setRoles(event.target.value)}>
+						<select className = "register-select roles-input" name="roles" id="roles" value={roles} onChange={(event) => setRoles(event.target.value)}>
 							<option></option>
 							<option value="tenant">Tenant</option>
 							<option value="host">Host</option>

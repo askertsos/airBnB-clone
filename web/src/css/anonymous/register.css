@@ -120,6 +120,11 @@
     height : 23px;
 }
 
+.register-select {
+    width: 235px;
+    height : 23px;
+}
+
 .username-input{
     position: relative;
     top: -2px;
@@ -164,7 +169,7 @@
 
 .roles-input{
     position: relative;
-    top: 6px;
+    top: 0px;
     left : 71px;
 }
 
