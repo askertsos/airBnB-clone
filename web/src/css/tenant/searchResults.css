@@ -6,12 +6,26 @@
     background-size : cover; 
 }
 
+.recomended-list-bg {
+    background-image : url("../images/home_background.jpg");
+    position:absolute;
+    height : 1600px;
+    width: 1864px;
+    background-size : cover; 
+}
+
 .rentalList-host-bg {
     background-image : url("../images/home_background.jpg");
     position:absolute;
     height : 2700px;
     width: 1864px;
     background-size : cover; 
+}
+
+.recomend-home-btn{
+    position: relative;
+    left : 800px;
+    top : 14px;
 }
 
 .rental {
@@ -23,6 +37,21 @@
     bottom : 429px;
     cursor: pointer;
     border: 3px solid rgb(8, 7, 7);
+}
+
+.recomended-rental {
+    background-color: burlywood;
+    width: 1000px;
+    height: 200px;
+    cursor: pointer;
+    border: 3px solid rgb(8, 7, 7);
+    position: relative;
+    left : 400px;
+}
+
+.recomended-rental:hover {
+    background-color: rgb(212, 189, 158);
+    color: rgb(8, 7, 7);
 }
 
 .rental:hover {
