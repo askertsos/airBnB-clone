@@ -181,11 +181,20 @@ function SearchDetails() {
                         {rental.rating === null && <div className="host-info-stars"> Stars : - </div>}
                         {rental.rating !== null && <div className="host-info-stars"> Stars : {rental.rating} </div>}
                 </button>
-                <a href="https://localhost:3000/search/results">
-                    <button className="button bookRental">
-                        Back to rental list
-                    </button>
-                </a>
+                {localStorage.getItem("isRecomendation") === "false" &&             
+                    <a href="https://localhost:3000/search/results">
+                        <button className="button bookRental">
+                            Back to rental list
+                        </button>
+                    </a>
+                }
+                {localStorage.getItem("isRecomendation") === "true" &&             
+                    <a href="https://localhost:3000/recomendations">
+                        <button className="button bookRental">
+                            Back to recomended rentals list
+                        </button>
+                    </a>
+                }
                 <button className="button bookRental" onClick={() => Book()}>
                         Book rental
                 </button>
