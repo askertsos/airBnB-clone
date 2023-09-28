@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/tenant/**").hasAnyRole("TENANT","ADMIN");
                     auth.requestMatchers("/host/**").hasAnyRole("HOST","ADMIN");
-                    auth.requestMatchers("/user/**").hasAnyRole("TENANT", "HOST", "ADMIN");
+                    auth.requestMatchers("/user/recommended_rentals").hasRole("TENANT");
                     auth.requestMatchers("/search/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
