@@ -1,11 +1,11 @@
 // recomendedRentals.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function RecomendedRentals() {
 
     const [recommendedRentals,setRecommendedRentals] = useState([]);
 
-	const Recommend = () => {
+	useEffect(() => {
 		const fetchOptions = {
 			headers: {
 				"Content-Type": "application/json",
@@ -20,13 +20,13 @@ function RecomendedRentals() {
 			setRecommendedRentals(response);
 		})
 		.catch((message) => console.log(message));
-	};
+	}, []);
 
     return(
         <>
-            <div className="searchList-bg">
+            <div className="recomended-list-bg">
                  <a href = 'https://localhost:3000/home'>
-                    <button className="button" id="submit" type="button">
+                    <button className="button recomend-home-btn" id="submit" type="button">
                             HomePage
                     </button>
                 </a>
@@ -35,7 +35,7 @@ function RecomendedRentals() {
                         {recommendedRentals.map((data) => (
                             <p>
                                 <a href={"https://localhost:3000/search/" + data.id + "/details"}>
-                                    <button className="rental ">
+                                    <button className="recomended-rental ">
                                         {data.photos.length === 0 &&  <img className="rentalPic" src={require("../rental_photos/default.jpg")} alt="rentalPic"/>}
                                         {data.photos.length > 0 && <img className="rentalPic" src={require("../rental_photos/rental_" + data.id + "/" + data.photos[0].name)} alt="rentalPic"/>}
                                         <p className="rental-field1"> Title : {data.title} </p>
