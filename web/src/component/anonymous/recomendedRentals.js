@@ -1,5 +1,6 @@
 // recomendedRentals.js
 import React, { useState, useEffect } from "react";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants";
 
 function RecomendedRentals() {
 
@@ -13,19 +14,19 @@ function RecomendedRentals() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/user/recommended_rentals", fetchOptions)
-		.then((response) => response.json())
-		.then((response) => {
-			console.log(response);
-			setRecommendedRentals(response);
-		})
-		.catch((message) => console.log(message));
+		fetch(BaseUrl + ServerPort + "/user/recommended_rentals", fetchOptions)
+			.then((response) => response.json())
+			.then((response) => {
+				console.log(response);
+				setRecommendedRentals(response);
+			})
+			.catch((message) => console.log(message));
 	}, []);
 
     return(
         <>
             <div className="recomended-list-bg">
-                 <a href = 'https://localhost:3000/home'>
+                 <a href = {BaseUrl + ClientPort + "/home"}> 
                     <button className="button recomend-home-btn" id="submit" type="button">
                             HomePage
                     </button>
@@ -34,7 +35,7 @@ function RecomendedRentals() {
                     <ul>
                         {recommendedRentals.map((data) => (
                             <p>
-                                <a href={"https://localhost:3000/search/" + data.id + "/details"}>
+                                <a href={BaseUrl + ClientPort + "/search/" + data.id + "/details"}>
                                     <button className="recomended-rental ">
                                         {data.photos.length === 0 &&  <img className="rentalPic" src={require("../rental_photos/default.jpg")} alt="rentalPic"/>}
                                         {data.photos.length > 0 && <img className="rentalPic" src={require("../rental_photos/rental_" + data.id + "/" + data.photos[0].name)} alt="rentalPic"/>}

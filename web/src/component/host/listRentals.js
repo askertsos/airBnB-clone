@@ -1,7 +1,7 @@
 // listRentals.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 function ListRentals() {
 
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function ListRentals() {
 			method: "post",
             body: JSON.stringify(reqBody)
 		};
-		fetch("https://localhost:8080/host/rental/list", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/rental/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
             console.log(response);
@@ -101,7 +101,7 @@ function ListRentals() {
                             <option value={10}> 10 </option>
                         </select>
                     </button>
-                    <a href = 'https://localhost:3000/host/hostHome'>
+                    <a href = {BaseUrl + ClientPort + "/host/hostHome"}>
                         <button className="button" id="submit" type="button">
                                 HomePage
                         </button>
@@ -110,7 +110,7 @@ function ListRentals() {
                     <ul>
                         {rentals.map((data) => (
                             <p>
-                                <a href={"https://localhost:3000/host/rental/" + data.id + "/details"}>
+                                <a href={BaseUrl + ClientPort + "/host/rental/" + data.id + "/details"}>
                                     <button className="rental host-rental-list">
                                         {data.photos.length === 0 &&  <img className="rentalPic" src={require("../rental_photos/default.jpg")} alt="rentalPic"/>}
                                         {data.photos.length > 0 && <img className="rentalPic" src={require("../rental_photos/rental_" + data.id + "/" + data.photos[0].name)} alt="rentalPic"/>}

@@ -1,6 +1,7 @@
 // bothHome.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 import "../../css/host/bothHome.css"
 
@@ -17,7 +18,7 @@ function BothHome() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/host/auth", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/auth", fetchOptions)
 		.then((response) => {
 			if (response.status !== 200) {
 				navigate("/unauthorized/user");
@@ -40,20 +41,20 @@ function BothHome() {
 
 				{/* Navigation bar */}
 				<div className="main-bar">
-					<a href = 'https://localhost:3000/user/profile'>
+					<a href = {BaseUrl + ClientPort + "/user/profile"}>
 						<button className="bar-button small-button">Profile</button>
 					</a>
-					<a href = 'https://localhost:3000/auth/logout'>
+					<a href = {BaseUrl + ClientPort + "/auth/logout"}>
 						<button className="bar-button small-button">Logout</button>
 					</a>
 				</div>
 
-				<a href = 'https://localhost:3000/home'>
+				<a href = {BaseUrl + ClientPort + "/home"}>
 					<button className="huge-button tenant-home-btn">
 						Tenant interface
 					</button>
 				</a>
-				<a href = 'https://localhost:3000/host/hostHome'>
+				<a href = {BaseUrl + ClientPort + "/host/hostHome"}>
 					<button className="huge-button tenant-home-btn">
 						Host interface
 					</button>

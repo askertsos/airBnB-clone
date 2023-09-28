@@ -1,3 +1,5 @@
+import { BaseUrl, ServerPort } from "../../constants.js"
+
 const downloadDatabaseJSON = async () => {
 	const fetchOptions = {
 		headers: {
@@ -7,7 +9,7 @@ const downloadDatabaseJSON = async () => {
 		},
 		method: "GET",
 	};
-	fetch("https://localhost:8080/admin/json", fetchOptions)
+	fetch(BaseUrl + ServerPort + "/admin/json", fetchOptions)
 		.then((response) => {
 			console.log(response);
 			return response.json();
@@ -25,7 +27,7 @@ const downloadDatabaseXML = async () => {
 		method: "GET",
 	};
 
-	fetch("https://localhost:8080/admin/xml", fetchOptions)
+	fetch(BaseUrl + ServerPort + "/admin/xml", fetchOptions)
 		.then((response) => response.text())
 		.then((data) => exportDatabaseToXML(data));
 };

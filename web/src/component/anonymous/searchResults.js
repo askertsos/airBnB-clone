@@ -1,6 +1,7 @@
 // SearchResults.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 import "../../css/tenant/searchResults.css"
 
@@ -172,7 +173,7 @@ function SearchResults() {
                 body: JSON.stringify(reqBody),
             };
 
-            fetch("https://localhost:8080/search/", fetchOptions)
+            fetch(BaseUrl + ServerPort + "/search/", fetchOptions)
             .then((response) => response.json())
             .then(response => {
                 let tempList = [];
@@ -223,176 +224,262 @@ function SearchResults() {
 
 	return (
 		<>
-            <div className="searchList-bg">
-                <h2>Current page : {pageNum + 1}</h2>
-                <button className="button" id="submit" type="button" onClick={() => nextPage()}>
-                        Next Page
-                </button>
-                <button className="button" id="submit" type="button" onClick={() => previousPage()}>
-                        Previous Page
-                </button>
-                {pageNum > 0 && 
-                    <>
-                        <button className="button" id="submit" type="button" onClick={() => firstPage()}>
-                                First Page
-                        </button>
-                    </>
-                }
-                {pageNum < maxPage - 1 && 
-                    <>
-                        <button className="button" id="submit" type="button" onClick={() => lastPage()}>
-                                Last Page
-                        </button>
-                    </>
-                }
-        
-                <a href = 'https://localhost:3000/home'>
-                <button className="button" id="submit" type="button">
-                        HomePage
-                </button>
-                </a>
+			<div className="searchList-bg">
+				<h2>Current page : {pageNum + 1}</h2>
+				<button
+					className="button"
+					id="submit"
+					type="button"
+					onClick={() => nextPage()}
+				>
+					Next Page
+				</button>
+				<button
+					className="button"
+					id="submit"
+					type="button"
+					onClick={() => previousPage()}
+				>
+					Previous Page
+				</button>
+				{pageNum > 0 && (
+					<>
+						<button
+							className="button"
+							id="submit"
+							type="button"
+							onClick={() => firstPage()}
+						>
+							First Page
+						</button>
+					</>
+				)}
+				{pageNum < maxPage - 1 && (
+					<>
+						<button
+							className="button"
+							id="submit"
+							type="button"
+							onClick={() => lastPage()}
+						>
+							Last Page
+						</button>
+					</>
+				)}
 
-                <div className="filter-bar">
-                    <h2>Add more filters</h2>
-                    <div>
-                        <label for="type" >
-                            Type 
-                        </label>
-                        <select name="type" id="type" value={type} onChange={(event) => {if(event.target.value !== "Any type") setType(event.target.value); else setType(null);}}>
-                            <option value = {null}>Any type</option>
-                            <option value="privateRoom">privateRoom</option>
-                            <option value="publicRoom">Public Room</option>
-                            <option value="house">House</option>
-                        </select>
-                    </div>
-                    <div>
-                    <label for="maxCost" >
-                        Maximum cost 
-                        </label>
-                        <input
-                            id="maxCost"
-                            name="maxCost"
-                            type="number"
-                            placeholder="maxCost"
-                            onChange={(event) => {if(event.target.value !== "") setMaxCost(event.target.value); else setMaxCost(null);}}
-                            value={maxCost}
-                        />
-                    </div>
-                    <div>
-                        <label>
-                            WiFi:
-                            <input
-                                id="hasWiFi"
-                                name="hasWiFi"
-                                type="checkbox"
-                                placeholder="hasWiFi"
-                                onChange={(event) => handleCheckbox(hasWiFi, setHasWiFi)}
-                                value={hasWiFi}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            AC:
-                            <input
-                                id="hasAC"
-                                name="hasAC"
-                                type="checkbox"
-                                placeholder="hasAC"
-                                onChange={(event) => handleCheckbox(hasAC, setHasAC)}
-                                value={hasAC}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Heating:
-                            <input
-                                id="hasHeating"
-                                name="hasHeating"
-                                type="checkbox"
-                                placeholder="hasHeating"
-                                onChange={(event) => handleCheckbox(hasHeating, setHasHeating)}
-                                value={hasHeating}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Kitchen:
-                            <input
-                                id="hasKitchen"
-                                name="hasKitchen"
-                                type="checkbox"
-                                placeholder="hasKitchen"
-                                onChange={(event) => handleCheckbox(hasKitchen, setHasKitchen)}
-                                value={hasKitchen}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Television:
-                            <input
-                                id="hasTV"
-                                name="hasTV"
-                                type="checkbox"
-                                placeholder="hasTV"
-                                onChange={(event) => handleCheckbox(hasTV, setHasTV)}
-                                value={hasTV}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Parking:
-                            <input
-                                id="hasParking"
-                                name="hasParking"
-                                type="checkbox"
-                                placeholder="hasParking"
-                                onChange={(event) => handleCheckbox(hasParking, setHasParking)}
-                                value={hasParking}
-                            />
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            Elevator:
-                            <input
-                                id="hasElevator"
-                                name="hasElevator"
-                                type="checkbox"
-                                placeholder="hasElevator"
-                                onChange={(event) => handleCheckbox(hasElevator, setHasElevator)}
-                                value={hasElevator}
-                            />
-                        </label>
-                    </div>
-                    <button className="button" onClick={() => setNewSearch(true)}>Submit filters</button>
-                </div>
+				<a href={BaseUrl + ClientPort + "/home"}>
+					<button className="button" id="submit" type="button">
+						HomePage
+					</button>
+				</a>
 
-                <div>
-                    <ul>
-                        {rentals.map((data) => (
-                            <p>
-                                <a href={"https://localhost:3000/search/" + data.id + "/details"}>
-                                    <button className="rental ">
-                                        {data.photos.length === 0 &&  <img className="rentalPic" src={require("../rental_photos/default.jpg")} alt="rentalPic"/>}
-                                        {data.photos.length > 0 && <img className="rentalPic" src={require("../rental_photos/rental_" + data.id + "/" + data.photos[0].name)} alt="rentalPic"/>}
-                                        <p className="rental-field1"> Title : {data.title} </p>
-                                        <p className="rental-field1"> Price : {((data.chargePerPerson * parseInt(peopleCount, 10) + data.basePrice) * dates.split(",").length)} </p>
-                                        <p className="rental-field1"> Type : {data.type} </p>
-                                        <p className="rental-field2"> Number of beds : {data.beds} </p>
-                                        <p className="rental-field2"> Number of reviews : {data.reviews.length} </p>
-                                        <p className="rental-field2"> Rating : {data.rating} </p>
-                                    </button>
-                                </a>
-                            </p>
-                    ))}
-                    </ul>
-                </div>
-            </div>
+				<div className="filter-bar">
+					<h2>Add more filters</h2>
+					<div>
+						<label for="type">Type</label>
+						<select
+							name="type"
+							id="type"
+							value={type}
+							onChange={(event) => {
+								if (event.target.value !== "Any type")
+									setType(event.target.value);
+								else setType(null);
+							}}
+						>
+							<option value={null}>Any type</option>
+							<option value="privateRoom">privateRoom</option>
+							<option value="publicRoom">Public Room</option>
+							<option value="house">House</option>
+						</select>
+					</div>
+					<div>
+						<label for="maxCost">Maximum cost</label>
+						<input
+							id="maxCost"
+							name="maxCost"
+							type="number"
+							placeholder="maxCost"
+							onChange={(event) => {
+								if (event.target.value !== "")
+									setMaxCost(event.target.value);
+								else setMaxCost(null);
+							}}
+							value={maxCost}
+						/>
+					</div>
+					<div>
+						<label>
+							WiFi:
+							<input
+								id="hasWiFi"
+								name="hasWiFi"
+								type="checkbox"
+								placeholder="hasWiFi"
+								onChange={(event) =>
+									handleCheckbox(hasWiFi, setHasWiFi)
+								}
+								value={hasWiFi}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							AC:
+							<input
+								id="hasAC"
+								name="hasAC"
+								type="checkbox"
+								placeholder="hasAC"
+								onChange={(event) =>
+									handleCheckbox(hasAC, setHasAC)
+								}
+								value={hasAC}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Heating:
+							<input
+								id="hasHeating"
+								name="hasHeating"
+								type="checkbox"
+								placeholder="hasHeating"
+								onChange={(event) =>
+									handleCheckbox(hasHeating, setHasHeating)
+								}
+								value={hasHeating}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Kitchen:
+							<input
+								id="hasKitchen"
+								name="hasKitchen"
+								type="checkbox"
+								placeholder="hasKitchen"
+								onChange={(event) =>
+									handleCheckbox(hasKitchen, setHasKitchen)
+								}
+								value={hasKitchen}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Television:
+							<input
+								id="hasTV"
+								name="hasTV"
+								type="checkbox"
+								placeholder="hasTV"
+								onChange={(event) =>
+									handleCheckbox(hasTV, setHasTV)
+								}
+								value={hasTV}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Parking:
+							<input
+								id="hasParking"
+								name="hasParking"
+								type="checkbox"
+								placeholder="hasParking"
+								onChange={(event) =>
+									handleCheckbox(hasParking, setHasParking)
+								}
+								value={hasParking}
+							/>
+						</label>
+					</div>
+					<div>
+						<label>
+							Elevator:
+							<input
+								id="hasElevator"
+								name="hasElevator"
+								type="checkbox"
+								placeholder="hasElevator"
+								onChange={(event) =>
+									handleCheckbox(hasElevator, setHasElevator)
+								}
+								value={hasElevator}
+							/>
+						</label>
+					</div>
+					<button
+						className="button"
+						onClick={() => setNewSearch(true)}
+					>
+						Submit filters
+					</button>
+				</div>
+
+				<div>
+					<ul>
+						{rentals.map((data) => (
+							<p>
+								<a href={BaseUrl + ClientPort + "/search/" + data.id +"/details"}>
+									<button className="rental ">
+										{data.photos.length === 0 && (
+											<img
+												className="rentalPic"
+												src={require("../rental_photos/default.jpg")}
+												alt="rentalPic"
+											/>
+										)}
+										{data.photos.length > 0 && (
+											<img
+												className="rentalPic"
+												src={require("../rental_photos/rental_" +
+													data.id +
+													"/" +
+													data.photos[0].name)}
+												alt="rentalPic"
+											/>
+										)}
+										<p className="rental-field1">
+											{" "}
+											Title : {data.title}{" "}
+										</p>
+										<p className="rental-field1">
+											{" "}
+											Price :{" "}
+											{(data.chargePerPerson *
+												parseInt(peopleCount, 10) +
+												data.basePrice) *
+												dates.split(",").length}{" "}
+										</p>
+										<p className="rental-field1">
+											{" "}
+											Type : {data.type}{" "}
+										</p>
+										<p className="rental-field2">
+											{" "}
+											Number of beds : {data.beds}{" "}
+										</p>
+										<p className="rental-field2">
+											{" "}
+											Number of reviews :{" "}
+											{data.reviews.length}{" "}
+										</p>
+										<p className="rental-field2">
+											{" "}
+											Rating : {data.rating}{" "}
+										</p>
+									</button>
+								</a>
+							</p>
+						))}
+					</ul>
+				</div>
+			</div>
 		</>
 	);
 }

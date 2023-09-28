@@ -1,5 +1,6 @@
 // registrationTenantComplete.js
 import React from "react";
+import { BaseUrl, ClientPort } from "../../constants.js";
 
 import "../../css/anonymous/registerComplete.css"
 
@@ -9,7 +10,7 @@ function RegistrationTenantComplete() {
 			<div className="register-complete-bg">
 				<div className="register-complete-box">
 					<div className="register-complete-h2 register-complete-header"> Succesfully registered!</div>
-					<a href="https://localhost:3000/auth/login">
+					<a href={BaseUrl + ClientPort + "/auth/login"}> 
 						<button className="button reg-com-btn">
 							Log in from here
 						</button>

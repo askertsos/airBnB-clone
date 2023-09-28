@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MultipleDatePicker from "react-multi-date-picker";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js"
 
 function NewRental() {
 
@@ -50,7 +51,7 @@ function NewRental() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/host/auth", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/auth", fetchOptions)
 		.then((response) => {
 			if (response.status !== 200) {
 				navigate("/unauthorized/user");
@@ -175,7 +176,7 @@ function NewRental() {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("https://localhost:8080/host/rental/new", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/rental/new", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					setHasLivingRoom(false);
@@ -215,7 +216,7 @@ function NewRental() {
             <button className = "button submit-new-rental"  id="submit" type="button" onClick={() => onSubmit()}>
                 Submit new rental
             </button>
-            <a href="https://localhost:3000/host/hostHome">
+            <a href={BaseUrl + ClientPort + "/host/hostHome"}>
                 <button className = "button submit-new-rental">
                     Homepage
                 </button>

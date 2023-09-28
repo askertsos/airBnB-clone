@@ -1,6 +1,7 @@
 // messageDetail.js
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 import "../../css/messages.css"
 
@@ -23,7 +24,7 @@ function MessageDetail() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/host/" + rentalId + "/tenant/" + tenantId + "/message_history/" + page, fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/" + rentalId + "/tenant/" + tenantId + "/message_history/" + page, fetchOptions)
         .then((response) => response.json())
         .then((response) => {
             let reverted_history;
@@ -59,7 +60,7 @@ function MessageDetail() {
                 method: "post",
                 body: newMessage
             };
-            fetch("https://localhost:8080/host/rentals/" + rentalId + "/message/" + tenantId, fetchOptions)
+            fetch(BaseUrl + ServerPort + "/host/rentals/" + rentalId + "/message/" + tenantId, fetchOptions)
             .then((response) => {
                 window.location.reload(false);
             })
@@ -82,7 +83,7 @@ function MessageDetail() {
 	return (
 		<>
             <div className="messages-bg">
-                <a href = {"https://localhost:3000/host/rental/" + rentalId + "/messages"}>
+                <a href = {BaseUrl + ClientPort + "/host/rental/" + rentalId + "/messages"}>
                     <button className="button back-todetails">
                         Back to rental details
                     </button>

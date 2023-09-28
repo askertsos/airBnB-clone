@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, useParams } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 import "../../css/tenant/review.css"
 
@@ -21,7 +22,7 @@ function Review() {
 			},
 			method: "get"
 		};
-		fetch("https://localhost:8080/rentals/auth", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/rentals/auth", fetchOptions)
         .then((response) => {
             if (response.status !== 200){
                 navigate("/unauthorized/user");
@@ -54,7 +55,7 @@ function Review() {
             method: "post",
             body: JSON.stringify(reqBody),
         };
-        fetch("https://localhost:8080/rentals/" + rentalId + "/review", fetchOptions)
+        fetch(BaseUrl + ServerPort + "/rentals/" + rentalId + "/review", fetchOptions)
         .then(response => {
             if (response.status === 200){
                 navigate("/tenant/review/complete");
@@ -78,7 +79,7 @@ function Review() {
                     <button className="button submit-review" onClick={() => SubmitReview()}>
                         Submit review
                     </button>
-                    <a href="https://localhost:3000/home">
+                    <a href={BaseUrl + ClientPort + "/home"}>
                         <button className="button submit-review">
                             Homepage
                         </button>

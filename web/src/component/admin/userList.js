@@ -1,6 +1,7 @@
 // userList.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants";
 
 function UserList() {
 
@@ -26,7 +27,7 @@ function UserList() {
 			method: "post",
             body: JSON.stringify(reqBody)
 		};
-		fetch("https://localhost:8080/admin/user/list", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/admin/user/list", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
             setUsers(response.Users.content);
@@ -100,7 +101,7 @@ function UserList() {
                         <option value={10}> 10 </option>
                     </select>
                 </button>
-                <a href = 'https://localhost:3000/admin/home'>
+                <a href = {BaseUrl + ClientPort + "/admin/home"}> 
                     <button className="button">
                         Homepage
                     </button>
@@ -109,9 +110,9 @@ function UserList() {
                     <ul>
                         {users.map((data) => (
                             <p>
-                                <a href={"https://localhost:3000/admin/user/" + data.id + "/details"}>
+                                <a href={BaseUrl + ClientPort + "/admin/user/" + data.id + "/details"}>
                                     <button className="user-list">
-                                        <img className="admin-photo-field" src={require("../profile_photos/" + "default" + ".jpg")} alt="profilePic"/>
+                                        <img className="admin-photo-field" src={require("../profile_photos/default.jpg")} alt="profilePic"/>
                                         <div className="admin-uname-field"> Username : {data.username} </div>
                                     </button>
                                 </a>

@@ -1,6 +1,7 @@
 // profile.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 import "../../css/profile.css"
 
@@ -31,7 +32,7 @@ function Profile() {
 			},
 			method: "get"
 		};
-		fetch("https://localhost:8080/user/profile", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/user/profile", fetchOptions)
 		.then((response) => response.json())
 		.then((response) => {
 			setUser(response.User);
@@ -48,7 +49,7 @@ function Profile() {
             return;
         });
 
-		fetch("https://localhost:8080/user/profile_picture", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/user/profile_picture", fetchOptions)
 		.then((response) => response.json())
 		.then((response) => {
 			console.log(response);
@@ -89,7 +90,7 @@ function Profile() {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("https://localhost:8080/user/profile/update", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/user/profile/update", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					if(username !== null || password !== null){
@@ -121,7 +122,7 @@ function Profile() {
 				body: reqBody
 			};
 			console.log(fetchOptions);
-			fetch("https://localhost:8080/user/update_profile_picture", fetchOptions)
+			fetch(BaseUrl + ServerPort + "/user/update_profile_picture", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					window.location.reload(false);
@@ -295,9 +296,9 @@ function Profile() {
 						</button>
 					</div>
 					<div>
-						{ isBoth === true && <a href="https://localhost:3000/host/bothHome"> <button className="button home">Home page </button></a> }
-						{ isHost === true && isBoth === false && <a href="https://localhost:3000/host/hostHome"><button className="button home">Home page </button></a> }
-						{ isTenant === true && isBoth === false && <a href="https://localhost:3000/home"><button className="button home">Home page </button></a> }
+						{ isBoth === true && <a href={BaseUrl + ClientPort + "/host/bothHome"}> <button className="button home">Home page </button></a> }
+						{ isHost === true && isBoth === false && <a href={BaseUrl + ClientPort + "/host/hostHome"}><button className="button home">Home page </button></a> }
+						{ isTenant === true && isBoth === false && <a href={BaseUrl + ClientPort + "/home"}><button className="button home">Home page </button></a> }
 					</div>
 				</div>
 			</div>

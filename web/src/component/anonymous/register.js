@@ -1,6 +1,7 @@
 // Register.js
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants";
 
 import "../../css/anonymous/register.css"
 
@@ -75,7 +76,7 @@ function Register() {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("https://localhost:8080/auth/register", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/auth/register", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
 					if (roles === "host"){
@@ -105,121 +106,140 @@ function Register() {
 			<div className="register-bg">
 				<div className="register-box">
 					<div className="register-h2 username-header">
-						<label>
-							Username 
-						</label>
+						<label>Username</label>
 						<input
 							className="register-input username-input"
 							id="username"
 							name="username"
 							type="text"
 							placeholder="username"
-							onChange={(event) => setUsername(event.target.value)}
+							onChange={(event) =>
+								setUsername(event.target.value)
+							}
 							value={username}
 							required
 						/>
 					</div>
 					<div className="register-h2 password-header">
 						<label>
-							Password 
+							Password
 							<input
 								className="register-input password-input"
 								id="password"
 								name="password"
 								type="password"
 								placeholder="password"
-								onChange={(event) => setPassword(event.target.value)}
+								onChange={(event) =>
+									setPassword(event.target.value)
+								}
 								value={password}
 							/>
 						</label>
 					</div>
 					<div className="register-h2 confirm-password-header">
 						<label>
-							Confirm password 
+							Confirm password
 							<input
 								className="register-input register-confirm-password-input"
 								id="confirmPassword"
 								name="confirmPassword"
 								type="password"
 								placeholder="confirmPassword"
-								onChange={(event) => setConfirmPassword(event.target.value)}
+								onChange={(event) =>
+									setConfirmPassword(event.target.value)
+								}
 								value={confirmPassword}
 							/>
 						</label>
 					</div>
 					<div className="register-h2 fname-header">
-						<label>
-							First Name 
-						</label>
+						<label>First Name</label>
 						<input
 							className="register-input fname-input"
 							id="firstName"
 							name="firstName"
 							type="text"
 							placeholder="firstName"
-							onChange={(event) => setFirstName(event.target.value)}
+							onChange={(event) =>
+								setFirstName(event.target.value)
+							}
 							value={firstName}
 						/>
 					</div>
 					<div className="register-h2 lname-header">
 						<label>
-							Last Name  
+							Last Name
 							<input
 								className="register-input lname-input"
 								id="lastName"
 								name="lastName"
 								type="text"
 								placeholder="lastName"
-								onChange={(event) => setLastName(event.target.value)}
+								onChange={(event) =>
+									setLastName(event.target.value)
+								}
 								value={lastName}
 							/>
 						</label>
 					</div>
 					<div className="register-h2 email-header">
 						<label>
-							E-mail 
+							E-mail
 							<input
 								className="register-input email-input"
 								id="email"
 								name="email"
 								type="email"
 								placeholder="email"
-								onChange={(event) => setEmail(event.target.value)}
+								onChange={(event) =>
+									setEmail(event.target.value)
+								}
 								value={email}
 							/>
 						</label>
 					</div>
 					<div className="register-h2 pnum-header">
 						<label>
-							Phone Number 
+							Phone Number
 							<input
 								className="register-input pnum-input"
 								id="phoneNumber"
 								name="phoneNumber"
 								type="text"
 								placeholder="phoneNumber"
-								onChange={(event) => setPhoneNumber(event.target.value)}
+								onChange={(event) =>
+									setPhoneNumber(event.target.value)
+								}
 								value={phoneNumber}
 							/>
 						</label>
 					</div>
 					<div className="register-h2 roles-header">
-						<label for="roles" >
-							Roles on site 
-						</label>
-						<select className = "register-select roles-input" name="roles" id="roles" value={roles} onChange={(event) => setRoles(event.target.value)}>
+						<label for="roles">Roles on site</label>
+						<select
+							className="register-select roles-input"
+							name="roles"
+							id="roles"
+							value={roles}
+							onChange={(event) => setRoles(event.target.value)}
+						>
 							<option></option>
 							<option value="tenant">Tenant</option>
 							<option value="host">Host</option>
 							<option value="both">Both</option>
 						</select>
 					</div>
-					<button className="register-btn submit-register" id="submit" type="button" onClick={() => onSubmit()}>
+					<button
+						className="register-btn submit-register"
+						id="submit"
+						type="button"
+						onClick={() => onSubmit()}
+					>
 						Register
 					</button>
 					<div>
-						<a href = "https://localhost:3000/home" >
-							<button className = "register-btn register-home">
+						<a href={BaseUrl + ClientPort + "/home"}>
+							<button className="register-btn register-home">
 								Homepage
 							</button>
 						</a>

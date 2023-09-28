@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import MultipleDatePicker from "react-multi-date-picker";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 function RentalDetails() {
 
@@ -58,7 +59,7 @@ function RentalDetails() {
 			},
 			method: "get"
 		};
-		fetch("https://localhost:8080/host/" + rentalId + "/info", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/" + rentalId + "/info", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
             setPhotos(response.Rental.photos);
@@ -127,7 +128,7 @@ function RentalDetails() {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("https://localhost:8080/host/rental/" + rentalId + "/update", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/rental/" + rentalId + "/update", fetchOptions)
 			.then((response) => {
 				if (response.status === 200) {
                     window.location.reload(false);
@@ -156,7 +157,7 @@ function RentalDetails() {
                     body: reqBody
                 };
                 console.log(fetchOptions);
-                fetch("https://localhost:8080/host/rental/" + rentalId + "/add_photo", fetchOptions)
+                fetch(BaseUrl + ServerPort + "/host/rental/" + rentalId + "/add_photo", fetchOptions)
             }
             window.location.reload(false);
 		}
@@ -173,7 +174,7 @@ function RentalDetails() {
                     body: photos[photosIndex].name
                 };
                 console.log(fetchOptions);
-                fetch("https://localhost:8080/host/rental/" + rentalId + "/remove_photos", fetchOptions)
+                fetch(BaseUrl + ServerPort + "/host/rental/" + rentalId + "/remove_photos", fetchOptions)
                 .then((response) => {
                     console.log(response);
                     if (response.status !== 200) {
@@ -204,12 +205,12 @@ function RentalDetails() {
         <>
          <div className="host-details-bg">
             <div className="details-header view-header">View rental info</div>
-            <a href="https://localhost:3000/host/rental/list">
+            <a href={BaseUrl + ClientPort + "/host/rental/list"}>
                 <button className="button backToListHost">
                     Back to rental list
                 </button>
             </a>
-            <a href={"https://localhost:3000/host/rental/" + rentalId + "/messages"}>
+            <a href={BaseUrl + ClientPort + "/host/rental/" + rentalId + "/messages"}>
                 <button className="button backToListHost">
                     View messages
                 </button>

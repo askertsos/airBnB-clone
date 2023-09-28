@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants";
 
 import "../../css//anonymous/login.css"
 
@@ -21,7 +22,7 @@ const LoginPost = () => {
 			method: "post",
 			body: JSON.stringify(reqBody),
 		};
-		fetch("https://localhost:8080/auth/login", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/auth/login", fetchOptions)
 		.then((response) => response.json())
 		.then(response => {
 			if( response.isAdmin === "true" ){
@@ -79,7 +80,7 @@ const LoginPost = () => {
 							Login
 						</button>
 				</div>
-				<a href = "https://localhost:3000/home">
+				<a href = {BaseUrl + ClientPort + "/home"}>
 					<button className="login-btn btn2">
 						Homepage
 					</button>

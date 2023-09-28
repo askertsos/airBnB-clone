@@ -209,6 +209,9 @@ public class RecommendationService {
             }
         }
 
+        //Remove all rentals hosted *by* the user, in case user is both tenant and host
+        rentalsOfInterest.removeIf(r -> (r.getRental().getHost().getId().equals(tenant.getId())));
+
         rentalsOfInterest.sort(new Comparator<RentalRating>() {
             @Override
             public int compare(RentalRating r1, RentalRating r2) {
@@ -235,7 +238,7 @@ public class RecommendationService {
     private Set<Rental> recommendBasedOnSearchHistory(User user){
         Optional<SearchHistory> optionalSearchHistory = searchHistoryRepository.findByUser(user);
         if (optionalSearchHistory.isEmpty()){ //No search history, recommend 5 most highly-rated rentals
-            return recommendMostHighlyRated();
+            return recommendMostHighlyRated(user);
         }
         SearchHistory searchHistory = optionalSearchHistory.get();
         List<Search> searchList = searchHistory.getSearchList();
@@ -398,6 +401,9 @@ public class RecommendationService {
 
         List<RentalRating> rentalsOfInterest = new ArrayList<>(Arrays.asList(dR[userIndex]));
 
+        //Remove all rentals hosted *by* the user, in case user is both tenant and host
+        rentalsOfInterest.removeIf(r -> (r.getRental().getHost().getId().equals(user.getId())));
+
         rentalsOfInterest.sort(new Comparator<RentalRating>() {
             @Override
             public int compare(RentalRating r1, RentalRating r2) {
@@ -420,7 +426,7 @@ public class RecommendationService {
         return new HashSet<>(recommendedRentals);
     }
 
-    private Set<Rental> recommendMostHighlyRated(){
+    private Set<Rental> recommendMostHighlyRated(User user){
         List<Rental> rentalList = rentalRepository.findAll();
 
         final int minReviews = 20;
@@ -428,12 +434,11 @@ public class RecommendationService {
         rentalList.removeIf(r -> reviewRepository.countByRental(r) < minReviews);
 
         if (rentalList.isEmpty()) return new HashSet<>(rentalList);
-        rentalList.sort(new Comparator<Rental>() {
-            @Override
-            public int compare(Rental r1, Rental r2) {
-                //r2.compareTo(r1) because descending order is warranted
-                return r2.getRating().compareTo(r1.getRating());
-            }
+
+        rentalList.removeIf(r -> (r.getHost().getId().equals(user.getId())));
+        rentalList.sort((r1, r2) -> {
+            //r2.compareTo(r1) because descending order is warranted
+            return r2.getRating().compareTo(r1.getRating());
         });
         int last = Math.min(rentalList.size(),rentalsToRecommend);
         return new HashSet<>(rentalList.subList(0,last));
@@ -452,12 +457,9 @@ public class RecommendationService {
     }
 
     private double getLastReviewRating(List<Review> reviewList){
-        reviewList.sort(new Comparator<Review>() {
-            @Override
-            public int compare(Review r1, Review r2) {
-                //r2.compare(r1) for descending order
-                return r2.getIssuedAt().compareTo(r1.getIssuedAt());
-            }
+        reviewList.sort((r1, r2) -> {
+            //r2.compare(r1) for descending order
+            return r2.getIssuedAt().compareTo(r1.getIssuedAt());
         });
         return reviewList.get(0).getStars();
     }
@@ -501,20 +503,7 @@ public class RecommendationService {
         return new Object[]{UserFeatures,RentalFeatures};
     }
 
-
-    private RentalRating[][] transpose(RentalRating[][] M){
-        int rows = M.length;
-        int columns = M[0].length;
-
-        RentalRating[][] T = new RentalRating[columns][rows];
-
-        for (int i=0; i<columns; i++){
-            for(int j=0; j<rows; j++){
-                T[i][j] = M[j][i];
-            }
-        }
-        return T;
-    }
+    //Returns the dot product of two one-dimensional arrays of type RentalRating based on each cell's expRating
     private Double dotProduct(RentalRating[] A, RentalRating[] B)
     {
         double product = 0d;
@@ -526,6 +515,7 @@ public class RecommendationService {
         return product;
     }
 
+    //Returns the dot product of two two-dimensional arrays of type RentalRating based on each cell's expRating
     private RentalRating[][] dotProduct(RentalRating[][] A, RentalRating[][] B){
         RentalRating[][] D = new RentalRating[A.length][B[0].length];
         for (int i=0; i<A.length; i++) {
@@ -545,6 +535,7 @@ public class RecommendationService {
         return D;
     }
 
+    //Returns given column of a two-dimensional RentalRating array
     private RentalRating[] getColumn(RentalRating[][] A, int index){
         RentalRating[] column = new RentalRating[A.length];
         for(int i=0; i<column.length; i++){

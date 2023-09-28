@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { BaseUrl, ServerPort, ClientPort } from "../../constants";
+
 function UserDetails() {
 
     const routeParams = useParams();
@@ -22,7 +24,7 @@ function UserDetails() {
 			method: "post",
             body: JSON.stringify(reqBody)
 		};
-		fetch("https://localhost:8080/admin/user/details", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/admin/user/details", fetchOptions)
         .then((response) => response.json())
         .then((response) => {
             setUser(response.user);
@@ -48,7 +50,7 @@ function UserDetails() {
 			method: "post",
             body: JSON.stringify(reqBody)
 		};
-		fetch("https://localhost:8080/admin/user/activateHost", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/admin/user/activateHost", fetchOptions)
         .then((response) =>{
             if(response.status === 401){
                 navigate("/unauthorized/user");
@@ -69,43 +71,49 @@ function UserDetails() {
     
 
     return (
-        <>
-            <div className="searchDetails-admin-bg">
-                <div className="user-details-box">
-                    <div className="user-details-fields">
-                        <p>
-                            <div key={user.id}>
-                                <p>Id : {user.id}</p>
-                                <p>First name : {user.first_name}</p>
-                                <p>Last name : {user.last_name}</p>
-                                <p>E-mail : {user.email}</p>
-                                <p>Phone Number : {user.phoneNumber}</p>
-                                {user.authorities.map( (roles) => <p>Role : {roles.authority}</p>)}
-                                { isHost === "true" &&
-                                    <p>Authenticated host : {String(user.isAuthenticatedHost)}</p>
-                                }
-                            </div>
-                        </p>
-                    </div>
-                </div>
-                { isHost === "true" &&
-                    <button className="button activate-user" onClick={() => activateHost()}> 
-                        Activate Host 
-                    </button>
-                }
-                <a href="https://localhost:3000/admin/user/list">
-                    <button className="button backList-admin">
-                        User list
-                    </button>
-                </a>
-                <a href="https://localhost:3000/admin/home">
-                    <button className="button homepage-admin-user">
-                        Homepage
-                    </button>
-                </a>
-            </div>
-        </>
-    )
+		<>
+			<div className="searchDetails-admin-bg">
+				<div className="user-details-box">
+					<div className="user-details-fields">
+						<p>
+							<div key={user.id}>
+								<p>Id : {user.id}</p>
+								<p>First name : {user.first_name}</p>
+								<p>Last name : {user.last_name}</p>
+								<p>E-mail : {user.email}</p>
+								<p>Phone Number : {user.phoneNumber}</p>
+								{user.authorities.map((roles) => (
+									<p>Role : {roles.authority}</p>
+								))}
+								{isHost === "true" && (
+									<p>
+										Authenticated host :{" "}
+										{String(user.isAuthenticatedHost)}
+									</p>
+								)}
+							</div>
+						</p>
+					</div>
+				</div>
+				{isHost === "true" && (
+					<button
+						className="button activate-user"
+						onClick={() => activateHost()}
+					>
+						Activate Host
+					</button>
+				)}
+				<a href={BaseUrl + ClientPort + "/admin/user/list"}>
+					<button className="button backList-admin">User list</button>
+				</a>
+				<a href={BaseUrl + ClientPort + "/admin/home"}>
+					<button className="button homepage-admin-user">
+						Homepage
+					</button>
+				</a>
+			</div>
+		</>
+	);
 
 }
 

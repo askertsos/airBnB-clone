@@ -1,6 +1,7 @@
 // hostHome.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js";
 
 function HostHome() {
 
@@ -16,7 +17,7 @@ function HostHome() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/host/auth", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/host/auth", fetchOptions)
 		.then((response) => response.json())
 		.then((response) => {
 			let host = false;
@@ -48,14 +49,14 @@ function HostHome() {
 			<div className="home-bg">
 				{/* Navigation bar */}
 				<div className="main-bar">
-					<a href = 'https://localhost:3000/user/profile'>
+					<a href = {BaseUrl + ClientPort + "/user/profile"}>
 						<button className="bar-button small-button">Profile</button>
 					</a>
-					<a href = 'https://localhost:3000/auth/logout'>
+					<a href = {BaseUrl + ClientPort + "/auth/logout"}>
 						<button className="bar-button small-button">Logout</button>
 					</a>
 					{isBoth === true &&
-						<a href = 'https://localhost:3000/home'>
+						<a href = {BaseUrl + ClientPort + "/home"}>
 							<button className="bar-button big-button">
 								Tenant interface
 							</button>
@@ -63,12 +64,12 @@ function HostHome() {
 					}
 				</div>
 
-				<a href = 'https://localhost:3000/host/newRental'>
+				<a href = {BaseUrl + ClientPort + "/host/newRental"}>
 					<button className="huge-button tenant-home-btn">
 						Add new rental
 					</button>
 				</a>
-				<a href = 'https://localhost:3000/host/rental/list'>
+				<a href = {BaseUrl + ClientPort + "/host/rental/list"}>
 					<button className="huge-button tenant-home-btn">
 						List of your rentals
 					</button>

@@ -1,6 +1,7 @@
 // adminHome.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BaseUrl, ServerPort, ClientPort } from "../../constants.js" 
 
 import "../../css/admin/admin.css";
 import { downloadDatabaseJSON, downloadDatabaseXML } from "./downloadDatabase";
@@ -17,7 +18,7 @@ function AdminHome() {
 			},
 			method: "get",
 		};
-		fetch("https://localhost:8080/admin/auth", fetchOptions)
+		fetch(BaseUrl + ServerPort + "/admin/auth", fetchOptions)
 			.then((response) => {
 				if (response.status !== 200) {
 					navigate("/unauthorized/user");
@@ -37,7 +38,7 @@ function AdminHome() {
 	return (
 		<>
 			<div className="admin-bg">
-				<a href="https://localhost:3000/admin/user/list">
+				<a href={BaseUrl + ClientPort + "/admin/user/list"}>
 					<button className="list-users-btn-admin">
 						List all users
 					</button>
@@ -61,7 +62,7 @@ function AdminHome() {
 					</button>
 				</div>
 				<div className="main-bar admin-bar">
-					<a href="https://localhost:3000/auth/logout">
+					<a href={BaseUrl + ClientPort + "/auth/logout"}>
 						<button className="button">Logout</button>
 					</a>
 				</div>
