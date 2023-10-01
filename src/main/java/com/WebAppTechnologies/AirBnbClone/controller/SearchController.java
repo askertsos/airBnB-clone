@@ -94,12 +94,13 @@ public class SearchController {
                 rentalPage.
                         stream().
                         sorted(
-                                (r1, r2) -> r1.getPrice(finalDays,finalGuests).compareTo(r2.getPrice(finalDays,finalGuests)))
+                                Comparator.comparing(r -> r.getPrice(finalDays, finalGuests)))
                         .toList();
 
         Map<String, Object> responseBody = new HashMap<String, Object>();
         responseBody.put("content", sortedList);
         responseBody.put("totalPages",rentalPage.getTotalPages());
+
         return ResponseEntity.ok().body(responseBody);
     }
 

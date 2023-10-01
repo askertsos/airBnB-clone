@@ -163,8 +163,7 @@ public class UserController {
     //--------------------------------------------------------------------------------------------
 
     @GetMapping("/recommended_rentals")
-    public ResponseEntity<?> getRecommendedRentals(@Nullable @RequestHeader("Authorization") String jwt){
-        if (Objects.isNull(jwt)) return ResponseEntity.ok().body(recommendationService.recommendMostHighlyRated(null));
+    public ResponseEntity<?> getRecommendedRentals(@RequestHeader("Authorization") String jwt){
         User tenant = userService.getUserByJwt(jwt).get();
         Optional<RecommendedRentals> optional = recommendedRentalsRepository.findByTenant(tenant);
         if (optional.isEmpty()) return ResponseEntity.badRequest().build();
