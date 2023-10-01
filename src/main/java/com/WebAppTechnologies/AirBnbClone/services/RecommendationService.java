@@ -31,13 +31,13 @@ public class RecommendationService {
     private final Double alpha = 0.0002;
     private final Double beta = 0.02;
     private final Double epsilon = 0.001;
-    private final Integer steps = 5000;
+    private final Integer steps = 500;
     private final Integer K = 3;
     private final Integer rentalsToRecommend = 5;
 
     public RecommendationService(){}
 
-    private class RentalRating{
+    private static class RentalRating{
         private Rental rental;
         private Double expRating;
 
@@ -147,7 +147,7 @@ public class RecommendationService {
 
                         //if no bookings, assign rating of 2
                         if (!userBookedRentals.contains(rental)){
-                            Ratings[i][j] = new RentalRating(rental,2d);
+                            Ratings[i][j] = new RentalRating(rental, 2d);
                             continue;
                         }
 
@@ -159,11 +159,11 @@ public class RecommendationService {
                             if (r.equals(rental)) nBookings++;
                         }
                         final double finalRating = Math.min(base + nBookings*gainRate,rentalsToRecommend);
-                        Ratings[i][j] = new RentalRating(rental,finalRating);
+                        Ratings[i][j] = new RentalRating(rental, finalRating);
                     }
                     else{ //Base rating on latest review
                         final double rating = getLastReviewRating(userRentalReviews);
-                        Ratings[i][j] = new RentalRating(rental,rating);
+                        Ratings[i][j] = new RentalRating(rental, rating);
                     }
                 }
                 continue;
@@ -186,12 +186,12 @@ public class RecommendationService {
                 reviewList.removeIf(r -> !r.getReviewer().equals(reviewer));
 
                 if (reviewList.isEmpty()){
-                    Ratings[i][j] = new RentalRating(rental,2d);
+                    Ratings[i][j] = new RentalRating(rental, 2d);
                     continue;
                 }
                 //rating = rating made in the last review
                 final double rating = getLastReviewRating(reviewList);
-                Ratings[i][j] = new RentalRating(rental,rating);
+                Ratings[i][j] = new RentalRating(rental, rating);
             }
         }
 
@@ -361,7 +361,7 @@ public class RecommendationService {
 
             double rating = ratingSigmoid(similarityScore);
             System.out.println("rating is " + rating);
-            Ratings[userIndex][j] = new RentalRating(rental,rating);
+            Ratings[userIndex][j] = new RentalRating(rental, rating);
         }
 
         //for all rows in R
@@ -385,12 +385,12 @@ public class RecommendationService {
                 reviewList.removeIf(r -> !r.getReviewer().equals(reviewer));
 
                 if (reviewList.isEmpty()){
-                    Ratings[i][j] = new RentalRating(rental,2d);
+                    Ratings[i][j] = new RentalRating(rental, 2d);
                     continue;
                 }
                 //rating = rating made in the last review
                 final double rating = getLastReviewRating(reviewList);
-                Ratings[i][j] = new RentalRating(rental,rating);
+                Ratings[i][j] = new RentalRating(rental, rating);
             }
         }
 

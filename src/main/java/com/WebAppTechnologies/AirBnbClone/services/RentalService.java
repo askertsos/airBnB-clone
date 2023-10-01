@@ -45,15 +45,6 @@ public class RentalService {
     @Autowired
     private PhotoRepository photoRepository;
 
-    public List<LocalDate> convertToLocalDate(List<String> stringList) throws DateTimeParseException{
-        List<LocalDate> bookingDates = new ArrayList<>();
-        for (String date : stringList) {
-            LocalDate localDate = LocalDate.parse(date, dateTimeFormatter());
-            bookingDates.add(localDate);
-        }
-        return bookingDates;
-    }
-
     //Constructs the new booking based on the user, rental and booking info.
     //Returns new Booking instance if all info is valid, null otherwise
     public Booking constructBooking(String jwt, Rental rental, BookingDTO bookingDTO, LocalDate startDate, LocalDate endDate){
@@ -63,11 +54,10 @@ public class RentalService {
 
         //Assert that the guest number, as well as the booking dates are valid
         if (bookingDTO.getGuests() > rental.getMaxGuests()) return null;
-//        if (startDate.isBefore(LocalDate.now())) return null;
+        if (startDate.isBefore(LocalDate.now())) return null;
         if (startDate.isAfter(endDate)) return null;
 
         List<LocalDate> bookingDates = startDate.datesUntil(endDate.plusDays(1L)).toList();
-        System.out.println(bookingDates);
         if (bookingDates.size() < rental.getMinDays()) return null;
 
 
