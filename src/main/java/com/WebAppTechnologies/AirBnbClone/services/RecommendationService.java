@@ -308,8 +308,8 @@ public class RecommendationService {
 
             //Fill the two matrices with random values
             for (int k = 0; k < K; k++) {
-                UserFeatures[userIndex][k] = new RentalRating(rental, random.nextDouble());
-                RentalFeatures[k][j] = new RentalRating(rental, random.nextDouble());
+                UserFeatures[userIndex][k] = new RentalRating(rental, 4.0 * random.nextDouble() + 1.0);
+                RentalFeatures[k][j] = new RentalRating(rental, 4.0 * random.nextDouble() + 1.0);
             }
 
             double countryFreq = 0d;
@@ -374,8 +374,8 @@ public class RecommendationService {
 
                 //Fill the two matrices with random values
                 for (int k=0; k<K; k++) {
-                    UserFeatures[i][k] = new RentalRating(rental, random.nextDouble());
-                    RentalFeatures[k][j] = new RentalRating(rental, random.nextDouble());
+                    UserFeatures[i][k] = new RentalRating(rental, 4.0 * random.nextDouble() + 1.0);
+                    RentalFeatures[k][j] = new RentalRating(rental, 4.0 * random.nextDouble() + 1.0);
                 }
 
                 //Get all reviews made on this rental
@@ -404,12 +404,9 @@ public class RecommendationService {
         //Remove all rentals hosted *by* the user, in case user is both tenant and host
         rentalsOfInterest.removeIf(r -> (r.getRental().getHost().getId().equals(user.getId())));
 
-        rentalsOfInterest.sort(new Comparator<RentalRating>() {
-            @Override
-            public int compare(RentalRating r1, RentalRating r2) {
-                //r2.compareTo(r1) because descending order is warranted
-                return r2.getExpRating().compareTo(r1.getExpRating());
-            }
+        rentalsOfInterest.sort((r1, r2) -> {
+            //r2.compareTo(r1) because descending order is warranted
+            return r2.getExpRating().compareTo(r1.getExpRating());
         });
 
 
@@ -420,22 +417,23 @@ public class RecommendationService {
         rentalsOfInterest = rentalsOfInterest.subList(0,last);
         for (RentalRating info: rentalsOfInterest) {
             recommendedRentals.add(info.getRental());
-            System.out.println("Recommending rental: "+ info.getRental().getTitle());
+            System.out.println("Recommending rental: "+ info.getRental().getTitle() + "with rating: " + info.getExpRating());
         }
-
         return new HashSet<>(recommendedRentals);
     }
 
-    private Set<Rental> recommendMostHighlyRated(User user){
+    public Set<Rental> recommendMostHighlyRated(User user){
         List<Rental> rentalList = rentalRepository.findAll();
 
-        final int minReviews = 20;
+        final int minReviews = 1;
 
         rentalList.removeIf(r -> reviewRepository.countByRental(r) < minReviews);
 
         if (rentalList.isEmpty()) return new HashSet<>(rentalList);
 
-        rentalList.removeIf(r -> (r.getHost().getId().equals(user.getId())));
+        if (Objects.nonNull(user))
+            rentalList.removeIf(r -> (r.getHost().getId().equals(user.getId())));
+
         rentalList.sort((r1, r2) -> {
             //r2.compareTo(r1) because descending order is warranted
             return r2.getRating().compareTo(r1.getRating());

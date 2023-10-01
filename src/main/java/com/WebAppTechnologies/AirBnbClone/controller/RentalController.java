@@ -162,13 +162,9 @@ public class RentalController {
         int maxPageNo = (int)Math.ceil(messagesPerPage);
         if (index < 0 || index > maxPageNo) return ResponseEntity.badRequest().build();
 
-        messageList.sort(new Comparator<Message>() {
-            @Override
-            public int compare(Message m1, Message m2) {
-                return m2.getSentAt().compareTo(m1.getSentAt());
-            }
-        });
-        messageHistory.setMessageList(messageList);
+        messageList.sort((m1, m2) -> m2.getSentAt().compareTo(m1.getSentAt()));
+
+//        messageHistory.setMessageList(messageList);
         final int start = index*pageSize;
         int end = Math.min((index + 1) * pageSize,messageList.size());
         List<Message> pagedList = messageList.subList(start,end);

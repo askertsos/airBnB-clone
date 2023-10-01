@@ -25,74 +25,63 @@ public class SpecificationService<T> {
             List<Predicate> predicates = new ArrayList<>();
             List<SpecificationDTO> specificationDTOS = searchRequestDTO.getSpecificationList();
             for (SpecificationDTO specDTO: specificationDTOS) {
-                switch(specDTO.getOperation()){
-                    case EQUAL:
-                        Predicate equal = criteriaBuilder.equal(root.get(specDTO.getColumn()),specDTO.getValue());
+                switch (specDTO.getOperation()) {
+                    case EQUAL -> {
+                        Predicate equal = criteriaBuilder.equal(root.get(specDTO.getColumn()), specDTO.getValue());
                         predicates.add(equal);
-                        break;
-
-                    case IN:
+                    }
+                    case IN -> {
                         String[] inValues = specDTO.getValue().split(",");
                         Predicate in = root.get(specDTO.getColumn()).in(Arrays.asList(inValues));
                         predicates.add(in);
-                        break;
-
-                    case LIKE:
-                        Predicate like = criteriaBuilder.like(root.get(specDTO.getColumn()),specDTO.getValue()+"%");
+                    }
+                    case LIKE -> {
+                        Predicate like = criteriaBuilder.like(root.get(specDTO.getColumn()), specDTO.getValue() + "%");
                         predicates.add(like);
-                        break;
-
-                    case BETWEEN:
+                    }
+                    case BETWEEN -> {
                         String[] betweenValues = specDTO.getValue().split(",");
-                        if (betweenValues.length != 2){
+                        if (betweenValues.length != 2) {
                             throw new IllegalArgumentException("Between call must have 2 comma-separated values");
                         }
-                        Predicate between = criteriaBuilder.between(root.get(specDTO.getColumn()),betweenValues[0],betweenValues[1]);
+                        Predicate between = criteriaBuilder.between(root.get(specDTO.getColumn()), betweenValues[0], betweenValues[1]);
                         predicates.add(between);
-                        break;
-
-                    case GREATER_THAN:
-                        Predicate greaterThan = criteriaBuilder.greaterThan(root.get(specDTO.getColumn()),specDTO.getValue());
+                    }
+                    case GREATER_THAN -> {
+                        Predicate greaterThan = criteriaBuilder.greaterThan(root.get(specDTO.getColumn()), specDTO.getValue());
                         predicates.add(greaterThan);
-                        break;
-
-                    case GREATER_OR_EQUAL:
-                        Predicate greaterThanOrEqualTo = criteriaBuilder.greaterThanOrEqualTo(root.get(specDTO.getColumn()),specDTO.getValue());
+                    }
+                    case GREATER_OR_EQUAL -> {
+                        Predicate greaterThanOrEqualTo = criteriaBuilder.greaterThanOrEqualTo(root.get(specDTO.getColumn()), specDTO.getValue());
                         predicates.add(greaterThanOrEqualTo);
-                        break;
-
-                    case LESS_THAN:
-                        Predicate lessThan = criteriaBuilder.lessThan(root.get(specDTO.getColumn()),specDTO.getValue());
+                    }
+                    case LESS_THAN -> {
+                        Predicate lessThan = criteriaBuilder.lessThan(root.get(specDTO.getColumn()), specDTO.getValue());
                         predicates.add(lessThan);
-                        break;
-
-                    case LESS_OR_EQUAL:
-                        Predicate lessThanOrEqualTo = criteriaBuilder.lessThanOrEqualTo(root.get(specDTO.getColumn()),specDTO.getValue());
+                    }
+                    case LESS_OR_EQUAL -> {
+                        Predicate lessThanOrEqualTo = criteriaBuilder.lessThanOrEqualTo(root.get(specDTO.getColumn()), specDTO.getValue());
                         predicates.add(lessThanOrEqualTo);
-                        break;
-
-                    case JOIN:
-                        Predicate join = criteriaBuilder.equal(root.join(specDTO.getJoinTable()).get(specDTO.getColumn()),specDTO.getValue());
+                    }
+                    case JOIN -> {
+                        Predicate join = criteriaBuilder.equal(root.join(specDTO.getJoinTable()).get(specDTO.getColumn()), specDTO.getValue());
                         predicates.add(join);
-                        break;
-
-                    case DATES:
+                    }
+                    case DATES -> {
                         String[] stringDates = specDTO.getValue().split(",");
                         //Convert them to LocalDate and insert them into a list
-                        for (String stringDate: stringDates) {
+                        for (String stringDate : stringDates) {
                             LocalDate localDate = LocalDate.parse(stringDate, formatter);
-                            predicates.add(criteriaBuilder.isMember(localDate,root.get("availableDates")));
+                            predicates.add(criteriaBuilder.isMember(localDate, root.get("availableDates")));
                         }
                         return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-
-                    case AMENITIES:
-                    case BOOLEAN:
+                    }
+                    case AMENITIES, BOOLEAN -> {
                         boolean boolValue = Boolean.parseBoolean(specDTO.getValue());
-                        Predicate bool = criteriaBuilder.equal(root.get(specDTO.getColumn()),boolValue);
+                        Predicate bool = criteriaBuilder.equal(root.get(specDTO.getColumn()), boolValue);
                         predicates.add(bool);
-                        break;
-
-                    default: throw new IllegalStateException("Invalid operator");
+                    }
+                    default -> throw new IllegalStateException("Invalid operator");
                 }
 
             }

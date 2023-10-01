@@ -45,7 +45,7 @@ function SearchDetails() {
 
     const Book = () => {
 
-        if (localStorage.getItem("jwt") === null) {
+        if (localStorage.getItem("jwt") === null || localStorage.getItem("jwt") === "null") {
             navigate("/unauthorized/user");
             return;
         }
@@ -292,8 +292,7 @@ function SearchDetails() {
 				<button className="button bookRental" onClick={() => Book()}>
 					Book rental
 				</button>
-				<a href={BaseUrl + ClientPort + "/tenant/" + rental.id + "/review"}
-				>
+				<a href={BaseUrl + ClientPort + "/tenant/" + rental.id + "/review"}>
 					<button className="button bookRental">Add review</button>
 				</a>
 			</div>

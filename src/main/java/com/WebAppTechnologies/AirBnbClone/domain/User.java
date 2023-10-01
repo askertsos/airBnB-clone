@@ -29,8 +29,6 @@ public class User implements UserDetails {
     @JacksonXmlProperty(localName = "Profile_Picture")
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Photo profilePicture;
-
-//    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @JacksonXmlElementWrapper(localName = "Authorities")

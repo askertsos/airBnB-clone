@@ -39,8 +39,6 @@ public class SearchController {
     private SpecificationService<Rental> rentalSpecificationService;
     @Autowired
     private RentalRepository rentalRepository;
-
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -92,12 +90,12 @@ public class SearchController {
 
         final int finalDays = days;
         final int finalGuests = guests;
-        List<Rental> sortedList = rentalPage.stream().sorted(new Comparator<Rental>() {
-            @Override
-            public int compare(Rental r1, Rental r2) {
-                return r1.getPrice(finalDays,finalGuests).compareTo(r2.getPrice(finalDays,finalGuests));
-            }
-        }).toList();
+        List<Rental> sortedList =
+                rentalPage.
+                        stream().
+                        sorted(
+                                (r1, r2) -> r1.getPrice(finalDays,finalGuests).compareTo(r2.getPrice(finalDays,finalGuests)))
+                        .toList();
 
         Map<String, Object> responseBody = new HashMap<String, Object>();
         responseBody.put("content", sortedList);

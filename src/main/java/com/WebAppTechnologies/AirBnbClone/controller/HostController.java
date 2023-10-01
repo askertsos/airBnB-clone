@@ -85,10 +85,7 @@ public class HostController {
     public ResponseEntity<?> submitNewRental(@RequestBody NewRentalDTO body, @RequestHeader("Authorization") String jwt){
         User host = userService.getUserByJwt(jwt).get();
 
-        //Create new rental entity
         Rental newRental = new Rental(host,body);
-
-        //Save first time to generate the id, which is used for the path of the photos
         rentalRepository.save(newRental);
 
         return ResponseEntity.ok().body(newRental);
@@ -114,7 +111,7 @@ public class HostController {
     }
 
     @PostMapping("/rental/{rentalId}/add_photo")
-    public ResponseEntity<?> addRentalPhotos(@PathVariable("rentalId") Long rentalId,
+    public ResponseEntity<?> addRentalPhoto(@PathVariable("rentalId") Long rentalId,
                                              @RequestHeader("Authorization") String jwt,
                                              @RequestParam("image")MultipartFile photo){
 
@@ -151,7 +148,7 @@ public class HostController {
 
 
     @PostMapping("/rental/{rentalId}/remove_photos")
-    public ResponseEntity<?> removeRentalPhotos(@PathVariable("rentalId") Long rentalId,
+    public ResponseEntity<?> removeRentalPhoto(@PathVariable("rentalId") Long rentalId,
                                              @RequestHeader("Authorization") String jwt,
                                              @RequestBody String photoName){
 
@@ -170,16 +167,8 @@ public class HostController {
         if (optionalPhoto.isEmpty()) return ResponseEntity.badRequest().build();
 
         Photo photo = optionalPhoto.get();
-//            Path path = Path.of(rental.getPhotoDirectory() + "/rental_" + rental.getId() + "/" + photo.getName());
         rental.removePhoto(photo);
         photoRepository.deleteById(photo.getId());
-//            try {
-//                Files.delete(path);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
         rentalRepository.save(rental);
 
         return ResponseEntity.ok().build();

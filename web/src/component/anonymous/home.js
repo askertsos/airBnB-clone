@@ -101,7 +101,7 @@ function Home() {
 						<a href = {BaseUrl + ClientPort + "/auth/login"}> 
 							<button className="bar-button small-button"> Login</button>
 						</a>
-						<a href = {BaseUrl + ClientPort + "/auth/login"}>
+						<a href = {BaseUrl + ClientPort + "/auth/register"}>
 							<button className="bar-button small-button"> Register</button>
 						</a>
 					</div>

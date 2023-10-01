@@ -172,9 +172,7 @@ function SearchResults() {
                 method: "post",
                 body: JSON.stringify(reqBody),
             };
-
-            fetch(BaseUrl + ServerPort + "/search/", fetchOptions)
-            .then((response) => response.json())
+			fetch(BaseUrl + ServerPort + "/search/", fetchOptions)
             .then(response => {
                 let tempList = [];
                 response.content.map((rental) => {
@@ -199,18 +197,22 @@ function SearchResults() {
 
     const nextPage = () => {
         if (pageNum + 1 < maxPage) setPageNum(pageNum + 1);
+		setNewSearch(true);
     };
 
     const previousPage = () => {
         if (pageNum > 0) setPageNum(pageNum - 1);
+		setNewSearch(true);
     };
 
     const firstPage = () => {
         setPageNum(0);
+		setNewSearch(true);
     };
 
     const lastPage = () => {
         setPageNum(maxPage - 1);
+		setNewSearch(true);
     };
 
     const handleCheckbox = (boolVar, setBoolVar) => {
@@ -276,7 +278,7 @@ function SearchResults() {
 				<div className="filter-bar">
 					<h2>Add more filters</h2>
 					<div>
-						<label for="type">Type</label>
+						<label htmlFor="type">Type</label>
 						<select
 							name="type"
 							id="type"
@@ -288,13 +290,13 @@ function SearchResults() {
 							}}
 						>
 							<option value={null}>Any type</option>
-							<option value="privateRoom">privateRoom</option>
+							<option value="privateRoom">Private Room</option>
 							<option value="publicRoom">Public Room</option>
 							<option value="house">House</option>
 						</select>
 					</div>
 					<div>
-						<label for="maxCost">Maximum cost</label>
+						<label htmlFor="maxCost">Maximum cost</label>
 						<input
 							id="maxCost"
 							name="maxCost"
@@ -445,33 +447,27 @@ function SearchResults() {
 											/>
 										)}
 										<p className="rental-field1">
-											{" "}
-											Title : {data.title}{" "}
+											Title : {data.title}
 										</p>
 										<p className="rental-field1">
-											{" "}
-											Price :{" "}
+											Price :
 											{(data.chargePerPerson *
 												parseInt(peopleCount, 10) +
 												data.basePrice) *
-												dates.split(",").length}{" "}
+												dates.split(",").length}
 										</p>
 										<p className="rental-field1">
-											{" "}
-											Type : {data.type}{" "}
+											Type : {data.type}
 										</p>
 										<p className="rental-field2">
-											{" "}
-											Number of beds : {data.beds}{" "}
+											Number of beds : {data.beds}
 										</p>
 										<p className="rental-field2">
-											{" "}
-											Number of reviews :{" "}
-											{data.reviews.length}{" "}
+											Number of reviews :
+											{data.reviews.length}
 										</p>
 										<p className="rental-field2">
-											{" "}
-											Rating : {data.rating}{" "}
+											Rating : {data.rating}
 										</p>
 									</button>
 								</a>

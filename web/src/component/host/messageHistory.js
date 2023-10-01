@@ -64,7 +64,7 @@ function MessageHistoryHost() {
                         Previous Page
                 </button>
                 <div>
-                    {history.map((item) => (
+                    {history?.map((item) => (
                         <p>
                             <button className="user-list msg-user-color" onClick={() => MessageDetails(item.tenant.id, item.messageList)}>
                                 {item.tenant.profilePicture !== null && <img className="admin-photo-field" src={require("../profile_photos/user_" + item.tenant.id + "/" + item.tenant.profilePicture.name)} alt="profilePic"/>}

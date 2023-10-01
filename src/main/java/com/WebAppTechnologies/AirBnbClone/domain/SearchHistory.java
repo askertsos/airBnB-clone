@@ -17,12 +17,13 @@ public class SearchHistory {
     private User user;
 
     @ElementCollection(targetClass = Search.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "history_searches", joinColumns = @JoinColumn(name = "search_id"))
+    @CollectionTable(name = "history_searches")
     private List<Search> searchList = new ArrayList<>();
 
+    //Number of times a specific rental was searched by the user
     @ElementCollection(targetClass = Rental.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "history_rentals", joinColumns = @JoinColumn(name = "rental_id"))
-    private Map<Rental,Integer> rentalMap = new HashMap<>(); //Duplicate rental entries make correlation stronger
+    @CollectionTable(name = "history_rentals")
+    private Map<Rental,Integer> rentalMap = new HashMap<>();
 
     public SearchHistory() {}
 

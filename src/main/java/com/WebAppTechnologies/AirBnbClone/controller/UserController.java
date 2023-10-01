@@ -10,7 +10,9 @@ import com.WebAppTechnologies.AirBnbClone.dto.HostInfoDTO;
 
 import com.WebAppTechnologies.AirBnbClone.services.AuthenticationService;
 import com.WebAppTechnologies.AirBnbClone.services.PhotoService;
+import com.WebAppTechnologies.AirBnbClone.services.RecommendationService;
 import com.WebAppTechnologies.AirBnbClone.services.UserService;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class UserController {
     private UserService userService;
     @Autowired
     private PhotoService photoService;
+
+    @Autowired
+    private RecommendationService recommendationService;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -147,7 +152,6 @@ public class UserController {
             return ResponseEntity.ok().body(responseBody);
         }
 
-        System.out.println(profilePicture.getName());
         Map<String, Object> responseBody = new HashMap<String, Object>();
         responseBody.put("Photo", profilePicture.getName());
 
@@ -159,7 +163,8 @@ public class UserController {
     //--------------------------------------------------------------------------------------------
 
     @GetMapping("/recommended_rentals")
-    public ResponseEntity<?> getRecommendedRentals(@RequestHeader("Authorization") String jwt){
+    public ResponseEntity<?> getRecommendedRentals(@Nullable @RequestHeader("Authorization") String jwt){
+        if (Objects.isNull(jwt)) return ResponseEntity.ok().body(recommendationService.recommendMostHighlyRated(null));
         User tenant = userService.getUserByJwt(jwt).get();
         Optional<RecommendedRentals> optional = recommendedRentalsRepository.findByTenant(tenant);
         if (optional.isEmpty()) return ResponseEntity.badRequest().build();

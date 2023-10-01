@@ -113,7 +113,6 @@ function Profile() {
 		if (profilePic !== null) {
 			const reqBody = new FormData();
 			reqBody.append("image", profilePic[0]);
-			console.log(reqBody);
 			const fetchOptions = {
 				headers: {
 					"Authorization": "Bearer "  + localStorage.getItem("jwt")

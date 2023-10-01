@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface MessageHistoryRepository extends JpaRepository<MessageHistory,Long> {
 
-    public Optional<MessageHistory> findByTenantAndRental(User tenant, Rental rental);
+    Optional<MessageHistory> findByTenantAndRental(User tenant, Rental rental);
 
-    public List<MessageHistory> findByRental(Rental rental);
+    List<MessageHistory> findByRental(Rental rental);
 }
