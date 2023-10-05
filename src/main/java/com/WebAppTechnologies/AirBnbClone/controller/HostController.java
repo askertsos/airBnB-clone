@@ -189,31 +189,6 @@ public class HostController {
         return ResponseEntity.ok().body(nPhotos);
     }
 
-    @GetMapping("/rental/{rentalId}/get_photo/{photoIndex}")
-    public ResponseEntity<?> getRentalPhotos(@PathVariable("rentalId") Long rentalId, @PathVariable("photoIndex") Integer photoIndex, @RequestHeader("Authorization") String jwt){
-        User host = userService.getUserByJwt(jwt).get();
-
-        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
-        Rental rental = optionalRental.get();
-
-        if (!host.getId().equals(rental.getHost().getId())) return ResponseEntity.badRequest().build();
-
-        List<Photo> rentalPhotos = new ArrayList<>(rental.getPhotos());
-        if (photoIndex >= rentalPhotos.size()) return ResponseEntity.badRequest().build();
-
-        byte[] imageData;
-
-        Photo photo = rentalPhotos.get(photoIndex);
-
-        try { imageData = photoService.getImageData(photo);}
-        catch (IOException e){ return ResponseEntity.internalServerError().build();}
-
-        return ResponseEntity.ok().contentType(MediaType.valueOf(photo.getContentType())).body(imageData);
-    }
-
-
-
     @PostMapping("/rental/list")
     @Transactional
     public ResponseEntity<?> listRentals(@RequestBody PageRequestDTO dto, @RequestHeader("Authorization") String jwt){

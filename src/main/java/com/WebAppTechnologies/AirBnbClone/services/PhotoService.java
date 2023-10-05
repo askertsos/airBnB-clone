@@ -29,9 +29,4 @@ public class PhotoService {
         file.transferTo(new File(filePath).toPath());
         return photoRepository.save(newPhoto);
     }
-
-    public byte[] getImageData(Photo photo) throws IOException{
-        String filePath = photo.getFilePath();
-        return Files.readAllBytes(new File(filePath).toPath());
-    }
 }

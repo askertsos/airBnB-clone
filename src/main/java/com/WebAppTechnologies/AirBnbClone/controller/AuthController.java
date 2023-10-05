@@ -1,23 +1,11 @@
 package com.WebAppTechnologies.AirBnbClone.controller;
 
-import com.WebAppTechnologies.AirBnbClone.domain.Booking;
-import com.WebAppTechnologies.AirBnbClone.domain.Rental;
-import com.WebAppTechnologies.AirBnbClone.domain.Review;
-import com.WebAppTechnologies.AirBnbClone.domain.User;
 import com.WebAppTechnologies.AirBnbClone.dto.LoginDTO;
-import com.WebAppTechnologies.AirBnbClone.dto.MassReviewDTO;
 import com.WebAppTechnologies.AirBnbClone.dto.RegisterDTO;
-import com.WebAppTechnologies.AirBnbClone.repository.BookingRepository;
-import com.WebAppTechnologies.AirBnbClone.repository.RentalRepository;
-import com.WebAppTechnologies.AirBnbClone.repository.ReviewRepository;
-import com.WebAppTechnologies.AirBnbClone.repository.UserRepository;
 import com.WebAppTechnologies.AirBnbClone.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @RestController

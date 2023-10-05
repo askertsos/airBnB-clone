@@ -154,14 +154,13 @@ function SearchResults() {
             );
 
             const reqBody = {
-                jwt : localStorage.getItem("jwt"),
                 specificationList: specList,
                 globalOperator : "AND",
                 pageRequestDTO : {
                     pageNo : pageNum,
                     pageSize : 10,
                     sort : "ASC",
-                    sortByColumn : "id"
+                    sortByColumn : "basePrice"
                 }
             };
 
@@ -172,26 +171,42 @@ function SearchResults() {
                 method: "post",
                 body: JSON.stringify(reqBody),
             };
+			if (
+				localStorage.getItem("jwt") !== "null" &&
+				localStorage.getItem("jwt") !== null
+			)
+			fetchOptions.headers.Authorization = "Bearer " + localStorage.getItem("jwt");
 			fetch(BaseUrl + ServerPort + "/search/", fetchOptions)
-            .then(response => {
-                let tempList = [];
-                response.content.map((rental) => {
-                    let passesMaxCostCheck = true;
-                    let passesTypeCheck = true;
-                    if ( maxCost !== null && ((rental.chargePerPerson * parseInt(peopleCount, 10) + rental.basePrice) * dates.split(",").length) > maxCost) passesMaxCostCheck = false;
-                    if ( type !== null && rental.type !== type) passesTypeCheck = false;
-                    if ( passesMaxCostCheck && passesTypeCheck) tempList.push(rental);
-                });
+			.then(response => response.json())
+			.then((response) => {
+				let tempList = [];
+				response.content.map((rental) => {
+					let passesMaxCostCheck = true;
+					let passesTypeCheck = true;
+					if (
+						maxCost !== null &&
+						(rental.chargePerPerson *
+							parseInt(peopleCount, 10) +
+							rental.basePrice) *
+							dates.split(",").length >
+							maxCost
+					)
+						passesMaxCostCheck = false;
+					if (type !== null && rental.type !== type)
+						passesTypeCheck = false;
+					if (passesMaxCostCheck && passesTypeCheck)
+						tempList.push(rental);
+				});
 
-                setMaxPage(response.totalPages);
-                setRentals(tempList);
-                setLoading(false);
-                setNewSearch(false);
-            })
-            .catch((message) => {
-                console.log(message);
-                navigate("/");
-            })
+				setMaxPage(response.totalPages);
+				setRentals(tempList);
+				setLoading(false);
+				setNewSearch(false);
+			})
+			.catch((message) => {
+				console.log(message);
+				navigate("/");
+			});
         }
 	}, [pageNum, hasAC, hasWiFi, hasElevator, hasHeating, hasKitchen, hasParking, hasTV, type, maxCost, newSearch]);
 

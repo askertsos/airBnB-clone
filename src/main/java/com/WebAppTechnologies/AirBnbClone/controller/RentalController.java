@@ -64,25 +64,6 @@ public class RentalController {
         return ResponseEntity.ok().body(rental);
     }
 
-    @PostMapping("/{rentalId}/get_price")
-    public ResponseEntity<?> bookRental(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
-        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if (optionalRental.isEmpty()) return ResponseEntity.badRequest().build();
-        Rental rental = optionalRental.get();
-
-        LocalDate startDate = LocalDate.parse(dto.getStartDate(),dateTimeFormatter);
-        LocalDate endDate = LocalDate.parse(dto.getEndDate(),dateTimeFormatter);
-
-        Integer nDays = startDate.
-                datesUntil(endDate.plusDays(1L)).
-                toList().
-                size();
-
-        dto.setPrice(rental.getPrice(nDays,dto.getGuests()));
-
-        return ResponseEntity.ok().body(dto);
-    }
-
     @PostMapping("/{rentalId}/book/confirm")
     @Transactional
     public ResponseEntity<?> confirmBooking(@PathVariable("rentalId") Long rentalId, @RequestHeader("Authorization") String jwt, @RequestBody BookingDTO dto){
@@ -98,10 +79,10 @@ public class RentalController {
         catch (DateTimeParseException e){
             return ResponseEntity.badRequest().build();
         }
-        System.out.println("before constructBooking");
+
         Booking newBooking = rentalService.constructBooking(jwt,rental,dto,startDate,endDate);
         if (Objects.isNull(newBooking)) return ResponseEntity.badRequest().build();
-        System.out.println("after constructBooking");
+
 
         //Update the rental entity
         List<LocalDate> remainingDates = rental.getAvailableDates();

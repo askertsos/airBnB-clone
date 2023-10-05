@@ -46,7 +46,7 @@ public class AirBnbCloneApplication {
 	}
 
 	//Schedule this for once per day, as its complexity is ~= O(n*m*r) or O(n*m*s) where n=users, m=rentals, r=reviews, s=searches
-	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 5 * 10000)
+	@Scheduled(fixedDelay = 1000L * 60 * 60 * 24, initialDelay = 1000L * 10)
 	public void updateRecommendedRentals(){
 		System.out.println("Commencing the recommendation service");
 		LocalDateTime before = LocalDateTime.now();
