@@ -44,7 +44,7 @@ public class RentalService {
 
     @Autowired
     private PhotoRepository photoRepository;
-    
+
     //Constructs the new booking based on the user, rental and booking info.
     //Returns new Booking instance if all info is valid, null otherwise
     public Booking constructBooking(String jwt, Rental rental, BookingDTO bookingDTO, LocalDate startDate, LocalDate endDate){
