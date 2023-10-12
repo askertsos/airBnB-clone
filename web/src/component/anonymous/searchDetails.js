@@ -283,7 +283,7 @@ function SearchDetails() {
 					</a>
 				)}
 				{localStorage.getItem("isRecomendation") === "true" && (
-					<a href={BaseUrl + ClientPort + "/recommendations"}>
+					<a href={BaseUrl + ClientPort + "/recomendations"}>
 						<button className="button bookRental">
 							Back to recomended rentals list
 						</button>
