@@ -60,7 +60,7 @@ function Home() {
 		}
 
 		if (peopleCount === null){
-			alert("Select visitors amount to proceed!");
+			alert("Select number of visitors to proceed!");
 			return;
 		}
 		else if (peopleCount <= 0){
@@ -68,13 +68,13 @@ function Home() {
 			return;
 		}
 
-		let reformated_dates = ""
+		let reformatted_dates = ""
 		dates.map((date) => {
-			reformated_dates = reformated_dates + date + ",";
+			reformatted_dates = reformatted_dates + date + ",";
 		})
-		reformated_dates = reformated_dates.slice(0,-1);
+		reformatted_dates = reformatted_dates.slice(0,-1);
 
-		localStorage.setItem("search_dates", reformated_dates);
+		localStorage.setItem("search_dates", reformatted_dates);
 		localStorage.setItem("search_country", country);
 		localStorage.setItem("search_city", city);
 		localStorage.setItem("search_neighbourhood", neighbourhood);
@@ -128,7 +128,7 @@ function Home() {
 				{/* Search bar */}
 				<div className="search-bar">
 					<div className="search-header-background main-background">
-						<h2 className="search-h2 search-main-header"> Where are you going </h2>
+						<h2 className="search-h2 search-main-header"> Select destination details </h2>
 					</div>
 					<h2 className="search-h2 country-header"> Country: </h2>
 					<input
@@ -171,7 +171,7 @@ function Home() {
 						value={peopleCount}
 					/>
 					<div className="search-header-background dates-background" />
-					<h2 className="search-h2 dates-header"> When are you going: </h2>
+					<h2 className="search-h2 dates-header"> Select dates </h2>
 					<div className="dates-input">
 						<MulitDatePicker
 							onChange={dates => {
