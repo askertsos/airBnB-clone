@@ -442,7 +442,7 @@ function SearchResults() {
 					<ul>
 						{rentals.map((data) => (
 							<p>
-								<a href={BaseUrl + ClientPort + "/search/" + data.id +"/details"}>
+								<a href={BaseUrl + ClientPort + "/search/" + data.id + "/details"}>
 									<button className="rental ">
 										{data.photos.length === 0 && (
 											<img

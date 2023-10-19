@@ -1,28 +1,47 @@
 .login-bg {
-    background-image : url("../images/login.jpg");
-    position:absolute;
-    height : 939px;
-    width: 1879px;
+    background-image : url("../images/lake-mountains.jpg");
+    position: relative;
+    height : 941px;
+    width: 1920px;
     background-size : cover; 
 }
 
 .box-form {
-    background-color: rgb(126, 126, 139);
+    background-color: transparent;
+    border-radius: 25px;
     padding: 12px 28px;
-    width: 480px;
-    height: 400px;
+    width: 320px;
+    height: 260px;
+    position: absolute;
+    left: 40%;
+    top : 20%;
+    /* border: 5px solid rgb(212, 18, 51); */
+}
+
+.login-icon {
+    content: url("../images/login_icon_cropped.png");
+    top: 16px;
+    width: 42px;
+    height: 42px;
+    padding-left: 3px;
+    padding-right: 3px;
     position: relative;
-    left: 667px;
-    top : 162px;
-    border: 5px solid black;
+}
+
+.password-icon {
+    content: url("../images/password_icon.png");
+    top: 20px;
+    width: 48px;
+    height: 48px;
+    position: relative;
 }
 
 .login-h2 {
     position: relative;
-    top: 5px;
-    left: 60px;
+    top: 0px;
+    left: 10px;
     font-size: x-large;
-    color: rgb(241, 237, 237);
+    color: blue;
 }
 
 .login-input {
@@ -30,35 +49,48 @@
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #ccc;
+    color: white;
+    opacity: 0.8;
     box-sizing: border-box;
     position: relative;
-    left: 200px;
-    bottom : 58px;
+    left: 10px;
+    top: 0px;
+    bottom : 0px;
 }
 
 .login-btn {
     width: 170px;
     height: 60px;
-    background-color: rgb(126, 126, 139);
+    position: relative;
+    border-radius: 14px;
+    background-color: black;
+    opacity: 0.7;
     border: 2px solid black;
     font-size: large;
     color: rgb(248, 248, 248);
 }
 
 .login-btn:hover{
-    background-color: #c3c0ca;
-    color: rgb(8, 7, 7);
+    opacity: 0.6;
     cursor: pointer;
 }
 
+.login-btn:active{
+    opacity: 0.3;
+}
+
 .btn1 {
-    position: absolute;
-    right: 200px;
-    top : 270px;
+    left: 75px;
+    top : 30px;
 }
 
 .btn2 {
     position: absolute;
-    right: 872px;
-    top : 520px;
+    background-color:greenyellow;
+    color: black;
+    font-weight: bold;
+    font-size: xx-large;
+    width: 500px;
+    top : 50%;
+    left: 37%
 }

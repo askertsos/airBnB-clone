@@ -56,34 +56,45 @@ const LoginPost = () => {
 		<>
 			<div className="login-bg">
 				<div className="box-form">
-						<h2 className="login-h2"> Username: </h2>
+					<div>
+						<i className="login-icon"></i>
 						<input
 							className="login-input"
 							id="username"
 							name="username"
 							type="text"
 							placeholder="username"
-							onChange={(event) => setUsername(event.target.value)}
+							onChange={(event) =>
+								setUsername(event.target.value)
+							}
 							value={username}
 						/>
-						<h2 className="login-h2"> Password: </h2>
+					</div>
+					<div>
+						<i className="password-icon"></i>
 						<input
 							className="login-input"
 							id="password"
 							name="password"
 							type="password"
 							placeholder="password"
-							onChange={(event) => setPassword(event.target.value)}
+							onChange={(event) =>
+								setPassword(event.target.value)
+							}
 							value={password}
 						/>
-						<button className="login-btn btn1" id="submit" type="button" onClick={() => onSubmit()}>
-							Login
-						</button>
-				</div>
-				<a href = {BaseUrl + ClientPort + "/home"}>
-					<button className="login-btn btn2">
-						Homepage
+					</div>
+					<button
+						className="login-btn btn1"
+						id="submit"
+						type="button"
+						onClick={() => onSubmit()}
+					>
+						Login
 					</button>
+				</div>
+				<a href={BaseUrl + ClientPort + "/home"}>
+					<button className="login-btn btn2">Homepage</button>
 				</a>
 			</div>
 		</>
